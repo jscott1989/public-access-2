@@ -3,6 +3,7 @@
 --- !u!78 &1
 TagManager:
   tags:
+  - channel
   - 
   Builtin Layer 0: Default
   Builtin Layer 1: TransparentFX
@@ -40,4 +41,12 @@ TagManager:
   - name: Default
     userID: 0
     uniqueID: 0
+    locked: 0
+  - name: TV Content
+    userID: 1
+    uniqueID: 3724569867
+    locked: 0
+  - name: In front of TV
+    userID: 2
+    uniqueID: 347178233
     locked: 0
