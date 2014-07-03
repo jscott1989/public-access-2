@@ -692,3 +692,16 @@ MonoBehaviour:
     loadable: 0
     assetName: 
     version: 3
+  - name: WindowSprites
+    spriteCollectionGUID: 26143e5313d5c4b9581d2e785c3faf71
+    spriteCollectionDataGUID: 53970473e5994408ebaa15089df1620b
+    spriteNames:
+    - window_bg
+    spriteTextureGUIDs:
+    - ef4ea69688283430ba3fe8718cd95561
+    spriteTextureTimeStamps:
+    - 1404378691
+    managedSpriteCollection: 0
+    loadable: 0
+    assetName: 
+    version: 3
