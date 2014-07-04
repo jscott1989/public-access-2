@@ -88,6 +88,11 @@ public class EveningManager : MonoBehaviour {
 			r.enabled = false;
 		}
 
+		// Hide 3D Text
+		foreach (MeshRenderer r in channel.GetComponentsInChildren(typeof(MeshRenderer))) {
+//			r.enabled = false;
+		}
+
 		// Silence audio
 		foreach (AudioSource r in channel.GetComponentsInChildren(typeof(AudioSource))) {
 			r.volume = 0;
@@ -103,6 +108,11 @@ public class EveningManager : MonoBehaviour {
 		// Start audio
 		foreach (AudioSource r in channel.GetComponentsInChildren(typeof(AudioSource))) {
 			r.volume = 1;
+		}
+
+		// Show 3D Text
+		foreach (MeshRenderer r in channel.GetComponentsInChildren(typeof(MeshRenderer))) {
+			r.enabled = true;
 		}
 
 

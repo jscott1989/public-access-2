@@ -4,6 +4,7 @@
 TagManager:
   tags:
   - channel
+  - second_marker
   - 
   Builtin Layer 0: Default
   Builtin Layer 1: TransparentFX
