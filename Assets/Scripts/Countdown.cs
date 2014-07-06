@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 
 /**
@@ -10,11 +11,31 @@ public class Countdown : MonoBehaviour {
 	/**
 	 * The number that should be counted down from
 	 */
-	public float countdownTimer = 30;
+	float countdownTimer = 30;
+	bool finished = true;
+	UILabel u;
+	Action callback;
+
+	void Start() {
+		u = (UILabel) GetComponent (typeof(UILabel));
+	}
+
+	public void StartCountdown(float seconds, Action c) {
+		countdownTimer = seconds;
+		callback = c;
+		finished = false;
+	}
 
 	void Update () {
 		// Make the change and update the text
-		countdownTimer -= Time.deltaTime;
-		guiText.text = countdownTimer.ToString ("0");
+		if (!finished) {
+			countdownTimer -= Time.deltaTime;
+			if (countdownTimer <= 0) {
+				finished = true;
+				callback();
+			}
+
+			u.text = countdownTimer.ToString ("0");
+		}
 	}
 }

@@ -6,7 +6,6 @@ public class DialogueContinueButton : MonoBehaviour {
 	public DialogueController dialogueController;
 
 	void OnClick() {
-		print ("CLICK");
-		dialogueController.next();
+		dialogueController.Next();
 	}
 }
