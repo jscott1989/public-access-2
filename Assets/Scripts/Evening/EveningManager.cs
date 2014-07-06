@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -52,6 +53,8 @@ public class EveningManager : MonoBehaviour {
 	private float timePassed = 0;
 	private List<ChannelWatchingAction> channelWatchingActions = new List<ChannelWatchingAction>();
 
+	public Countdown countdown;
+
 
 	void Start () {
 		// TODO: Have an instructions phase on Day 1 evening
@@ -67,6 +70,10 @@ public class EveningManager : MonoBehaviour {
 		// Start with channel 1
 		// TODO: Make this something like (mychannelnumber - 1) so that no channel is given an unfair advantage
 		StartWatching (1);
+
+		Action eveningFinished = 
+			() => Application.LoadLevel ("Morning");
+		countdown.StartCountdown (30, eveningFinished);
 	}
 
 	void RemoveChannelInformation() {
