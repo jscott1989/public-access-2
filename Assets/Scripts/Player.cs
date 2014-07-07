@@ -14,7 +14,7 @@ public class Player : MonoBehaviour {
 	
 	}
 
-	[RPC] void SetPlayerName(string player_tempname)
+	[RPC] public void SetPlayerName(string player_tempname)
 	{
 		player_name = player_tempname;
 
