@@ -7,7 +7,7 @@ public class LobbyManager : MonoBehaviour {
 	public ChatTextList textList;
 	int playerNameIncrementor = 1;
 
-	GameObject[] existingPlayers = new GameObject[]{};
+	public GameObject[] allPlayers = new GameObject[]{};
 
 	// Use this for initialization
 	void Start () {
@@ -15,7 +15,7 @@ public class LobbyManager : MonoBehaviour {
 	}
 
 	void AnnounceAllPlayerNames() {
-		foreach (GameObject p in existingPlayers) {
+		foreach (GameObject p in allPlayers) {
 			Player player = (Player)p.GetComponent (typeof(Player));
 			if (player.player_name == "") {
 				// This player is new, set a new name
@@ -27,14 +27,14 @@ public class LobbyManager : MonoBehaviour {
 			}
 		}
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
 		if (Network.isServer) {
 			GameObject[] players = GameObject.FindGameObjectsWithTag ("Player");
 			foreach (GameObject p in players) {
-				if (!(existingPlayers.Contains (p))) {
-					existingPlayers = players;
+				if (!(allPlayers.Contains (p))) {
+					allPlayers = players;
 					// There is at least one new player 
 					AnnounceAllPlayerNames();
 					return;

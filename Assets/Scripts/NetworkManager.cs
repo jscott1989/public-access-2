@@ -52,5 +52,16 @@ public class NetworkManager : MonoBehaviour {
 		Network.Instantiate(playerPrefab, new Vector3(0f, 0f, 0f), Quaternion.identity, 0);
 	}
 
+	/**
+	 * Get the player object of the current network client
+	 */
+	public Player GetMyPlayer() {
+		foreach (GameObject p in GameObject.FindGameObjectsWithTag ("Player")) {
+			if (p.networkView.isMine) {
+				return (Player) p.GetComponent ("Player");
+			}
+		}
+		return null;
+	}
 
 }
