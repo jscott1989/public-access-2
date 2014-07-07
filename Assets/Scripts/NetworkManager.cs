@@ -10,12 +10,6 @@ public class NetworkManager : MonoBehaviour {
 		Network.InitializeServer(4, 25000, !Network.HavePublicAddress());
 		MasterServer.RegisterHost(typeName, gameName);
 	}
-	void OnServerInitialized()
-	{
-		Debug.Log("Server Initializied");
-
-	}
-
 
 	public HostData[] hostList;
 	
@@ -46,6 +40,20 @@ public class NetworkManager : MonoBehaviour {
 	void OnConnectedToServer()
 	{
 		Debug.Log("Server Joined");
+		SpawnPlayer();
+	}
+
+	public GameObject playerPrefab;
+	
+	void OnServerInitialized()
+	{
+		Debug.Log("Server Initializied");
+		SpawnPlayer();
+	}
+	
+	private void SpawnPlayer()
+	{
+		Network.Instantiate(playerPrefab, new Vector3(0f, 0f, 0f), Quaternion.identity, 0);
 	}
 
 
