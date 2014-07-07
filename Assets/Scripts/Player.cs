@@ -13,4 +13,20 @@ public class Player : MonoBehaviour {
 	void Update () {
 	
 	}
+
+	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
+	{
+
+		if(stream.isWriting)
+		{
+			stream.Serialize(ref player_name);
+		}
+		else
+		{
+			string temp_player;
+			stream.Serialize(ref temp_player);
+			player_name = temp_player;
+
+		}
+	}
 }
