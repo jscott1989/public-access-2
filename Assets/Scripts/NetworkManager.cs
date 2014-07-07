@@ -24,12 +24,8 @@ public class NetworkManager : MonoBehaviour {
 	{
 		if (msEvent == MasterServerEvent.HostListReceived) {
 			hostList = MasterServer.PollHostList ();
-
-
 			print (hostList[0]);
 		}
-
-		//print ("Refresh 2");
 
 	}
 	public void JoinServer(HostData hostData)
