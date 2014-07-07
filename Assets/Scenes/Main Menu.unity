@@ -846,6 +846,7 @@ GameObject:
   - 114: {fileID: 806556122}
   - 114: {fileID: 806556121}
   - 114: {fileID: 806556126}
+  - 114: {fileID: 806556127}
   m_Layer: 0
   m_Name: Create Game Button
   m_TagString: Untagged
@@ -950,6 +951,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneName: Lobby
+--- !u!114 &806556127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 806556119}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab6c5cee69dc3413d93886ed519c500b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  networkManager: {fileID: 923172077}
 --- !u!1 &879260495
 GameObject:
   m_ObjectHideFlags: 0
@@ -998,6 +1011,44 @@ MonoBehaviour:
   mFillDirection: 4
   mFillAmount: 1
   mInvert: 0
+--- !u!1 &923172076
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 923172078}
+  - 114: {fileID: 923172077}
+  m_Layer: 0
+  m_Name: NetworkManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &923172077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 923172076}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdbcf6801d20e445cabc36ec6025a9eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &923172078
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 923172076}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -.0569040217, y: -.103333406, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
 --- !u!1 &1224547071
 GameObject:
   m_ObjectHideFlags: 0
@@ -1012,6 +1063,7 @@ GameObject:
   - 114: {fileID: 1224547075}
   - 114: {fileID: 1224547074}
   - 114: {fileID: 1224547073}
+  - 114: {fileID: 1224547079}
   m_Layer: 0
   m_Name: Refresh Button
   m_TagString: Untagged
@@ -1143,6 +1195,18 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 150, y: 40, z: 0}
   m_Center: {x: 0, y: 1.90734863e-06, z: -2.25}
+--- !u!114 &1224547079
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1224547071}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c21b7eefdfbc3428f857625d546a2e88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  networkManager: {fileID: 923172077}
 --- !u!1 &1315893800
 GameObject:
   m_ObjectHideFlags: 0
