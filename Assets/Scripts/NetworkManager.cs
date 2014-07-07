@@ -17,13 +17,13 @@ public class NetworkManager : MonoBehaviour {
 	}
 
 
-	private HostData[] hostList;
+	public HostData[] hostList;
 	
 	public void RefreshHostList()
 	{
 		MasterServer.RequestHostList(typeName);
 
-		print ("Refreshed");
+		//print ("Refreshed");
 	}
 	
 	void OnMasterServerEvent(MasterServerEvent msEvent)
@@ -31,10 +31,21 @@ public class NetworkManager : MonoBehaviour {
 		if (msEvent == MasterServerEvent.HostListReceived) {
 			hostList = MasterServer.PollHostList ();
 
-			print (hostList);
+
+			print (hostList[0]);
 		}
 
-		print ("Refresh 2");
+		//print ("Refresh 2");
+
+	}
+	public void JoinServer(HostData hostData)
+	{
+		Network.Connect(hostData);
+	}
+	
+	void OnConnectedToServer()
+	{
+		Debug.Log("Server Joined");
 	}
 
 
