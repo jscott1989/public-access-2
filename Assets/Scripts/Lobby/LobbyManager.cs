@@ -20,6 +20,8 @@ public class LobbyManager : MonoBehaviour {
 			if (!(existingPlayers.Contains (p))) {
 			
 				if (Network.isServer) {
+					Player player = (Player)p.GetComponent(typeof(Player));
+					player.name = "test player";
 					textList.Add ("A Player has joined");
 				}
 
