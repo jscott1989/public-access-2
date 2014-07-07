@@ -107,6 +107,7 @@ Transform:
   - {fileID: 806556120}
   - {fileID: 1505163131}
   m_Father: {fileID: 1315893801}
+  m_RootOrder: 0
 --- !u!114 &424725
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -125,17 +126,17 @@ MonoBehaviour:
   widgetsAreStatic: 0
   cullWhileDragging: 0
   worldToLocal:
-    e00: 207
+    e00: 239.999985
     e01: 0
     e02: 0
     e03: 0
     e10: 0
-    e11: 207
+    e11: 239.999985
     e12: 0
     e13: 0
     e20: 0
     e21: 0
-    e22: 207
+    e22: 239.999985
     e23: 0
     e30: 0
     e31: 0
@@ -173,6 +174,7 @@ Transform:
   m_LocalScale: {x: 150, y: 40, z: 1}
   m_Children: []
   m_Father: {fileID: 1224547072}
+  m_RootOrder: 1
 --- !u!114 &145467160
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -229,6 +231,7 @@ Transform:
   - {fileID: 1741933260}
   - {fileID: 323404364}
   m_Father: {fileID: 424724}
+  m_RootOrder: 3
 --- !u!114 &213990509
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -247,17 +250,17 @@ MonoBehaviour:
   widgetsAreStatic: 0
   cullWhileDragging: 0
   worldToLocal:
-    e00: 207
+    e00: 239.999985
     e01: 0
     e02: 0
     e03: -208.624023
     e10: 0
-    e11: 207
+    e11: 239.999985
     e12: 0
     e13: 147.301193
     e20: 0
     e21: 0
-    e22: 207
+    e22: 239.999985
     e23: 0
     e30: 0
     e31: 0
@@ -348,10 +351,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 213990507}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c4f29626902b4433b0f9dd625a71010, type: 3}
+  m_Script: {fileID: 11500000, guid: 769dbb5bf3b274b7db52bab45d00d099, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneName: Lobby
+  networkManager: {fileID: 923172077}
 --- !u!1 &323404363
 GameObject:
   m_ObjectHideFlags: 0
@@ -379,6 +382,7 @@ Transform:
   m_LocalScale: {x: 150, y: 40, z: 1}
   m_Children: []
   m_Father: {fileID: 213990508}
+  m_RootOrder: 1
 --- !u!114 &323404365
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -427,6 +431,7 @@ Transform:
   m_LocalScale: {x: 20, y: 20, z: 1}
   m_Children: []
   m_Father: {fileID: 2139820420}
+  m_RootOrder: 0
 --- !u!114 &360183619
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -483,6 +488,7 @@ Transform:
   m_LocalScale: {x: 40, y: 40, z: 1}
   m_Children: []
   m_Father: {fileID: 1505163131}
+  m_RootOrder: 1
 --- !u!114 &380616340
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -539,17 +545,17 @@ MonoBehaviour:
   widgetsAreStatic: 0
   cullWhileDragging: 0
   worldToLocal:
-    e00: 207
+    e00: 239.999985
     e01: 0
     e02: 0
     e03: 0
     e10: 0
-    e11: 207
+    e11: 239.999985
     e12: 0
     e13: 0
     e20: 0
     e21: 0
-    e22: 207
+    e22: 239.999985
     e23: 0
     e30: 0
     e31: 0
@@ -584,10 +590,11 @@ Transform:
   m_GameObject: {fileID: 409174929}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: .00483091781, y: .00483091781, z: .00483091781}
+  m_LocalScale: {x: .00416666688, y: .00416666688, z: .00416666688}
   m_Children:
   - {fileID: 1566892802}
   m_Father: {fileID: 0}
+  m_RootOrder: 2
 --- !u!1 &638629709
 GameObject:
   m_ObjectHideFlags: 0
@@ -615,6 +622,7 @@ Transform:
   m_LocalScale: {x: 800, y: 600, z: 1}
   m_Children: []
   m_Father: {fileID: 424724}
+  m_RootOrder: 0
 --- !u!114 &638629711
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -665,6 +673,7 @@ Transform:
   m_LocalScale: {x: 20, y: 20, z: 1}
   m_Children: []
   m_Father: {fileID: 1224547072}
+  m_RootOrder: 0
 --- !u!114 &642758811
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -763,8 +772,11 @@ Camera:
     m_Bits: 4294967295
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
   m_HDR: 0
   m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: .0219999999
 --- !u!4 &740842353
 Transform:
   m_ObjectHideFlags: 0
@@ -776,6 +788,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
+  m_RootOrder: 0
 --- !u!1 &762534008
 GameObject:
   m_ObjectHideFlags: 0
@@ -803,6 +816,7 @@ Transform:
   m_LocalScale: {x: 20, y: 20, z: 1}
   m_Children: []
   m_Father: {fileID: 1505163131}
+  m_RootOrder: 0
 --- !u!114 &762534010
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -845,7 +859,6 @@ GameObject:
   - 114: {fileID: 806556123}
   - 114: {fileID: 806556122}
   - 114: {fileID: 806556121}
-  - 114: {fileID: 806556126}
   - 114: {fileID: 806556127}
   m_Layer: 0
   m_Name: Create Game Button
@@ -867,6 +880,7 @@ Transform:
   - {fileID: 2097403414}
   - {fileID: 879260496}
   m_Father: {fileID: 424724}
+  m_RootOrder: 4
 --- !u!114 &806556121
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -939,18 +953,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 150, y: 40, z: 0}
   m_Center: {x: 0, y: 1.90734863e-06, z: -2.25}
---- !u!114 &806556126
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 806556119}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c4f29626902b4433b0f9dd625a71010, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sceneName: Lobby
 --- !u!114 &806556127
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -990,6 +992,7 @@ Transform:
   m_LocalScale: {x: 150, y: 40, z: 1}
   m_Children: []
   m_Father: {fileID: 806556120}
+  m_RootOrder: 1
 --- !u!114 &879260497
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1049,6 +1052,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
+  m_RootOrder: 1
 --- !u!1 &1224547071
 GameObject:
   m_ObjectHideFlags: 0
@@ -1084,6 +1088,7 @@ Transform:
   - {fileID: 642758810}
   - {fileID: 145467159}
   m_Father: {fileID: 424724}
+  m_RootOrder: 1
 --- !u!114 &1224547073
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1102,17 +1107,17 @@ MonoBehaviour:
   widgetsAreStatic: 0
   cullWhileDragging: 0
   worldToLocal:
-    e00: 207
+    e00: 239.999985
     e01: 0
     e02: 0
     e03: -56.2043915
     e10: 0
-    e11: 207
+    e11: 239.999985
     e12: 0
     e13: 147.301208
     e20: 0
     e21: 0
-    e22: 207
+    e22: 239.999985
     e23: 0
     e30: 0
     e31: 0
@@ -1235,6 +1240,7 @@ Transform:
   m_Children:
   - {fileID: 424724}
   m_Father: {fileID: 1566892802}
+  m_RootOrder: 0
 --- !u!114 &1315893802
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1281,6 +1287,7 @@ Transform:
   m_LocalScale: {x: 40, y: 40, z: 1}
   m_Children: []
   m_Father: {fileID: 2139820420}
+  m_RootOrder: 1
 --- !u!114 &1383441823
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1336,6 +1343,7 @@ Transform:
   - {fileID: 762534009}
   - {fileID: 380616339}
   m_Father: {fileID: 424724}
+  m_RootOrder: 5
 --- !u!114 &1505163132
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1354,17 +1362,17 @@ MonoBehaviour:
   widgetsAreStatic: 0
   cullWhileDragging: 0
   worldToLocal:
-    e00: 207
+    e00: 239.999985
     e01: 0
     e02: 0
     e03: -314.750305
     e10: 0
-    e11: 207
+    e11: 239.999985
     e12: 0
     e13: 147.301285
     e20: 0
     e21: 0
-    e22: 207
+    e22: 239.999985
     e23: 0
     e30: 0
     e31: 0
@@ -1476,6 +1484,7 @@ Transform:
   m_Children:
   - {fileID: 1315893801}
   m_Father: {fileID: 409174932}
+  m_RootOrder: 0
 --- !u!114 &1566892803
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1539,8 +1548,11 @@ Camera:
     m_Bits: 1
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
   m_HDR: 0
   m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: .0219999999
 --- !u!1 &1741933259
 GameObject:
   m_ObjectHideFlags: 0
@@ -1568,6 +1580,7 @@ Transform:
   m_LocalScale: {x: 20, y: 20, z: 1}
   m_Children: []
   m_Father: {fileID: 213990508}
+  m_RootOrder: 0
 --- !u!114 &1741933261
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1624,6 +1637,7 @@ Transform:
   m_LocalScale: {x: 20, y: 20, z: 1}
   m_Children: []
   m_Father: {fileID: 806556120}
+  m_RootOrder: 0
 --- !u!114 &2097403415
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1687,6 +1701,7 @@ Transform:
   - {fileID: 360183618}
   - {fileID: 1383441822}
   m_Father: {fileID: 424724}
+  m_RootOrder: 2
 --- !u!114 &2139820421
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1705,17 +1720,17 @@ MonoBehaviour:
   widgetsAreStatic: 0
   cullWhileDragging: 0
   worldToLocal:
-    e00: 207
+    e00: 239.999985
     e01: 0
     e02: 0
     e03: 47.3220825
     e10: 0
-    e11: 207
+    e11: 239.999985
     e12: 0
     e13: 147.301208
     e20: 0
     e21: 0
-    e22: 207
+    e22: 239.999985
     e23: 0
     e30: 0
     e31: 0
