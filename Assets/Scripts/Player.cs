@@ -19,7 +19,7 @@ public class Player : MonoBehaviour {
 		player_name = player_tempname;
 
 		if (Network.isServer) {
-						networkView.RPC ("SetPlayerName", RPCMode.All, player_name);
+						networkView.RPC ("SetPlayerName", RPCMode.Others, player_name);
 				}
 
 	}
