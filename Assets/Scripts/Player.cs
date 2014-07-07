@@ -14,19 +14,13 @@ public class Player : MonoBehaviour {
 	
 	}
 
-	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
+	[RPC] void SetPlayerName(string player_tempname)
 	{
+		player_name = player_tempname;
 
-		if(stream.isWriting)
-		{
-			stream.Serialize(ref player_name);
-		}
-		else
-		{
-			string temp_player;
-			stream.Serialize(ref temp_player);
-			player_name = temp_player;
+		if (Network.isServer) {
+						networkView.RPC ("SetPlayerName", RPCMode.Others, player_name);
+				}
 
-		}
 	}
 }
