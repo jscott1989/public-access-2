@@ -18,7 +18,11 @@ public class LobbyManager : MonoBehaviour {
 		GameObject[] players = GameObject.FindGameObjectsWithTag ("Player");
 		foreach (GameObject p in players) {
 			if (!(existingPlayers.Contains (p))) {
-				textList.Add ("A Player has joined");
+			
+				if (Network.isServer) {
+					textList.Add ("A Player has joined");
+				}
+
 			}
 		}
 
