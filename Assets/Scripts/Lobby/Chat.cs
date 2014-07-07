@@ -4,21 +4,18 @@
 
 public class Chat : MonoBehaviour
 {
-	public UITextList textList;
+	public ChatTextList textList;
 
 	UIInput mInput;
 	
 	void Start ()
 	{
 		mInput = GetComponent<UIInput>();
-		
-
 	}
 
 	void AddMessage(string message)
 	{
 		textList.Add (message);
-
 	}
 
 	
@@ -31,8 +28,8 @@ public class Chat : MonoBehaviour
 			
 			if (!string.IsNullOrEmpty(text))
 			{
+				AddMessage(text);
 				mInput.text = "";
-
 			}
 		}
 

@@ -4,7 +4,7 @@ using System.Collections;
 
 public class LobbyManager : MonoBehaviour {
 
-	public UITextList textList;
+	public ChatTextList textList;
 
 	GameObject[] existingPlayers = new GameObject[]{};
 
