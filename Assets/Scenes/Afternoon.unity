@@ -317,6 +317,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 659366372}
   - 114: {fileID: 659366371}
+  - 114: {fileID: 659366373}
   m_Layer: 0
   m_Name: AfternoonManager
   m_TagString: Untagged
@@ -337,6 +338,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   statusLabel: {fileID: 129306273}
   countdown: {fileID: 817959506}
+  sceneRecorder: {fileID: 659366373}
 --- !u!4 &659366372
 Transform:
   m_ObjectHideFlags: 0
@@ -348,6 +350,17 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
+--- !u!114 &659366373
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 659366370}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ddcae8c0cbfe414dadd6b36c29710a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &661331246
 GameObject:
   m_ObjectHideFlags: 0

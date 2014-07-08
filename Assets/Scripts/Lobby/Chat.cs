@@ -2,11 +2,17 @@
 
 [RequireComponent(typeof(UIInput))]
 
+/**
+ * The input for the lobby chat
+ */
 public class Chat : MonoBehaviour
 {
+	// The Chatlist to add messages to
 	public ChatTextList textList;
+
 	NetworkManager networkManager;
 
+	// The text input
 	UIInput mInput;
 	
 	void Start ()
@@ -20,6 +26,11 @@ public class Chat : MonoBehaviour
 		textList.Add (message);
 	}
 
+	void Update() {
+			if (mInput != null) {
+				mInput.selected = true;
+			}
+		}
 	
 	void OnSubmit ()
 	{

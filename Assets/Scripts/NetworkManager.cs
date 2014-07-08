@@ -4,6 +4,7 @@ using System.Collections;
 public class NetworkManager : MonoBehaviour {
 
 	private const string typeName = "PublicAccessWars";
+	public GameObject playerPrefab;
 	
 	public void StartServer(string gameName)
 	{
@@ -39,8 +40,6 @@ public class NetworkManager : MonoBehaviour {
 		SpawnPlayer();
 	}
 
-	public GameObject playerPrefab;
-	
 	void OnServerInitialized()
 	{
 		Debug.Log("Server Initializied");

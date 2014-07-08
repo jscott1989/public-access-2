@@ -894,10 +894,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1190877519}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c4f29626902b4433b0f9dd625a71010, type: 3}
+  m_Script: {fileID: 11500000, guid: aca9604955fd94dc2ae0500cfc0ea362, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneName: Main Menu
+  networkManagerPrefab: {fileID: 100000, guid: 6ba0dadefbc464cd6a0fe2664dd147e7, type: 2}
 --- !u!1 &1354173168
 GameObject:
   m_ObjectHideFlags: 0
@@ -1178,6 +1178,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textList: {fileID: 1850298275}
+  allPlayers: []
 --- !u!4 &1671810106
 Transform:
   m_ObjectHideFlags: 0
