@@ -165,11 +165,19 @@ public class LobbyManager : SceneManager {
 		networkView.RPC ("AddChatMessage", RPCMode.All, "<br /><i style=\"color: black;\">Game stopped</i>");
 	}
 
+
+	/**
+	 * Inform the players the game is starting
+	 */
+	[RPC] void StartingGame() {
+		mLoadingPanel.ShowAlert ("Starting game...");
+	}
+
 	/**
 	 * Move to the Day 1 morning phase
 	 */
 	[RPC] void StartGame() {
-		mLoadingPanel.ShowAlert ("Starting game...");
+		mLoadingPanel.ShowAlert ("Started");
 	}
 
 	void Update() {
@@ -179,7 +187,17 @@ public class LobbyManager : SceneManager {
 
 				if (mCountdown <= 0) {
 					mCountdown = -1;
-					StartGame();
+					networkView.RPC ("StartingGame", RPCMode.All);
+					Player[] players = mNetworkManager.players;
+					GameSetup gameSetup = GameSetup.generate (players.Length);
+					for (var i = 0; i < players.Length; i++) {
+						foreach (string s in gameSetup.uAvailableProps) {
+							// We do this individually because it kept getting memory errors when sending the array
+							// TODO: Figure out why this is - it's inefficient like this
+							players[i].networkView.RPC ("AddAvailableProp",RPCMode.All,s);
+						}
+						players[i].networkView.RPC ("SetGameInfo",RPCMode.All, gameSetup.uThemes[i], gameSetup.uNeeds[i]);
+					}
 					networkView.RPC ("StartGame", RPCMode.All);
 					return;
 				}

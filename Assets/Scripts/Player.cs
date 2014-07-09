@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 /**
  * This class holds basic information about each player, and methods
@@ -45,6 +46,20 @@ public class Player : MonoBehaviour {
 		if (Network.isServer) {
 			mSceneManager.ReadyStatusChanged(this);
 		}
+	}
+
+	public List<string> uAvailableProps = new List<string>();
+	
+	[RPC] public void AddAvailableProp(string pProp) {
+		uAvailableProps.Add (pProp);
+	}
+
+	public string uTheme;
+	public string uNeed;
+
+	[RPC] public void SetGameInfo (string pTheme, string pNeed) {
+		uTheme = pTheme;
+		uNeed = pNeed;
 	}
 
 	
