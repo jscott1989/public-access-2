@@ -5,13 +5,18 @@ public class LobbyManager : SceneManager {
 	GameObject mMyPlayerInfoPrefab;
 	GameObject mPlayerInfoPrefab;
 	dfScrollPanel mPlayersList;
+	dfRichTextLabel mChat;
 	LoadingPanel mLoadingPanel;
 	NetworkManager mNetworkManager;
+
+	// The current typed chat message
+	public string uChatMessage;
 
 	void Awake() {
 		mMyPlayerInfoPrefab = (GameObject)Resources.Load ("Lobby/Prefabs/MyPlayerInfoBox");
 		mPlayerInfoPrefab = (GameObject)Resources.Load ("Lobby/Prefabs/PlayerInfoBox");
 		mPlayersList = (dfScrollPanel)GameObject.FindObjectOfType (typeof(dfScrollPanel));
+		mChat = (dfRichTextLabel)GameObject.FindObjectOfType (typeof(dfRichTextLabel));
 		mLoadingPanel = (LoadingPanel)GameObject.FindObjectOfType (typeof(LoadingPanel));
 		mNetworkManager = (NetworkManager)GameObject.FindObjectOfType (typeof(NetworkManager));
 	}
@@ -24,14 +29,20 @@ public class LobbyManager : SceneManager {
 		}
 	}
 
+	/**
+	 * Create an info box for another player
+	 */
 	void CreatePlayerInfoBox(Player pPlayer) {
 		GameObject playerInfo = (GameObject) Instantiate (mPlayerInfoPrefab, Vector3.zero, Quaternion.identity);
 		playerInfo.transform.parent = mPlayersList.gameObject.transform;
 
-		dfLabel nameLabel = (dfLabel)playerInfo.GetComponentInChildren (typeof(dfLabel));
+		dfLabel nameLabel = (dfLabel)playerInfo.GetComponentsInChildren (typeof(dfLabel))[0];
 		dfPropertyBinding b = dfPropertyBinding.Bind (pPlayer,"uName", nameLabel,"Text");
 	}
 
+	/**
+	 * Create my own info box
+	 */
 	void CreateMyPlayerInfoBox(Player pPlayer) {
 		GameObject playerInfo = (GameObject) Instantiate (mMyPlayerInfoPrefab, Vector3.zero, Quaternion.identity);
 		playerInfo.transform.parent = mPlayersList.gameObject.transform;
@@ -39,11 +50,11 @@ public class LobbyManager : SceneManager {
 		dfTextbox myNameTextBox = (dfTextbox)playerInfo.GetComponentInChildren (typeof(dfTextbox));
 		myNameTextBox.Text = pPlayer.uName;
 		dfPropertyBinding b = dfPropertyBinding.Bind (myNameTextBox,"Text",pPlayer,"uName");
-
 	}
 
 	public override void PlayerConnected(int pID, NetworkPlayer pPlayer) {
 		// A new player has joined - so we should fill them in on the state of the lobby
+		// (This is only called on the Server)
 		foreach (Player p in mNetworkManager.players) {
 			if (!p.Equals(pPlayer)) {
 				p.SendInfoTo(pPlayer);
@@ -52,11 +63,22 @@ public class LobbyManager : SceneManager {
 	}
 
 	public override void NewPlayer(Player pPlayer) {
+		// A player has joined the server (this is called for everyone)
 		if (pPlayer.uID == mNetworkManager.mMyClientID) {
 			// This is me, and I won't be ready yet so make a myplayerinfobox
 			CreateMyPlayerInfoBox (pPlayer);
 		} else {
 			CreatePlayerInfoBox (pPlayer);
 		}
+	}
+
+	[RPC] void AddChatMessage(string pMessage) {
+		mChat.Text += pMessage;
+		mChat.ScrollToBottom (); // TODO: This isn't working for some reason
+	}
+
+	public void SubmitChatMessage() {
+		networkView.RPC ("AddChatMessage", RPCMode.All, "<br /><b style=\"color: black;\">&lt;" + mNetworkManager.myPlayer.uName + "&gt;</b> " + uChatMessage);
+		uChatMessage = "";
 	}
 }

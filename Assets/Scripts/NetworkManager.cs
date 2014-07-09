@@ -42,6 +42,17 @@ public class NetworkManager : MonoBehaviour {
 		}
 	}
 
+	public Player myPlayer {
+		get {
+			foreach (Player player in players) {
+				if (player.uID == mMyClientID) {
+					return player;
+				}
+			}
+			return null;
+		}
+	}
+
 	ErrorPanel mErrorPanel;
 
 	void Awake() {
