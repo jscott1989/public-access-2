@@ -96,8 +96,19 @@ public class LobbyManager : SceneManager {
 		mChat.ScrollToBottom (); // TODO: This isn't working for some reason
 	}
 
+	/**
+	 * This is when the chat input is submitted
+	 */
 	public void SubmitChatMessage() {
 		networkView.RPC ("AddChatMessage", RPCMode.All, "<br /><b style=\"color: black;\">&lt;" + mNetworkManager.myPlayer.uName + "&gt;</b> " + uChatMessage);
 		uChatMessage = "";
+	}
+
+	/**
+	 * This is when the "Quit" button is pressed
+	 */
+	public void Quit() {
+		// Destroy the NetworkManager - the user will be kicked to the main menu
+		mNetworkManager.Shutdown ();
 	}
 }

@@ -189,8 +189,17 @@ public class NetworkManager : MonoBehaviour {
 	 */
 	void OnDisconnectedFromServer(NetworkDisconnection pInfo) {
 		if (Network.isClient) {
-			mErrorPanel.ShowError("You have been disconnected from the server. Refresh the page.");
+			if (pInfo == NetworkDisconnection.LostConnection) {
+				mErrorPanel.ShowError("You have been disconnected from the server.");
+			}
 		}
+		foreach (Player player in players) {
+			Destroy (player.gameObject);
+		}
+		
+		Destroy (gameObject);
+
+		Application.LoadLevel ("MainMenu");
 	}
 
 	void OnLevelWasLoaded(int level) {
@@ -200,5 +209,20 @@ public class NetworkManager : MonoBehaviour {
 	void Start() {
 		// It doesn't appear that OnLevelWasLoaded runs for the MainMenu
 		OnLevelWasLoaded (0);
+	}
+
+	/**
+	 * If we're the server, stop it and unregister it.
+	 * If we're a client, disconnect.
+	 * 
+	 * Then destroy the network manager object
+	 */
+	public void Shutdown() {
+		if (Network.isServer) {
+			if (!uGameHasStarted) {
+				MasterServer.UnregisterHost ();
+			}
+		}
+		Network.Disconnect();
 	}
 }
