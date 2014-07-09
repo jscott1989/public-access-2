@@ -111,4 +111,15 @@ public class LobbyManager : SceneManager {
 		// Destroy the NetworkManager - the user will be kicked to the main menu
 		mNetworkManager.Shutdown ();
 	}
+
+	/**
+	 * This is called on the server when any player changes their ready status
+	 */
+	public override void ReadyStatusChanged(Player pPlayer) {
+		if (pPlayer.uReady) {
+			networkView.RPC ("AddChatMessage", RPCMode.All, "<br /><i style=\"color: black;\">" + pPlayer.uName + " is ready</i>");
+		} else {
+			networkView.RPC ("AddChatMessage", RPCMode.All, "<br /><i style=\"color: black;\">" + pPlayer.uName + " is not ready</i>");
+		}
+	}
 }

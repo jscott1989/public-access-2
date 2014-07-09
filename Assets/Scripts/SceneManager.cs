@@ -10,4 +10,5 @@ public abstract class SceneManager : MonoBehaviour {
 	public virtual void PlayerDisconnected(int pID, NetworkPlayer pPlayer) {}
 	public virtual void NewPlayer(Player pPlayer) {}
 	public virtual void PlayerLeaves(Player pPlayer) {}
+	public virtual void ReadyStatusChanged(Player pPlayer) {}
 }

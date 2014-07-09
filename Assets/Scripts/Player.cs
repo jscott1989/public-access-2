@@ -10,8 +10,11 @@ public class Player : MonoBehaviour {
 	// The player's ID
 	public int uID;
 
+	// This is used anywhere we need to wait for everyone to be ready before continuing
+	public bool uReady = false;
+
 	// The player's display name
-	public string _name; //TODO: Change this private when finished debugging
+	private string _name;
 	public string uName {
 		get {
 			return _name;
@@ -20,6 +23,14 @@ public class Player : MonoBehaviour {
 			SetInfo(uID, value);
 		}
 	}
+
+	[RPC] public void SetReady(bool pReady) {
+		uReady = pReady;
+		if (Network.isServer) {
+			mSceneManager.ReadyStatusChanged(this);
+		}
+	}
+
 	
 	// The current scene manager
 	private SceneManager mSceneManager;
