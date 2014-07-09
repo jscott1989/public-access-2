@@ -38,6 +38,9 @@ public class LobbyManager : SceneManager {
 
 		dfLabel nameLabel = (dfLabel)playerInfo.GetComponentsInChildren (typeof(dfLabel))[0];
 		dfPropertyBinding b = dfPropertyBinding.Bind (pPlayer,"uName", nameLabel,"Text");
+
+		PlayerInfoBox p = (PlayerInfoBox)playerInfo.GetComponent (typeof(PlayerInfoBox));
+		p.uID = pPlayer.uID;
 	}
 
 	/**
@@ -60,6 +63,13 @@ public class LobbyManager : SceneManager {
 				p.SendInfoTo(pPlayer);
 			}
 		}
+		networkView.RPC ("AddChatMessage", RPCMode.All, "<br /><i style=\"color: black;\">Player " + (pID + 1).ToString () + " has joined</i>");
+	}
+
+	public override void PlayerDisconnected(int pID, NetworkPlayer pPlayer) {
+		// A player has left - so we should inform the players
+		// (This is only called on the Server)
+		networkView.RPC ("AddChatMessage", RPCMode.All, "<br /><i style=\"color: black;\">" + mNetworkManager.GetPlayerWithID(pID).uName + " has left</i>");
 	}
 
 	public override void NewPlayer(Player pPlayer) {
@@ -69,6 +79,15 @@ public class LobbyManager : SceneManager {
 			CreateMyPlayerInfoBox (pPlayer);
 		} else {
 			CreatePlayerInfoBox (pPlayer);
+		}
+	}
+
+	public override void PlayerLeaves(Player pPlayer) {
+		// We need to remove the player's info box
+		foreach (PlayerInfoBox infoBox in GameObject.FindObjectsOfType(typeof(PlayerInfoBox))) {
+			if (infoBox.uID == pPlayer.uID) {
+				Destroy (infoBox.gameObject);
+			}
 		}
 	}
 

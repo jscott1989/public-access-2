@@ -53,6 +53,15 @@ public class NetworkManager : MonoBehaviour {
 		}
 	}
 
+	public Player GetPlayerWithID(int pID) {
+		foreach (Player player in players) {
+			if (player.uID == pID) {
+				return player;
+			}
+		}
+		return null;
+	}
+	
 	ErrorPanel mErrorPanel;
 
 	void Awake() {
@@ -165,10 +174,11 @@ public class NetworkManager : MonoBehaviour {
 	}
 
 	/**
-	 * Called on the server wehn a player disconnects
+	 * Called on the server when a player disconnects
 	 */
 	void OnPlayerDisconnected(NetworkPlayer pPlayer) {
-		// TODO: Ensure we delete things correctly
+		int id = Convert.ToInt16(pPlayer.ToString ());
+		mSceneManager.PlayerDisconnected(id, pPlayer);
 		Network.RemoveRPCs(pPlayer);
 		Network.DestroyPlayerObjects(pPlayer);
 	}

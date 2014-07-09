@@ -40,6 +40,10 @@ public class Player : MonoBehaviour {
 		mSceneManager.NewPlayer (this);
 	}
 
+	void OnDestroy() {
+		mSceneManager.PlayerLeaves (this);
+	}
+
 	/**
 	 * Use this method to set basic information for the player
 	 */
