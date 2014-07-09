@@ -177,7 +177,8 @@ public class LobbyManager : SceneManager {
 	 * Move to the Day 1 morning phase
 	 */
 	[RPC] void StartGame() {
-		mLoadingPanel.ShowAlert ("Started");
+		mLoadingPanel.HideAlert ();
+		Application.LoadLevel ("Day1Morning");
 	}
 
 	void Update() {
