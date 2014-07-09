@@ -48,6 +48,9 @@ public class LobbyManager : SceneManager {
 
 		PlayerInfoBox p = (PlayerInfoBox)playerInfo.GetComponent (typeof(PlayerInfoBox));
 		p.uID = pPlayer.uID;
+
+		dfTextureSprite d = (dfTextureSprite) playerInfo.GetComponentsInChildren (typeof(dfTextureSprite))[0];
+		b = dfPropertyBinding.Bind (pPlayer,"uReadyTexture",d,"Texture");
 	}
 
 	/**
@@ -60,6 +63,9 @@ public class LobbyManager : SceneManager {
 		dfTextbox myNameTextBox = (dfTextbox)playerInfo.GetComponentInChildren (typeof(dfTextbox));
 		myNameTextBox.Text = pPlayer.uName;
 		dfPropertyBinding b = dfPropertyBinding.Bind (myNameTextBox,"Text",pPlayer,"uName");
+
+		dfTextureSprite d = (dfTextureSprite) playerInfo.GetComponentsInChildren (typeof(dfTextureSprite))[0];
+		b = dfPropertyBinding.Bind (pPlayer,"uReadyTexture",d,"Texture");
 	}
 
 	public override void PlayerConnected(int pID, NetworkPlayer pPlayer) {
@@ -82,7 +88,7 @@ public class LobbyManager : SceneManager {
 	public override void NewPlayer(Player pPlayer) {
 		// A player has joined the server (this is called for everyone)
 		if (pPlayer.uID == mNetworkManager.mMyClientID) {
-			// This is me, and I won't be ready yet so make a myplayerinfobox
+			// This is me, so make a myplayerinfobox
 			CreateMyPlayerInfoBox (pPlayer);
 		} else {
 			CreatePlayerInfoBox (pPlayer);

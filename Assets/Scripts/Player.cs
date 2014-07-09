@@ -13,6 +13,22 @@ public class Player : MonoBehaviour {
 	// This is used anywhere we need to wait for everyone to be ready before continuing
 	public bool uReady = false;
 
+	Texture2D mReadyTexture;
+	Texture2D mNotReadyTexture;
+
+	/**
+	 * I don't think this should be here - as it's lobby specific - but I'm not sure 
+	 * where else to put it right now - move it if you think of somewhere better
+	 */
+	public Texture2D uReadyTexture {
+		get {
+			if (uReady) {
+				return mReadyTexture;
+			}
+			return mNotReadyTexture;
+		}
+	}
+
 	// The player's display name
 	private string _name;
 	public string uName {
@@ -36,6 +52,9 @@ public class Player : MonoBehaviour {
 	private SceneManager mSceneManager;
 
 	void Awake() {
+		mReadyTexture = (Texture2D)Resources.Load ("Lobby/Images/ready");
+		mNotReadyTexture = (Texture2D)Resources.Load ("Lobby/Images/not_ready");
+
 		// Ensure we configure ourselves for the level we're created on
 		OnLevelWasLoaded (0);
 
