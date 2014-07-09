@@ -34,7 +34,7 @@ public class NetworkManager : MonoBehaviour {
 
 	private SceneManager mSceneManager;
 
-	private int mMyClientID;
+	public int mMyClientID;
 
 	public Player[] players {
 		get {

@@ -17,23 +17,29 @@ public class LobbyManager : SceneManager {
 	}
 
 	void Start() {
-		// When the lobby loads we're definitely not "Ready" so we create our own info box
-		CreateMyPlayerInfoBox ();
-
-		// Then we need to loop through all active players and create boxes for them
-		// TODO
-
-
+		// Create a NewPlayer event for all players currently in the game
+		print(mNetworkManager.players.Length);
+		foreach (Player player in mNetworkManager.players) {
+			NewPlayer (player);
+		}
 	}
 
-	void CreatePlayerInfoBox() {
+	void CreatePlayerInfoBox(Player pPlayer) {
 		GameObject playerInfo = (GameObject) Instantiate (mPlayerInfoPrefab, Vector3.zero, Quaternion.identity);
 		playerInfo.transform.parent = mPlayersList.gameObject.transform;
+
+		dfLabel nameLabel = (dfLabel)playerInfo.GetComponentInChildren (typeof(dfLabel));
+		dfPropertyBinding b = dfPropertyBinding.Bind (pPlayer,"uName", nameLabel,"Text");
 	}
 
-	void CreateMyPlayerInfoBox() {
+	void CreateMyPlayerInfoBox(Player pPlayer) {
 		GameObject playerInfo = (GameObject) Instantiate (mMyPlayerInfoPrefab, Vector3.zero, Quaternion.identity);
 		playerInfo.transform.parent = mPlayersList.gameObject.transform;
+
+		dfTextbox myNameTextBox = (dfTextbox)playerInfo.GetComponentInChildren (typeof(dfTextbox));
+		myNameTextBox.Text = pPlayer.uName;
+		dfPropertyBinding b = dfPropertyBinding.Bind (myNameTextBox,"Text",pPlayer,"uName");
+
 	}
 
 	public override void PlayerConnected(int pID, NetworkPlayer pPlayer) {
@@ -42,6 +48,15 @@ public class LobbyManager : SceneManager {
 			if (!p.Equals(pPlayer)) {
 				p.SendInfoTo(pPlayer);
 			}
+		}
+	}
+
+	public override void NewPlayer(Player pPlayer) {
+		if (pPlayer.uID == mNetworkManager.mMyClientID) {
+			// This is me, and I won't be ready yet so make a myplayerinfobox
+			CreateMyPlayerInfoBox (pPlayer);
+		} else {
+			CreatePlayerInfoBox (pPlayer);
 		}
 	}
 }

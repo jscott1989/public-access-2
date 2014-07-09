@@ -11,11 +11,33 @@ public class Player : MonoBehaviour {
 	public int uID;
 
 	// The player's display name
-	public string uName;
+	public string _name; //TODO: Change this private when finished debugging
+	public string uName {
+		get {
+			return _name;
+		}
+		set {
+			SetInfo(uID, value);
+		}
+	}
+	
+	// The current scene manager
+	private SceneManager mSceneManager;
 
 	void Awake() {
+		// Ensure we configure ourselves for the level we're created on
+		OnLevelWasLoaded (0);
+
 		// Persist the Player between scenes
 		DontDestroyOnLoad(gameObject);
+	}
+
+	void OnLevelWasLoaded(int level) {
+		mSceneManager = (SceneManager) GameObject.FindObjectOfType (typeof(SceneManager));
+	}
+	
+	void Start() {
+		mSceneManager.NewPlayer (this);
 	}
 
 	/**
@@ -23,8 +45,7 @@ public class Player : MonoBehaviour {
 	 */
 	[RPC] public void SetInfo(int pID, string pName) {
 		uID = pID;
-		uName = pName;
-		print("Setting to " + uName);
+		_name = pName;
 
 		if (networkView.isMine) {
 			networkView.RPC ("SetInfo", RPCMode.Others, pID, pName);
@@ -35,7 +56,6 @@ public class Player : MonoBehaviour {
 	 * Send my info to another network player
 	 */
 	public void SendInfoTo(NetworkPlayer pPlayer) {
-		print("Sending info");
 		networkView.RPC ("SetInfo", pPlayer, uID, uName);
 	}
 }
