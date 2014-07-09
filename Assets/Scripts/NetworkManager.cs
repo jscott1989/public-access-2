@@ -183,6 +183,16 @@ public class NetworkManager : MonoBehaviour {
 		Network.DestroyPlayerObjects(pPlayer);
 	}
 
+	/**
+	 * Called on both server and client - we care about it when the connection
+	 * drops and need to warn the client
+	 */
+	void OnDisconnectedFromServer(NetworkDisconnection pInfo) {
+		if (Network.isClient) {
+			mErrorPanel.ShowError("You have been disconnected from the server. Refresh the page.");
+		}
+	}
+
 	void OnLevelWasLoaded(int level) {
 		mSceneManager = (SceneManager) GameObject.FindObjectOfType (typeof(SceneManager));
 	}
