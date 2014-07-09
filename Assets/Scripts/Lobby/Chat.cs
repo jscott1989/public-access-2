@@ -46,6 +46,5 @@ public class Chat : MonoBehaviour
 				mInput.text = "";
 			}
 		}
-
 	}
 }

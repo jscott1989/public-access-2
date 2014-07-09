@@ -23,7 +23,7 @@ public static class SimpleEditorUtils
 		{
 			EditorApplication.isPlaying = false;
 			EditorApplication.OpenScene(
-				"Assets/Scenes/Afternoon.unity");
+				"Assets/Scenes/Lobby.unity");
 			return;
 		}
 		EditorApplication.SaveCurrentSceneIfUserWantsTo();

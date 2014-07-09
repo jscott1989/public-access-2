@@ -6,6 +6,8 @@ TagManager:
   - channel
   - second_marker
   - NetworkManager
+  - player name
+  - Player List
   - 
   Builtin Layer 0: Default
   Builtin Layer 1: TransparentFX
