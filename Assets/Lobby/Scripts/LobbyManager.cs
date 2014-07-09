@@ -12,6 +12,13 @@ public class LobbyManager : SceneManager {
 	// The current typed chat message
 	public string uChatMessage;
 
+	/**
+	 * This is used to countdown 5 seconds before the game begins
+	 */
+	float mCountdown = -1;
+	// This is used to announce each second as it passes
+	int mLastCountdownAnnouncement = 0;
+
 	void Awake() {
 		mMyPlayerInfoPrefab = (GameObject)Resources.Load ("Lobby/Prefabs/MyPlayerInfoBox");
 		mPlayerInfoPrefab = (GameObject)Resources.Load ("Lobby/Prefabs/PlayerInfoBox");
@@ -118,8 +125,68 @@ public class LobbyManager : SceneManager {
 	public override void ReadyStatusChanged(Player pPlayer) {
 		if (pPlayer.uReady) {
 			networkView.RPC ("AddChatMessage", RPCMode.All, "<br /><i style=\"color: black;\">" + pPlayer.uName + " is ready</i>");
+
+			// Check if all players are ready - if so we can start
+			foreach (Player p in mNetworkManager.players) {
+				if (!p.uReady) {
+					return;
+				}
+			}
+
+			// TODO: Add 3 player minimum (I'm not adding this now as it's easier to test things with 2)
+
+			// Everyone is ready, let's start the countdown
+			StartCountdown();
 		} else {
 			networkView.RPC ("AddChatMessage", RPCMode.All, "<br /><i style=\"color: black;\">" + pPlayer.uName + " is not ready</i>");
+			if (mCountdown > -1) {
+				CancelCountdown();
+			}
+		}
+	}
+
+	/**
+	 * Start the countdown until the game begins
+	 */
+	void StartCountdown() {
+		mNetworkManager.StartGame ();
+		mCountdown = 6;
+	}
+
+	void CancelCountdown() {
+		mNetworkManager.StopGame ();
+		mCountdown = -1;
+		networkView.RPC ("AddChatMessage", RPCMode.All, "<br /><i style=\"color: black;\">Game stopped</i>");
+	}
+
+	/**
+	 * Move to the Day 1 morning phase
+	 */
+	[RPC] void StartGame() {
+		mLoadingPanel.ShowAlert ("Starting game...");
+	}
+
+	void Update() {
+		if (Network.isServer) {
+			if (mCountdown > -1) {
+				mCountdown -= Time.deltaTime;
+
+				if (mCountdown <= 0) {
+					mCountdown = -1;
+					StartGame();
+					networkView.RPC ("StartGame", RPCMode.All);
+					return;
+				}
+
+				if ((int)mCountdown != mLastCountdownAnnouncement) {
+					mLastCountdownAnnouncement = (int)mCountdown;
+					if (mLastCountdownAnnouncement > 0) {
+						networkView.RPC ("AddChatMessage", RPCMode.All, "<br /><i style=\"color: black;\">Game starting in " + mLastCountdownAnnouncement.ToString() + "</i>");
+					} else {
+						networkView.RPC ("AddChatMessage", RPCMode.All, "<br /><i style=\"color: black;\">Game starting...</i>");
+					}
+				}
+			}
 		}
 	}
 }

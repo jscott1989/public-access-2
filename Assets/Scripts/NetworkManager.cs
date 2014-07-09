@@ -13,8 +13,9 @@ public class NetworkManager : MonoBehaviour {
 	// The port to connect to
 	private const int SERVER_PORT = 25000;
 
+	private string mRoomName = "";
+
 	// A list of known servers we can connect to
-	// TODO: Make this observable
 	public HostData[] uHostList;
 
 	// One of these will be created for each player
@@ -84,7 +85,8 @@ public class NetworkManager : MonoBehaviour {
 		mStartServerCallback = pStartServerCallback;
 
 		Network.InitializeServer (MAX_PLAYERS, SERVER_PORT, !Network.HavePublicAddress ());
-		MasterServer.RegisterHost (GAME_NAME, pRoomName);
+		mRoomName = pRoomName;
+		StopGame (); // This registers everything with hte server - we're accepting new people
 	}
 
 	/**
@@ -93,6 +95,14 @@ public class NetworkManager : MonoBehaviour {
 	public void StartGame() {
 		MasterServer.UnregisterHost ();
 		uGameHasStarted = true;
+	}
+
+	/**
+	 * Add the server to the room list and start accepting connections
+	 */
+	public void StopGame() {
+		MasterServer.RegisterHost(GAME_NAME, mRoomName);
+		uGameHasStarted = false;
 	}
 
 	public void CreatePlayer() {
