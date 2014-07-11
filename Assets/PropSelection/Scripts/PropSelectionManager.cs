@@ -7,6 +7,8 @@ public class PropSelectionManager : SceneManager {
 	DialogueManager mDialogueManager;
 	Countdown mCountdown;
 
+	dfListbox mAvailablePropsList;
+
 	// This is just to track where we are in the scene
 	// 0 = the intial dialogue
 	// 1 = the prop selection
@@ -16,10 +18,13 @@ public class PropSelectionManager : SceneManager {
 		mNetworkManager = (NetworkManager) FindObjectOfType(typeof(NetworkManager));
 		mDialogueManager = (DialogueManager) FindObjectOfType(typeof(DialogueManager));
 		mCountdown = (Countdown) FindObjectOfType(typeof(Countdown));
+		mAvailablePropsList = (dfListbox) FindObjectOfType(typeof(dfListbox));
 	}
 
 	void Start () {
 		// TODO: Check what day it is - for now assume day 1 so give an introduction to prop selection
+
+		PopulateAvailableProps();
 
 		// First we need to set everyone to "Not Ready"
 		if (Network.isServer) {
@@ -28,8 +33,6 @@ public class PropSelectionManager : SceneManager {
 			}
 		}
 
-		print("Setting up");
-
 		string[] propSelectionDialogue = new string[]{
 			"text about prop selection..",
 			"little bit of an overview..."
@@ -37,14 +40,18 @@ public class PropSelectionManager : SceneManager {
 
 		Action propSelectionDialogueComplete =
 			() => {
-				print ("COMPLETE");
 				mNetworkManager.myPlayer.networkView.RPC("SetReady", RPCMode.All, true);
 				mDialogueManager.StartDialogue("Waiting for other players to continue");
 		};
 
-		print("Showing Dialogue");
 		mDialogueManager.StartDialogue(propSelectionDialogue, propSelectionDialogueComplete);
-		print("Shown");
+	}
+
+	void PopulateAvailableProps() {
+		mAvailablePropsList.Items = new string[]{};
+		foreach (String prop_id in mNetworkManager.myPlayer.uAvailableProps) {
+			mAvailablePropsList.AddItem (prop_id);
+		}
 	}
 
 	/**
@@ -86,8 +93,14 @@ public class PropSelectionManager : SceneManager {
 		mCountdown.StartCountdown (60, countdownFinished);
 	}
 
+	/**
+	 * This will only be called on the server
+	 */
 	void EndPropSelection() {
 		// TODO: Force everyone to have at least X props (ensure that they aren't stuck with nothing on the next scene)
+		foreach(Player p in mNetworkManager.players) {
+			p.networkView.RPC ("EnsureMinimumProps", RPCMode.All);
+		}
 		networkView.RPC ("MoveToNextScene", RPCMode.All);
 	}
 

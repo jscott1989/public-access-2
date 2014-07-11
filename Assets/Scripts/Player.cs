@@ -107,4 +107,11 @@ public class Player : MonoBehaviour {
 	public void SendInfoTo(NetworkPlayer pPlayer) {
 		networkView.RPC ("SetInfo", pPlayer, uID, uName);
 	}
+
+	/**
+	 * Ensure that I have at least X props (so that the recording stage is playable
+	 */
+	[RPC] void EnsureMinimumProps() {
+		// TODO
+	}
 }
