@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class LobbyManager : SceneManager {
 	GameObject mMyPlayerInfoPrefab;
@@ -44,13 +45,13 @@ public class LobbyManager : SceneManager {
 		playerInfo.transform.parent = mPlayersList.gameObject.transform;
 
 		dfLabel nameLabel = (dfLabel)playerInfo.GetComponentsInChildren (typeof(dfLabel))[0];
-		dfPropertyBinding b = dfPropertyBinding.Bind (pPlayer,"uName", nameLabel,"Text");
+		dfPropertyBinding.Bind (nameLabel.gameObject, pPlayer,"uName", nameLabel,"Text");
 
 		PlayerInfoBox p = (PlayerInfoBox)playerInfo.GetComponent (typeof(PlayerInfoBox));
 		p.uID = pPlayer.uID;
 
 		dfTextureSprite d = (dfTextureSprite) playerInfo.GetComponentsInChildren (typeof(dfTextureSprite))[0];
-		b = dfPropertyBinding.Bind (pPlayer,"uReadyTexture",d,"Texture");
+		dfPropertyBinding.Bind (d.gameObject, pPlayer,"uReadyTexture",d,"Texture");
 	}
 
 	/**
@@ -62,10 +63,10 @@ public class LobbyManager : SceneManager {
 
 		dfTextbox myNameTextBox = (dfTextbox)playerInfo.GetComponentInChildren (typeof(dfTextbox));
 		myNameTextBox.Text = pPlayer.uName;
-		dfPropertyBinding b = dfPropertyBinding.Bind (myNameTextBox,"Text",pPlayer,"uName");
+		dfPropertyBinding.Bind (myNameTextBox.gameObject, myNameTextBox,"Text",pPlayer,"uName");
 
 		dfTextureSprite d = (dfTextureSprite) playerInfo.GetComponentsInChildren (typeof(dfTextureSprite))[0];
-		b = dfPropertyBinding.Bind (pPlayer,"uReadyTexture",d,"Texture");
+		dfPropertyBinding.Bind (d.gameObject, pPlayer,"uReadyTexture",d,"Texture");
 	}
 
 	public override void PlayerConnected(int pID, NetworkPlayer pPlayer) {

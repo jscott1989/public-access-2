@@ -146,7 +146,6 @@ public class NetworkManager : MonoBehaviour {
 	 * Called when we have connected to the server
 	 */
 	void OnConnectedToServer() {
-		Debug.Log("Server Joined");
 		CreatePlayer ();
 
 		mJoinGameCallback ();
@@ -156,7 +155,6 @@ public class NetworkManager : MonoBehaviour {
 	 * Called when there is an error connecting to the server
 	 */
 	void OnFailedToConnect(NetworkConnectionError error) {
-//		Debug.Log("Could not connect to server: " + error);
 		mErrorPanel.ShowError (error.ToString ());
 	}
 
@@ -164,7 +162,6 @@ public class NetworkManager : MonoBehaviour {
 	 * Called when the server is listening for connections
 	 */
 	void OnServerInitialized() {
-		Debug.Log ("Server Initialized");
 		CreatePlayer();
 		// We don't care about this event really because if it's not registered with
 		// the master server nobody can join anyway
@@ -177,7 +174,6 @@ public class NetworkManager : MonoBehaviour {
 		if (uGameHasStarted) {
 			Network.CloseConnection (pPlayer, true);
 		} else {
-			Debug.Log ("Player connected from " + pPlayer.ipAddress + ":" + pPlayer.port);
 			int id = Convert.ToInt16(pPlayer.ToString ());
 			mSceneManager.PlayerConnected(id, pPlayer);
 		}
