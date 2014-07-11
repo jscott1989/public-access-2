@@ -13,8 +13,10 @@ public class MorningManager : SceneManager {
 
 	void Start () {
 		// First we need to set everyone to "Not Ready"
-		foreach (Player player in mNetworkManager.players) {
-			player.networkView.RPC ("SetReady", RPCMode.All, false);
+		if (Network.isServer) {
+			foreach (Player player in mNetworkManager.players) {
+				player.networkView.RPC ("SetReady", RPCMode.All, false);
+			}
 		}
 
 		// TODO: Start the dialogue

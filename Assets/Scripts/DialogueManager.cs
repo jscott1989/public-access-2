@@ -58,6 +58,9 @@ public class DialogueManager : MonoBehaviour {
 
 		currentDialogue = 0;
 	}
+	public void StartDialogue(string pDialogue) {
+		StartDialogue (new string[]{pDialogue});
+	}
 
 	/**
 	 * End the current dialogue
