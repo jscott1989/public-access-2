@@ -11,4 +11,7 @@ public abstract class SceneManager : MonoBehaviour {
 	public virtual void NewPlayer(Player pPlayer) {}
 	public virtual void PlayerLeaves(Player pPlayer) {}
 	public virtual void ReadyStatusChanged(Player pPlayer) {}
+
+	public virtual void PropPurchased(Player pPlayer, PurchasedProp pPurchasedProp) {}
+	public virtual void PropSold(Player pPlayer, PurchasedProp pPurchasedProp) {}
 }

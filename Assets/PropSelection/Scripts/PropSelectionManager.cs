@@ -8,6 +8,7 @@ public class PropSelectionManager : SceneManager {
 	DialogueManager mDialogueManager;
 	Countdown mCountdown;
 
+	MyProps mMyProps;
 	dfListbox mAvailablePropsList;
 	Game mGame;
 
@@ -21,33 +22,10 @@ public class PropSelectionManager : SceneManager {
 	 */
 	public string uBudgetText {
 		get {
+			if (mNetworkManager == null) {
+				return "$300 remaining";
+			}
 			return "$" + mNetworkManager.myPlayer.uBudget.ToString () + " remaining";
-		}
-	}
-
-	/**
-	 * Can the currently selected prop be purchased
-	 */
-	public bool uCanBuyCurrentProp {
-		get {
-			if (mAvailablePropsList.SelectedIndex < 0) {
-				return false;
-			}
-			Prop purchase = mNetworkManager.myPlayer.uUnpurchasedProps[mAvailablePropsList.SelectedIndex];
-			if (purchase.uPrice <= mNetworkManager.myPlayer.uBudget) {
-				return true;
-			}
-			return false;
-		}
-	}
-
-	public string uPurchaseButtonText {
-		get {
-			if (mAvailablePropsList.SelectedIndex < 0) {
-				return "Buy";
-			}
-			Prop purchase = mNetworkManager.myPlayer.uUnpurchasedProps[mAvailablePropsList.SelectedIndex];
-			return "Buy $" + purchase.uPrice;
 		}
 	}
 
@@ -56,6 +34,7 @@ public class PropSelectionManager : SceneManager {
 		mDialogueManager = (DialogueManager) FindObjectOfType(typeof(DialogueManager));
 		mCountdown = (Countdown) FindObjectOfType(typeof(Countdown));
 		mAvailablePropsList = (dfListbox) FindObjectOfType(typeof(dfListbox));
+		mMyProps = (MyProps) FindObjectOfType(typeof(MyProps));
 		mGame = (Game) FindObjectOfType(typeof(Game));
 	}
 
@@ -94,8 +73,33 @@ public class PropSelectionManager : SceneManager {
 	}
 
 	void PopulatePurchasedProps() {
-		// TODO: Don't just clear and re-add
-		// go through and check which props are represented
+		// TODO This is called when first entering the scene - ensure that the MyProps lines up with what we already own
+	}
+
+	/**
+	 * Can the currently selected prop be purchased
+	 */
+	public bool uCanBuyCurrentProp {
+		get {
+			if (mAvailablePropsList.SelectedIndex < 0) {
+				return false;
+			}
+			Prop purchase = mNetworkManager.myPlayer.uUnpurchasedProps[mAvailablePropsList.SelectedIndex];
+			if (purchase.uPrice <= mNetworkManager.myPlayer.uBudget) {
+				return true;
+			}
+			return false;
+		}
+	}
+	
+	public string uPurchaseButtonText {
+		get {
+			if (mAvailablePropsList.SelectedIndex < 0) {
+				return "Buy";
+			}
+			Prop purchase = mNetworkManager.myPlayer.uUnpurchasedProps[mAvailablePropsList.SelectedIndex];
+			return "Buy $" + purchase.uPrice;
+		}
 	}
 
 	/**
@@ -104,8 +108,45 @@ public class PropSelectionManager : SceneManager {
 	public void BuySelectedProp() {
 		Prop purchase = mNetworkManager.myPlayer.uUnpurchasedProps[mAvailablePropsList.SelectedIndex];
 		mNetworkManager.myPlayer.PurchaseProp(purchase.uID);
-		PopulateAvailableProps();
-		PopulatePurchasedProps();
+	}
+
+	public override void PropPurchased(Player pPlayer, PurchasedProp pPurchasedProp) {
+		if (pPlayer.uID == mNetworkManager.myPlayer.uID) {
+			PopulateAvailableProps();
+			mMyProps.Add(pPurchasedProp);
+		}
+	}
+
+	public override void PropSold(Player pPlayer, PurchasedProp pPurchasedProp) {
+		if (pPlayer.uID == mNetworkManager.myPlayer.uID) {
+			mMyProps.Remove(pPurchasedProp);
+			PopulateAvailableProps();
+		}
+	}
+
+	/**
+	 * Can the currently selected prop be sold
+	 */
+	public bool uCanSellCurrentProp {
+		get {
+			return (mMyProps.uSelectedPurchasedProp != null);
+		}
+	}
+	
+	public string uSellButtonText {
+		get {
+			if (mMyProps.uSelectedPurchasedProp == null) {
+				return "Sell";
+			}
+			return "Sell $" + mMyProps.uSelectedPurchasedProp.uProp.uPrice;
+		}
+	}
+	
+	/**
+	 * The "Sell" button has been pressed
+	 */
+	public void SellSelectedProp() {
+		mNetworkManager.myPlayer.SellProp(mMyProps.uSelectedPurchasedProp.uID);
 	}
 
 	/**
@@ -144,7 +185,7 @@ public class PropSelectionManager : SceneManager {
 			}
 		};
 
-		mCountdown.StartCountdown (60, countdownFinished);
+		//mCountdown.StartCountdown (60, countdownFinished);
 	}
 
 	/**

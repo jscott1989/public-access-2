@@ -17,7 +17,7 @@ public class Player : MonoBehaviour {
 	public int uBudget = 300;
 
 	public Game mGame;
-	public List<PurchasedProp> uPurchasedProps = new List<PurchasedProp>();
+	public Dictionary<string, PurchasedProp> uPurchasedProps = new Dictionary<string, PurchasedProp>();
 
 	Texture2D mReadyTexture;
 	Texture2D mNotReadyTexture;
@@ -50,7 +50,8 @@ public class Player : MonoBehaviour {
 		get {
 			List<Prop> props = new List<Prop>();
 			props.AddRange(uAvailableProps);
-			foreach(PurchasedProp purchasedProp in uPurchasedProps) {
+			foreach(KeyValuePair<string, PurchasedProp> p in uPurchasedProps) {
+				PurchasedProp purchasedProp = p.Value;
 				props.Remove (purchasedProp.uProp);
 			}
 			return props.ToArray();
@@ -159,12 +160,32 @@ public class Player : MonoBehaviour {
 		print ("Have budget");
 
 		// Add the prop to our props, and take away the money
-		uPurchasedProps.Add(new PurchasedProp(prop));
+		PurchasedProp purchasedProp = new PurchasedProp(prop);
+		uPurchasedProps.Add(purchasedProp.uID, purchasedProp);
 		uBudget -= prop.uPrice;
+
+		mSceneManager.PropPurchased(this, purchasedProp);
 
 		print("DONE!");
 		if (networkView.isMine) {
 			networkView.RPC ("PurchaseProp", RPCMode.Others, prop.uID);
+		}
+	}
+
+	[RPC] public void SellProp(string pPurchasedPropID) {
+		if (!uPurchasedProps.ContainsKey(pPurchasedPropID)) {
+			return;
+		}
+
+		// Remove the prop from purchases and add to the budget
+		PurchasedProp p = uPurchasedProps[pPurchasedPropID];
+		uPurchasedProps.Remove (pPurchasedPropID);
+		uBudget += p.uProp.uPrice;
+
+		mSceneManager.PropSold(this, p);
+
+		if (networkView.isMine) {
+			networkView.RPC ("SellProp", RPCMode.Others, p.uID);
 		}
 	}
 }
