@@ -14,6 +14,11 @@ public class Player : MonoBehaviour {
 	// This is used anywhere we need to wait for everyone to be ready before continuing
 	public bool uReady = false;
 
+	public int uBudget = 300;
+
+	public Game mGame;
+	public List<PurchasedProp> uPurchasedProps = new List<PurchasedProp>();
+
 	Texture2D mReadyTexture;
 	Texture2D mNotReadyTexture;
 
@@ -41,6 +46,17 @@ public class Player : MonoBehaviour {
 		}
 	}
 
+	public Prop[] uUnpurchasedProps {
+		get {
+			List<Prop> props = new List<Prop>();
+			props.AddRange(uAvailableProps);
+			foreach(PurchasedProp purchasedProp in uPurchasedProps) {
+				props.Remove (purchasedProp.uProp);
+			}
+			return props.ToArray();
+		}
+	}
+
 	[RPC] public void SetReady(bool pReady) {
 		uReady = pReady;
 		if (Network.isServer) {
@@ -48,10 +64,10 @@ public class Player : MonoBehaviour {
 		}
 	}
 
-	public List<string> uAvailableProps = new List<string>();
+	public List<Prop> uAvailableProps = new List<Prop>();
 	
 	[RPC] public void AddAvailableProp(string pProp) {
-		uAvailableProps.Add (pProp);
+		uAvailableProps.Add (mGame.uProps[pProp]);
 	}
 
 	public string uTheme;
@@ -69,6 +85,7 @@ public class Player : MonoBehaviour {
 	void Awake() {
 		mReadyTexture = (Texture2D)Resources.Load ("Lobby/Images/ready");
 		mNotReadyTexture = (Texture2D)Resources.Load ("Lobby/Images/not_ready");
+		mGame = (Game)FindObjectOfType(typeof(Game));
 
 		// Ensure we configure ourselves for the level we're created on
 		OnLevelWasLoaded (0);
@@ -108,10 +125,46 @@ public class Player : MonoBehaviour {
 		networkView.RPC ("SetInfo", pPlayer, uID, uName);
 	}
 
+
+
 	/**
 	 * Ensure that I have at least X props (so that the recording stage is playable
 	 */
 	[RPC] void EnsureMinimumProps() {
 		// TODO
+	}
+
+	[RPC] public void PurchaseProp(string pPropID) {
+		Prop prop = mGame.uProps[pPropID];
+		print("PURCHASING");
+		// Check that there is a prop.uID available
+		bool propAvailable = false;
+		foreach(Prop p in uUnpurchasedProps) {
+			if (p.uID == prop.uID) {
+				propAvailable = true;
+				break;
+			}
+		}
+
+		print (propAvailable);
+
+		if (!propAvailable) {
+			return;
+		}
+
+		// Check that we have enough money
+		if (uBudget < prop.uPrice) {
+			return;
+		}
+		print ("Have budget");
+
+		// Add the prop to our props, and take away the money
+		uPurchasedProps.Add(new PurchasedProp(prop));
+		uBudget -= prop.uPrice;
+
+		print("DONE!");
+		if (networkView.isMine) {
+			networkView.RPC ("PurchaseProp", RPCMode.Others, prop.uID);
+		}
 	}
 }

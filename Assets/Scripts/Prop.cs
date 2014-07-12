@@ -16,3 +16,12 @@ public class Prop {
 	}
 }
 
+public class PurchasedProp {
+	public string uID;
+	public Prop uProp;
+
+	public PurchasedProp (Prop pProp) {
+		uID = Guid.NewGuid().ToString();
+		uProp = pProp;
+	}
+}

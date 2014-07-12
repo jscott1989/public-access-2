@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PropSelectionManager : SceneManager {
 	NetworkManager mNetworkManager;
@@ -8,23 +9,61 @@ public class PropSelectionManager : SceneManager {
 	Countdown mCountdown;
 
 	dfListbox mAvailablePropsList;
+	Game mGame;
 
 	// This is just to track where we are in the scene
 	// 0 = the intial dialogue
 	// 1 = the prop selection
 	int state = 0;
 
+	/**
+	 * Proxy for the player's budget so it can be displayed on the interface
+	 */
+	public string uBudgetText {
+		get {
+			return "$" + mNetworkManager.myPlayer.uBudget.ToString () + " remaining";
+		}
+	}
+
+	/**
+	 * Can the currently selected prop be purchased
+	 */
+	public bool uCanBuyCurrentProp {
+		get {
+			if (mAvailablePropsList.SelectedIndex < 0) {
+				return false;
+			}
+			Prop purchase = mNetworkManager.myPlayer.uUnpurchasedProps[mAvailablePropsList.SelectedIndex];
+			if (purchase.uPrice <= mNetworkManager.myPlayer.uBudget) {
+				return true;
+			}
+			return false;
+		}
+	}
+
+	public string uPurchaseButtonText {
+		get {
+			if (mAvailablePropsList.SelectedIndex < 0) {
+				return "Buy";
+			}
+			Prop purchase = mNetworkManager.myPlayer.uUnpurchasedProps[mAvailablePropsList.SelectedIndex];
+			return "Buy $" + purchase.uPrice;
+		}
+	}
+
 	void Awake() {
 		mNetworkManager = (NetworkManager) FindObjectOfType(typeof(NetworkManager));
 		mDialogueManager = (DialogueManager) FindObjectOfType(typeof(DialogueManager));
 		mCountdown = (Countdown) FindObjectOfType(typeof(Countdown));
 		mAvailablePropsList = (dfListbox) FindObjectOfType(typeof(dfListbox));
+		mGame = (Game) FindObjectOfType(typeof(Game));
 	}
 
 	void Start () {
 		// TODO: Check what day it is - for now assume day 1 so give an introduction to prop selection
 
 		PopulateAvailableProps();
+		PopulatePurchasedProps();
 
 		// First we need to set everyone to "Not Ready"
 		if (Network.isServer) {
@@ -49,9 +88,24 @@ public class PropSelectionManager : SceneManager {
 
 	void PopulateAvailableProps() {
 		mAvailablePropsList.Items = new string[]{};
-		foreach (String prop_id in mNetworkManager.myPlayer.uAvailableProps) {
-			mAvailablePropsList.AddItem (prop_id);
+		foreach (Prop p in mNetworkManager.myPlayer.uUnpurchasedProps) {
+			mAvailablePropsList.AddItem (p.uName + " ($" + p.uPrice + ")");
 		}
+	}
+
+	void PopulatePurchasedProps() {
+		// TODO: Don't just clear and re-add
+		// go through and check which props are represented
+	}
+
+	/**
+	 * The "Buy" button has been pressed
+	 */
+	public void BuySelectedProp() {
+		Prop purchase = mNetworkManager.myPlayer.uUnpurchasedProps[mAvailablePropsList.SelectedIndex];
+		mNetworkManager.myPlayer.PurchaseProp(purchase.uID);
+		PopulateAvailableProps();
+		PopulatePurchasedProps();
 	}
 
 	/**

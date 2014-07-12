@@ -66,6 +66,7 @@ public class DialogueManager : MonoBehaviour {
 	 * End the current dialogue
 	 */
 	public void EndDialogue() {
+		print("Ending dialogue");
 		currentDialogue = 0;
 		mDialogue = new string[]{};
 		mCallback = null;
