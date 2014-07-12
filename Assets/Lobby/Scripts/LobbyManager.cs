@@ -9,6 +9,7 @@ public class LobbyManager : SceneManager {
 	dfRichTextLabel mChat;
 	LoadingPanel mLoadingPanel;
 	NetworkManager mNetworkManager;
+	Game mGame;
 
 	// The current typed chat message
 	public string uChatMessage;
@@ -27,6 +28,7 @@ public class LobbyManager : SceneManager {
 		mChat = (dfRichTextLabel)GameObject.FindObjectOfType (typeof(dfRichTextLabel));
 		mLoadingPanel = (LoadingPanel)GameObject.FindObjectOfType (typeof(LoadingPanel));
 		mNetworkManager = (NetworkManager)GameObject.FindObjectOfType (typeof(NetworkManager));
+		mGame = (Game)FindObjectOfType (typeof(Game));
 	}
 
 	void Start() {
@@ -134,9 +136,11 @@ public class LobbyManager : SceneManager {
 			networkView.RPC ("AddChatMessage", RPCMode.All, "<br /><i style=\"color: black;\">" + pPlayer.uName + " is ready</i>");
 
 			// Check if all players are ready - if so we can start
-			foreach (Player p in mNetworkManager.players) {
-				if (!p.uReady) {
-					return;
+			if (!mGame.DEBUG_MODE) {
+				foreach (Player p in mNetworkManager.players) {
+					if (!p.uReady) {
+						return;
+					}
 				}
 			}
 

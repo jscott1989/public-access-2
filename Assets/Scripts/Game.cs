@@ -6,6 +6,9 @@ using System.Collections.Generic;
 public class Game : MonoBehaviour {
 	public Dictionary<string, Prop> uProps = new Dictionary<string, Prop>();
 
+	// This means that a single "ready" is enough to move everyone on - just to hurry during testing
+	public bool DEBUG_MODE = true;
+
 	void AddProp(Prop pProp) {
 		uProps.Add (pProp.uID, pProp);
 	}

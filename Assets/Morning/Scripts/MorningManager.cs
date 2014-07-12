@@ -5,10 +5,12 @@ using System.Collections;
 public class MorningManager : SceneManager {
 	NetworkManager mNetworkManager;
 	DialogueManager mDialogueManager;
+	Game mGame;
 
 	void Awake() {
 		mNetworkManager = (NetworkManager)FindObjectOfType (typeof(NetworkManager));
 		mDialogueManager = (DialogueManager)FindObjectOfType (typeof(DialogueManager));
+		mGame = (Game)FindObjectOfType(typeof(Game));
 	}
 
 	void Start () {
@@ -41,10 +43,12 @@ public class MorningManager : SceneManager {
 	 */
 	public override void ReadyStatusChanged(Player pPlayer) {
 		if (pPlayer.uReady) {
-			// Check if all players are ready - if so we can start
-			foreach (Player p in mNetworkManager.players) {
-				if (!p.uReady) {
-					return;
+			if (!mGame.DEBUG_MODE) {
+				// Check if all players are ready - if so we can start
+				foreach (Player p in mNetworkManager.players) {
+					if (!p.uReady) {
+						return;
+					}
 				}
 			}
 

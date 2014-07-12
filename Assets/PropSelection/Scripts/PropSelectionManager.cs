@@ -155,9 +155,11 @@ public class PropSelectionManager : SceneManager {
 	public override void ReadyStatusChanged(Player pPlayer) {
 		if (pPlayer.uReady) {
 			// Check if all players are ready - if so we can start
-			foreach (Player p in mNetworkManager.players) {
-				if (!p.uReady) {
-					return;
+			if (!mGame.DEBUG_MODE) {
+				foreach (Player p in mNetworkManager.players) {
+					if (!p.uReady) {
+						return;
+					}
 				}
 			}
 			

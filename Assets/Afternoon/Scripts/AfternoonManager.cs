@@ -6,6 +6,7 @@ public class AfternoonManager : SceneManager {
 	NetworkManager mNetworkManager;
 	DialogueManager mDialogueManager;
 	Countdown mCountdown;
+	Game mGame;
 
 	public bool uRecording = false;
 
@@ -23,6 +24,7 @@ public class AfternoonManager : SceneManager {
 		mNetworkManager = (NetworkManager) FindObjectOfType(typeof(NetworkManager));
 		mDialogueManager = (DialogueManager) FindObjectOfType(typeof(DialogueManager));
 		mCountdown = (Countdown) FindObjectOfType(typeof(Countdown));
+		mGame = (Game) FindObjectsOfType (typeof(Game));
 	}
 
 	void Start () {
@@ -53,9 +55,11 @@ public class AfternoonManager : SceneManager {
 	public override void ReadyStatusChanged(Player pPlayer) {
 		if (pPlayer.uReady) {
 			// Check if all players are ready
-			foreach (Player p in mNetworkManager.players) {
-				if (!p.uReady) {
-					return;
+			if (!mGame.DEBUG_MODE) {
+				foreach (Player p in mNetworkManager.players) {
+					if (!p.uReady) {
+						return;
+					}
 				}
 			}
 			
