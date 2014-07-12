@@ -9,6 +9,8 @@ public class DialogueManager : MonoBehaviour {
 	string[] mDialogue = new string[]{};
 	Action mCallback;
 
+	public string uContinueButtonText;
+
 	int currentDialogue = 0;
 
 	/**
@@ -52,14 +54,15 @@ public class DialogueManager : MonoBehaviour {
 	 * and a callback for once the dialogue is completed - if there is no callback the final "Continue" button will be hidden
 	 * and the dialogue can only be ended with EndDialogue
 	 */
-	public void StartDialogue(string[] pDialogue, Action pCallback = null) {
+	public void StartDialogue(string[] pDialogue, Action pCallback = null, string pContinueButtonText = "Continue") {
 		mDialogue = pDialogue;
 		mCallback = pCallback;
+		uContinueButtonText = pContinueButtonText;
 
 		currentDialogue = 0;
 	}
-	public void StartDialogue(string pDialogue) {
-		StartDialogue (new string[]{pDialogue});
+	public void StartDialogue(string pDialogue, Action pCallback = null, string pContinueButtonText = "Continue") {
+		StartDialogue (new string[]{pDialogue}, pCallback, pContinueButtonText);
 	}
 
 	/**
