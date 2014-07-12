@@ -21,6 +21,8 @@ public class MyProps : MonoBehaviour {
 		GameObject propSelectionPurchasedProp = (GameObject) Instantiate(mPropSelectionPurchasedPropPrefab, Vector3.zero, Quaternion.identity);
 		PropSelectionPurchasedProp p = (PropSelectionPurchasedProp)propSelectionPurchasedProp.GetComponent (typeof(PropSelectionPurchasedProp));
 		p.uPurchasedProp = pPurchasedProp;
+		p.uImage.Texture = (Texture2D)Resources.Load ("Props/Icons/" + pPurchasedProp.uProp.uID);
+		print(p.uImage.Texture);
 		propSelectionPurchasedProp.transform.parent = mMyPropsList.transform;
 		mPurchasedPropObjects.Add (pPurchasedProp, p);
 	}

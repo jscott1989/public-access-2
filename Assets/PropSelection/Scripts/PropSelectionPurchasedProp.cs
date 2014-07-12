@@ -9,10 +9,13 @@ public class PropSelectionPurchasedProp : MonoBehaviour {
 	public PurchasedProp uPurchasedProp;
 	public bool uIsSelected;
 
+	public dfTextureSprite uImage;
+
 	MyProps mMyProps;
 
 	void Awake() {
 		mMyProps = (MyProps) FindObjectOfType(typeof(MyProps));
+		uImage = (dfTextureSprite) GetComponentInChildren(typeof(dfTextureSprite));
 	}
 
 	void Start() {
