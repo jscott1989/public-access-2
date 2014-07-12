@@ -58,8 +58,8 @@ public class PropSelectionManager : SceneManager {
 
 		Action propSelectionDialogueComplete =
 			() => {
-				mNetworkManager.myPlayer.networkView.RPC("SetReady", RPCMode.All, true);
 				mDialogueManager.StartDialogue("Waiting for other players to continue");
+				mNetworkManager.myPlayer.networkView.RPC("SetReady", RPCMode.All, true);
 		};
 
 		mDialogueManager.StartDialogue(propSelectionDialogue, propSelectionDialogueComplete);
@@ -195,12 +195,12 @@ public class PropSelectionManager : SceneManager {
 
 	public void ReadyButtonPressed() {
 		// Once ready is pressed we need to block the rest of the scene, so we'll show a cancellable dialogue
-		mNetworkManager.myPlayer.networkView.RPC("SetReady", RPCMode.All, true);
 		Action readyCancelled =
 			() => {
 				mNetworkManager.myPlayer.networkView.RPC("SetReady", RPCMode.All, false);
 		};
 		mDialogueManager.StartDialogue ("Waiting for other players...", readyCancelled, "Cancel");
+		mNetworkManager.myPlayer.networkView.RPC("SetReady", RPCMode.All, true);
 	}
 
 	/**

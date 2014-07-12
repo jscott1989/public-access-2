@@ -31,8 +31,8 @@ public class MorningManager : SceneManager {
 
 		Action day1DialogueFinished =
 			() => {
+				mDialogueManager.StartDialogue("Waiting for other players to continue");
 				mNetworkManager.myPlayer.networkView.RPC("SetReady", RPCMode.All, true);
-				mDialogueManager.StartDialogue(new string[]{"Waiting for other players to continue"});
 		};
 
 		mDialogueManager.StartDialogue(day1Dialogue, day1DialogueFinished);

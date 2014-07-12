@@ -29,6 +29,7 @@ public class AfternoonManager : SceneManager {
 
 	void Start () {
 		// First we need to set everyone to "Not Ready"
+		print ("ON Afternoon");
 		if (Network.isServer) {
 			foreach (Player player in mNetworkManager.players) {
 				player.networkView.RPC ("SetReady", RPCMode.All, false);
@@ -36,14 +37,14 @@ public class AfternoonManager : SceneManager {
 		}
 
 		string[] afternoon1Dialogue = new string[] {
-			"Some stuff abotu afternoon...",
+			"Some stuff about afternoon...",
 			"introduce it..."
 		};
 
 		Action afternoon1DialogueComplete =
 			() => {
-				mNetworkManager.myPlayer.networkView.RPC("SetReady", RPCMode.All, true);
 				mDialogueManager.StartDialogue("Waiting for other players to continue");
+				mNetworkManager.myPlayer.networkView.RPC("SetReady", RPCMode.All, true);
 		};
 
 		mDialogueManager.StartDialogue(afternoon1Dialogue, afternoon1DialogueComplete);
@@ -82,6 +83,8 @@ public class AfternoonManager : SceneManager {
 			}
 		}
 
+		mDialogueManager.EndDialogue();
+
 		uRecording = false;
 		Action finishedPreparing =
 			() => {
@@ -91,12 +94,11 @@ public class AfternoonManager : SceneManager {
 	}
 
 	void StartRecording() {
-		mDialogueManager.EndDialogue();
 		uRecording = true;
 		Action finishedRecording =
 			() => {
-			mNetworkManager.myPlayer.networkView.RPC("SetReady", RPCMode.All, true);
 			mDialogueManager.StartDialogue("Waiting for other players to finish recording");
+			mNetworkManager.myPlayer.networkView.RPC("SetReady", RPCMode.All, true);
 		};
 		mCountdown.StartCountdown (30, finishedRecording);
 	}
