@@ -24,7 +24,7 @@ public class AfternoonManager : SceneManager {
 		mNetworkManager = (NetworkManager) FindObjectOfType(typeof(NetworkManager));
 		mDialogueManager = (DialogueManager) FindObjectOfType(typeof(DialogueManager));
 		mCountdown = (Countdown) FindObjectOfType(typeof(Countdown));
-		mGame = (Game) FindObjectsOfType (typeof(Game));
+		mGame = (Game) FindObjectOfType (typeof(Game));
 	}
 
 	void Start () {
