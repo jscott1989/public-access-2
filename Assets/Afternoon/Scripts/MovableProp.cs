@@ -10,6 +10,8 @@ public class MovableProp : MonoBehaviour {
 
 	dfPanel mScreenPanel;
 	dfTextureSprite mSprite;
+	dfScrollPanel mProps;
+	RecordingProp mRecordingProp;
 
 	// The drag offset
 	float mXOffset;
@@ -18,6 +20,8 @@ public class MovableProp : MonoBehaviour {
 	void Awake() {
 		mScreenPanel = (dfPanel)GameObject.FindGameObjectWithTag("Screen").GetComponent(typeof(dfPanel));
 		mSprite = (dfTextureSprite)GetComponent(typeof(dfTextureSprite));
+		mProps = (dfScrollPanel)FindObjectOfType(typeof(dfScrollPanel));
+		mRecordingProp = (RecordingProp)GetComponent (typeof(RecordingProp));
 	}
 
 	void Update() {
@@ -26,13 +30,12 @@ public class MovableProp : MonoBehaviour {
 			aPosition = new Vector2(aPosition.x, 0 - aPosition.y);
 			// TODO: these numbers are hardcoded - copied from the unity gui - figure out how to get this programatically
 			Vector2 relativePosition = new Vector2(aPosition.x - 183, aPosition.y + 123);
-			print(mScreenPanel.Position);
 			mSprite.Position = new Vector2(relativePosition.x - mXOffset, relativePosition.y - mYOffset);
 
 			// Left = 183
 			// Top = 123
 			if (!Input.GetMouseButton(0)) {
-				mIsDragging = false;
+				StopDragging();
 			}
 			mSprite.BringToFront();
 		}
@@ -47,5 +50,13 @@ public class MovableProp : MonoBehaviour {
 		mYOffset = bPosition.y;
 
 		mIsDragging = true;
+	}
+
+	void StopDragging() {
+		if (dfInputManager.ControlUnderMouse == mProps) {
+			mRecordingProp.PutBackInBox();
+		}
+
+		mIsDragging = false;
 	}
 }

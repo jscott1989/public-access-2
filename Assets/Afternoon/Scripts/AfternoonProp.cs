@@ -29,6 +29,9 @@ public class AfternoonProp : MonoBehaviour {
 
 		sprite.Position = new Vector2(top_left.x - (sprite.Size.x / 2), top_left.y + (sprite.Size.y / 2));
 
+		RecordingProp r = (RecordingProp)g.GetComponent (typeof(RecordingProp));
+		r.uPurchasedProp = uPurchasedProp;
+
 		MovableProp p = (MovableProp)g.GetComponent(typeof(MovableProp));
 		p.OnMouseDown();
 
