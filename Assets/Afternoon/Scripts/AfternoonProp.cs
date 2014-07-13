@@ -4,7 +4,7 @@ using System.Collections;
 public class AfternoonProp : MonoBehaviour {
 	public PurchasedProp uPurchasedProp;
 	public dfTextureSprite uImage;
-	public GameObject mScreen;
+	GameObject mScreen;
 
 	GameObject mRecordingPropPrefab;
 	
@@ -18,14 +18,20 @@ public class AfternoonProp : MonoBehaviour {
 	}
 
 	void OnMouseDown() {
-		gameObject.transform.parent = mScreen.transform;
-
 		GameObject g = (GameObject) Instantiate(mRecordingPropPrefab, Vector3.zero, Quaternion.identity);
 		g.transform.parent = mScreen.transform;
-		g.transform.position = gameObject.transform.position;
 
-		// TODO: Set this gameObject's parent back
+		Vector2 mousePosition = uImage.GetManager ().ScreenToGui(new Vector2(Input.mousePosition.x, Input.mousePosition.y));
+
+		dfTextureSprite sprite = (dfTextureSprite)g.GetComponent (typeof(dfTextureSprite));
+		// TODO: these numbers are hardcoded - copied from the unity gui - figure out how to get this programatically
+		Vector2 top_left = new Vector2(mousePosition.x - 183, (0-mousePosition.y) + 123);
+
+		sprite.Position = new Vector2(top_left.x - (sprite.Size.x / 2), top_left.y + (sprite.Size.y / 2));
+
+		MovableProp p = (MovableProp)g.GetComponent(typeof(MovableProp));
+		p.OnMouseDown();
+
 		mProps.Remove (uPurchasedProp);
-		Destroy (gameObject); // And don't destroy it
 	}
 }

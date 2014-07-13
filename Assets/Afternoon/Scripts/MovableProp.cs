@@ -34,10 +34,11 @@ public class MovableProp : MonoBehaviour {
 			if (!Input.GetMouseButton(0)) {
 				mIsDragging = false;
 			}
+			mSprite.BringToFront();
 		}
 	}
 
-	void OnMouseDown() {
+	public void OnMouseDown() {
 		Vector2 aPosition = mScreenPanel.GetManager ().ScreenToGui(new Vector2(Input.mousePosition.x, Input.mousePosition.y));
 		aPosition = new Vector2(aPosition.x - 183, (0 - aPosition.y) + 123);
 		Vector2 bPosition = new Vector2(aPosition.x - mSprite.Position.x, aPosition.y - mSprite.Position.y);
