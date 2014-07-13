@@ -186,6 +186,21 @@ public class LobbyManager : SceneManager {
 		Application.LoadLevel ("Morning");
 	}
 
+	void ServerStartGame() {
+		networkView.RPC ("StartingGame", RPCMode.All);
+		Player[] players = mNetworkManager.players;
+		GameSetup gameSetup = GameSetup.generate (players.Length);
+		for (var i = 0; i < players.Length; i++) {
+			foreach (string s in gameSetup.uAvailableProps) {
+				// We do this individually because it kept getting memory errors when sending the array
+				// TODO: Figure out why this is - it's inefficient like this
+				players[i].networkView.RPC ("AddAvailableProp",RPCMode.All,s);
+			}
+			players[i].networkView.RPC ("SetGameInfo",RPCMode.All, gameSetup.uThemes[i], gameSetup.uNeeds[i]);
+		}
+		networkView.RPC ("StartGame", RPCMode.All);
+	}
+
 	void Update() {
 		if (Network.isServer) {
 			if (mCountdown > -1) {
@@ -193,18 +208,7 @@ public class LobbyManager : SceneManager {
 
 				if (mCountdown <= 0) {
 					mCountdown = -1;
-					networkView.RPC ("StartingGame", RPCMode.All);
-					Player[] players = mNetworkManager.players;
-					GameSetup gameSetup = GameSetup.generate (players.Length);
-					for (var i = 0; i < players.Length; i++) {
-						foreach (string s in gameSetup.uAvailableProps) {
-							// We do this individually because it kept getting memory errors when sending the array
-							// TODO: Figure out why this is - it's inefficient like this
-							players[i].networkView.RPC ("AddAvailableProp",RPCMode.All,s);
-						}
-						players[i].networkView.RPC ("SetGameInfo",RPCMode.All, gameSetup.uThemes[i], gameSetup.uNeeds[i]);
-					}
-					networkView.RPC ("StartGame", RPCMode.All);
+					ServerStartGame ();
 					return;
 				}
 
