@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 
 /**
  * This class holds basic information about each player, and methods
@@ -21,6 +23,8 @@ public class Player : MonoBehaviour {
 
 	Texture2D mReadyTexture;
 	Texture2D mNotReadyTexture;
+
+	public List<RecordingChange> uRecordingChanges = new List<RecordingChange>();
 
 	/**
 	 * I don't think this should be here - as it's lobby specific - but I'm not sure 
@@ -187,5 +191,11 @@ public class Player : MonoBehaviour {
 		if (networkView.isMine) {
 			networkView.RPC ("SellProp", RPCMode.Others, p.uID);
 		}
+	}
+
+	[RPC] public void RecordAction(string pActionType, string[] pParameters) {
+		Type t = Type.GetType (pActionType);
+		RecordingChange c = (RecordingChange)t.GetConstructors()[0].Invoke (pParameters);
+		uRecordingChanges.Add (c);
 	}
 }

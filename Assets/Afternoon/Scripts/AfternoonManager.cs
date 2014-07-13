@@ -7,6 +7,8 @@ public class AfternoonManager : SceneManager {
 	DialogueManager mDialogueManager;
 	Countdown mCountdown;
 	Game mGame;
+	Recorder mRecorder;
+	GameObject mScreen;
 
 	public bool uRecording = false;
 
@@ -25,6 +27,8 @@ public class AfternoonManager : SceneManager {
 		mDialogueManager = (DialogueManager) FindObjectOfType(typeof(DialogueManager));
 		mCountdown = (Countdown) FindObjectOfType(typeof(Countdown));
 		mGame = (Game) FindObjectOfType (typeof(Game));
+		mRecorder = (Recorder)FindObjectOfType(typeof(Recorder));
+		mScreen = GameObject.FindGameObjectWithTag("Screen");
 	}
 
 	void Start () {
@@ -94,9 +98,11 @@ public class AfternoonManager : SceneManager {
 	}
 
 	void StartRecording() {
+		mRecorder.StartRecording (mNetworkManager.myPlayer, mScreen);
 		uRecording = true;
 		Action finishedRecording =
 			() => {
+			mRecorder.StopRecording ();
 			mDialogueManager.StartDialogue("Waiting for other players to finish recording");
 			mNetworkManager.myPlayer.networkView.RPC("SetReady", RPCMode.All, true);
 		};
