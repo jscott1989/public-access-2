@@ -24,7 +24,7 @@ public class InstantiationChange : RecordingChange {
 	GameObject mPlayingPropPrefab;
 
 	public InstantiationChange(String pTime, string pPropID, string pID, string pNewX, string pNewY) {
-		uTime = Convert.ToDouble (pTime);
+		Debug.Log("INSIDE THE CHANGE");
 		mPropID = pPropID;
 		mID = pID;
 		mNewX = pNewX;
