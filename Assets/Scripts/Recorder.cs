@@ -40,6 +40,7 @@ public class Recorder : MonoBehaviour {
 			// Check if any have been added
 			foreach(string ID in currentIDs) {
 				if (!mKnownPropIDs.Contains(ID)) {
+					print("NEW PROP CREATED");
 					// This is a new prop
 
 					// Get the full prop information
@@ -47,7 +48,7 @@ public class Recorder : MonoBehaviour {
 					foreach(RecordingProp p in currentRecordingProps) {
 						if (p.uPurchasedProp.uID == ID) {
 							dfTextureSprite sprite = (dfTextureSprite) p.gameObject.GetComponent (typeof(dfTextureSprite));
-							mRecordingPlayer.networkView.RPC ("RecordAction", RPCMode.All, new object[]{"InstantiationChange", new string[]{mTime.ToString (), p.uPurchasedProp.uID,sprite.Position.x.ToString (),sprite.Position.y.ToString()}});
+							mRecordingPlayer.networkView.RPC ("RecordAction", RPCMode.All, new object[]{"InstantiationChange", new string[]{mTime.ToString (), p.uPurchasedProp.uProp.uID, p.uPurchasedProp.uID,sprite.Position.x.ToString (),sprite.Position.y.ToString()}});
 							mKnownPropPositions[ID] = sprite.Position;
 							break;
 						}

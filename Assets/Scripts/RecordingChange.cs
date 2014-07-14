@@ -15,31 +15,77 @@ public abstract class RecordingChange {
 }
 
 public class InstantiationChange : RecordingChange {
-	public InstantiationChange(String pTime, string pID, string newX, string newY) {
+
+	string mPropID;
+	string mID;
+	string mNewX;
+	string mNewY;
+
+	GameObject mPlayingPropPrefab;
+
+	public InstantiationChange(String pTime, string pPropID, string pID, string pNewX, string pNewY) {
 		uTime = Convert.ToDouble (pTime);
+		mPropID = pPropID;
+		mID = pID;
+		mNewX = pNewX;
+		mNewY = pNewY;
+		mPlayingPropPrefab = (GameObject)Resources.Load ("Evening/Prefabs/PlayingProp");
 	}
 
 	public override void run(GameObject pScreen) {
 		// TODO: Instantiate the object in pScreen
+		Debug.Log("Create " + mPropID + "(" + mID + ") at " + mNewX + "," + mNewY);
+		GameObject g = (GameObject) GameObject.Instantiate(mPlayingPropPrefab, Vector3.zero, Quaternion.identity);
+		g.transform.parent = pScreen.transform;
+
+		dfTextureSprite sprite = (dfTextureSprite)g.GetComponent (typeof(dfTextureSprite));
+		sprite.Texture = (Texture2D)Resources.Load("Props/" + mPropID);
+		sprite.Position = new Vector2(float.Parse(mNewX), float.Parse (mNewY));
+		PlayingProp r = (PlayingProp)g.GetComponent (typeof(PlayingProp));
+		r.uID = mID;
 	}
 }
 
 public class DestroyChange : RecordingChange {
+
+	string mID;
+
 	public DestroyChange(string pTime, string pID) {
 		uTime = Convert.ToDouble (pTime);
+		mID = pID;
 	}
 	
 	public override void run(GameObject pScreen) {
-		// TODO: Destroy the object in pScreen
+		foreach (PlayingProp p in pScreen.GetComponentsInChildren (typeof(PlayingProp))) {
+			if (p.uID == mID) {
+				GameObject.Destroy(p.gameObject);
+				return;
+			}
+		}
 	}
 }
 
 public class PositionChange : RecordingChange {
-	public PositionChange(string pTime, string pID, string newX, string newY) {
+
+	string mID;
+	string mNewX;
+	string mNewY;
+
+	public PositionChange(string pTime, string pID, string pNewX, string pNewY) {
 		uTime = Convert.ToDouble (pTime);
+		mID = pID;
+		mNewX = pNewX;
+		mNewY = pNewY;
 	}
 	
 	public override void run(GameObject pScreen) {
 		// TODO: Move pID to pNewPosition
+		foreach (PlayingProp p in pScreen.GetComponentsInChildren (typeof(PlayingProp))) {
+			if (p.uID == mID) {
+				dfTextureSprite sprite = (dfTextureSprite) p.gameObject.GetComponent (typeof(dfTextureSprite));
+				sprite.Position = new Vector2(float.Parse(mNewX), float.Parse (mNewY));
+				return;
+			}
+		}
 	}
 }
