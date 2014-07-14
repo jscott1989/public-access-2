@@ -67,8 +67,8 @@ public class NetworkManager : MonoBehaviour {
 
 	void Awake() {
 		// This is just for during testing - as the unity master server keeps banning me!
-		MasterServer.ipAddress = "127.0.0.1";
-		MasterServer.port = 23466;
+//		MasterServer.ipAddress = "127.0.0.1";
+//		MasterServer.port = 23466;
 
 		mErrorPanel = (ErrorPanel)GameObject.FindObjectOfType (typeof(ErrorPanel));
 		mPlayerPrefab = (GameObject)Resources.Load ("Prefabs/Player");
