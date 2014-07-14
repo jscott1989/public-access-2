@@ -194,7 +194,7 @@ public class Player : MonoBehaviour {
 	}
 
 	[RPC] public void RecordAction(string pActionType, string pParametersString) {
-		string[] pParameters = pParametersString.Split(",");
+		string[] pParameters = pParametersString.Split(',');
 		Type t = Type.GetType (pActionType);
 		RecordingChange c = (RecordingChange)t.GetConstructors()[0].Invoke (pParameters);
 		uRecordingChanges.Add (c);
