@@ -33,10 +33,12 @@ public class LobbyManager : SceneManager {
 
 	void Start() {
 		// Create a NewPlayer event for all players currently in the game
-		print(mNetworkManager.players.Length);
+	
 		foreach (Player player in mNetworkManager.players) {
 			NewPlayer (player);
 		}
+		networkView.RPC ("AddChatMessage", RPCMode.All, "<br /><i style=\"color: black;\">Player " + (mNetworkManager.mMyClientID + 1).ToString () + " has joined</i>");
+
 	}
 
 	/**
@@ -79,8 +81,7 @@ public class LobbyManager : SceneManager {
 				p.SendInfoTo(pPlayer);
 			}
 		}
-		networkView.RPC ("AddChatMessage", RPCMode.All, "<br /><i style=\"color: black;\">Player " + (pID + 1).ToString () + " has joined</i>");
-	}
+}
 
 	public override void PlayerDisconnected(int pID, NetworkPlayer pPlayer) {
 		// A player has left - so we should inform the players
