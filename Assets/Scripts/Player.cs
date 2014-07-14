@@ -70,15 +70,17 @@ public class Player : MonoBehaviour {
 	}
 
 	public List<Prop> uAvailableProps = new List<Prop>();
-	
-	[RPC] public void AddAvailableProp(string pProp) {
-		uAvailableProps.Add (mGame.uProps[pProp]);
-	}
 
 	public string uTheme;
 	public string uNeed;
 
-	[RPC] public void SetGameInfo (string pTheme, string pNeed) {
+	[RPC] public void SetGameInfo (string pTheme, string pNeed, string pPropsString) {
+		uAvailableProps.Clear ();
+		string[] propIDs = RPCEncoder.Decode(pPropsString);
+		foreach(var pID in propIDs) {
+			uAvailableProps.Add (mGame.uProps[pID]);
+		}
+
 		uTheme = pTheme;
 		uNeed = pNeed;
 	}

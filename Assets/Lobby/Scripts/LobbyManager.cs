@@ -192,12 +192,7 @@ public class LobbyManager : SceneManager {
 		Player[] players = mNetworkManager.players;
 		GameSetup gameSetup = GameSetup.generate (players.Length);
 		for (var i = 0; i < players.Length; i++) {
-			foreach (string s in gameSetup.uAvailableProps) {
-				// We do this individually because it kept getting memory errors when sending the array
-				// TODO: Figure out why this is - it's inefficient like this
-				players[i].networkView.RPC ("AddAvailableProp",RPCMode.All,s);
-			}
-			players[i].networkView.RPC ("SetGameInfo",RPCMode.All, gameSetup.uThemes[i], gameSetup.uNeeds[i]);
+			players[i].networkView.RPC ("SetGameInfo",RPCMode.All, gameSetup.uThemes[i], gameSetup.uNeeds[i], RPCEncoder.Encode(gameSetup.uAvailableProps));
 		}
 		networkView.RPC ("StartGame", RPCMode.All);
 	}
