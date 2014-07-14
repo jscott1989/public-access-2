@@ -95,6 +95,7 @@ public class ZOrderChange : RecordingChange {
 
 	public ZOrderChange(string pTime, string pID, string pZOrder) {
 		uTime = Convert.ToDouble (pTime);
+		mID = pID;
 		mZOrder = pZOrder;
 	}
 
