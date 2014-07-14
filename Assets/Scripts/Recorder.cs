@@ -33,6 +33,7 @@ public class Recorder : MonoBehaviour {
 			mTime += Time.deltaTime;
 
 			// First loop through all of the recordable objects in screen to check if any have been added/removed
+			// TODO: This should be fine - but it might be better to specify mRecordingScreen as the parent
 			RecordingProp[] currentRecordingProps = FindObjectsOfType<RecordingProp>();
 
 			// Get the IDs from all current props
@@ -49,9 +50,7 @@ public class Recorder : MonoBehaviour {
 						if (p.uPurchasedProp.uID == ID) {
 							dfTextureSprite sprite = (dfTextureSprite) p.gameObject.GetComponent (typeof(dfTextureSprite));
 
-							string[] createP = new string[]{mTime.ToString (), p.uPurchasedProp.uProp.uID, p.uPurchasedProp.uID,sprite.Position.x.ToString (),sprite.Position.y.ToString()};
-
-							mRecordingPlayer.networkView.RPC ("RecordAction", RPCMode.All, new object[]{"InstantiationChange", string.Join(",", createP)});
+							mRecordingPlayer.networkView.RPC ("RecordAction", RPCMode.All, new object[]{"InstantiationChange", RPCEncoder.Encode(new string[]{mTime.ToString (), p.uPurchasedProp.uProp.uID, p.uPurchasedProp.uID,sprite.Position.x.ToString (),sprite.Position.y.ToString()})});
 							mKnownPropPositions[ID] = sprite.Position;
 							mKnownZOrders[ID] = sprite.ZOrder;
 							break;
@@ -64,8 +63,7 @@ public class Recorder : MonoBehaviour {
 			foreach(string ID in mKnownPropIDs) {
 				if (!currentIDs.Contains (ID)) {
 					// This prop has been removed
-					string[] destroyP = new string[]{mTime.ToString (), ID};
-					mRecordingPlayer.networkView.RPC ("RecordAction", RPCMode.All, new object[]{"DestroyChange", string.Join (",", destroyP)});
+					mRecordingPlayer.networkView.RPC ("RecordAction", RPCMode.All, new object[]{"DestroyChange", RPCEncoder.Encode(new string[]{mTime.ToString (), ID})});
 				}
 			}
 
@@ -76,16 +74,13 @@ public class Recorder : MonoBehaviour {
 				dfTextureSprite sprite = (dfTextureSprite) p.gameObject.GetComponent (typeof(dfTextureSprite));
 				if (sprite.Position != mKnownPropPositions[p.uPurchasedProp.uID]) {
 					// The prop has moved
-					string[] positionP = new string[]{mTime.ToString (), p.uPurchasedProp.uID, sprite.Position.x.ToString(), sprite.Position.y.ToString()};
-					mRecordingPlayer.networkView.RPC ("RecordAction", RPCMode.All, new object[]{"PositionChange", string.Join (",", positionP)});
+					mRecordingPlayer.networkView.RPC ("RecordAction", RPCMode.All, new object[]{"PositionChange", RPCEncoder.Encode(new string[]{mTime.ToString (), p.uPurchasedProp.uID, sprite.Position.x.ToString(), sprite.Position.y.ToString()})});
 					mKnownPropPositions[p.uPurchasedProp.uID] = sprite.Position;
 				}
 
 				if (sprite.ZOrder != mKnownZOrders[p.uPurchasedProp.uID]) {
 					// The prop has moved ZOrder
-					// TODO: This part doesn't work properly
-					string[] zOrderP = new string[]{mTime.ToString (), p.uPurchasedProp.uID, sprite.ZOrder.ToString()};
-					mRecordingPlayer.networkView.RPC ("RecordAction", RPCMode.All, new object[]{"ZOrderChange", string.Join (",", zOrderP)});
+					mRecordingPlayer.networkView.RPC ("RecordAction", RPCMode.All, new object[]{"ZOrderChange", RPCEncoder.Encode(new string[]{mTime.ToString (), p.uPurchasedProp.uID, sprite.ZOrder.ToString()})});
 					mKnownZOrders[p.uPurchasedProp.uID] = sprite.ZOrder;
 				}
 			}
