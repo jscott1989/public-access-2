@@ -15,4 +15,8 @@ public class EveningManager : SceneManager {
 	void Start () {
 		mRecordingPlayer.Play(mNetworkManager.myPlayer, mScreen);
 	}
+
+	public void Jump() {
+		mRecordingPlayer.Jump (10);
+	}
 }

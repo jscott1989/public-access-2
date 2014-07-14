@@ -12,17 +12,45 @@ public class RecordingPlayer : MonoBehaviour {
 	 * Start playing back pPlayer's latest episode on pScreen
 	 */
 	public void Play(Player pPlayer, GameObject pScreen) {
-		mTime = 0;
-		mLastPlayedTime = -1;
+		Reset(pScreen);
 		mPlayingPlayer = pPlayer;
 		mPlayingScreen = pScreen;
+	}
+
+	/**
+	 * Clear the screen
+	 */
+	public void Reset(GameObject mScreen) {
+		// Destroy all objects
+		foreach(PlayingProp p in mScreen.GetComponentsInChildren(typeof(PlayingProp))) {
+			Destroy (p.gameObject);
+		}
+		// TODO: Stop all sounds, etc.
+
+		// Reset the time
+		mTime = 0;
+		mLastPlayedTime = -1;
 	}
 	
 	/**
 	 * Jump the current playback to pTime
 	 */
 	public void Jump(float pTime) {
-		
+		Reset (mPlayingScreen);
+//		mTime = pTime;
+//		PlayToCurrentTime();
+	}
+
+	void PlayToCurrentTime() {
+		foreach(RecordingChange rc in mPlayingPlayer.uRecordingChanges) {
+			if (rc.uTime > mTime) {
+				mLastPlayedTime = mTime;
+				return;
+			} else if (rc.uTime > mLastPlayedTime) {
+				// Needs activated
+				rc.run (mPlayingScreen);
+			}
+		}
 	}
 
 	void Update() {
@@ -30,15 +58,7 @@ public class RecordingPlayer : MonoBehaviour {
 			// We're playing
 			mTime += Time.deltaTime;
 
-			foreach(RecordingChange rc in mPlayingPlayer.uRecordingChanges) {
-				if (rc.uTime > mTime) {
-					mLastPlayedTime = mTime;
-					return;
-				} else if (rc.uTime > mLastPlayedTime) {
-					// Needs activated
-					rc.run (mPlayingScreen);
-				}
-			}
+			PlayToCurrentTime();
 		}
 	}
 }

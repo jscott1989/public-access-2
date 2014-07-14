@@ -79,11 +79,30 @@ public class PositionChange : RecordingChange {
 	}
 	
 	public override void run(GameObject pScreen) {
-		// TODO: Move pID to pNewPosition
 		foreach (PlayingProp p in pScreen.GetComponentsInChildren (typeof(PlayingProp))) {
 			if (p.uID == mID) {
 				dfTextureSprite sprite = (dfTextureSprite) p.gameObject.GetComponent (typeof(dfTextureSprite));
 				sprite.Position = new Vector2(float.Parse(mNewX), float.Parse (mNewY));
+				return;
+			}
+		}
+	}
+}
+
+public class ZOrderChange : RecordingChange { 
+	string mID;
+	string mZOrder;
+
+	public ZOrderChange(string pTime, string pID, string pZOrder) {
+		uTime = Convert.ToDouble (pTime);
+		mZOrder = pZOrder;
+	}
+
+	public override void run(GameObject pScreen) {
+		foreach (PlayingProp p in pScreen.GetComponentsInChildren (typeof(PlayingProp))) {
+			if (p.uID == mID) {
+				dfTextureSprite sprite = (dfTextureSprite) p.gameObject.GetComponent (typeof(dfTextureSprite));
+				sprite.ZOrder = Convert.ToInt32(mZOrder);
 				return;
 			}
 		}

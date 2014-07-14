@@ -9,6 +9,7 @@ public class Recorder : MonoBehaviour {
 
 	string[] mKnownPropIDs;
 	Dictionary<string, Vector3> mKnownPropPositions = new Dictionary<string, Vector3>();
+	Dictionary<string, int> mKnownZOrders = new Dictionary<string, int>();
 
 	double mTime = 0;
 
@@ -40,7 +41,6 @@ public class Recorder : MonoBehaviour {
 			// Check if any have been added
 			foreach(string ID in currentIDs) {
 				if (!mKnownPropIDs.Contains(ID)) {
-					print("NEW PROP CREATED");
 					// This is a new prop
 
 					// Get the full prop information
@@ -50,6 +50,7 @@ public class Recorder : MonoBehaviour {
 							dfTextureSprite sprite = (dfTextureSprite) p.gameObject.GetComponent (typeof(dfTextureSprite));
 							mRecordingPlayer.networkView.RPC ("RecordAction", RPCMode.All, new object[]{"InstantiationChange", new string[]{mTime.ToString (), p.uPurchasedProp.uProp.uID, p.uPurchasedProp.uID,sprite.Position.x.ToString (),sprite.Position.y.ToString()}});
 							mKnownPropPositions[ID] = sprite.Position;
+							mKnownZOrders[ID] = sprite.ZOrder;
 							break;
 						}
 					}
@@ -73,6 +74,13 @@ public class Recorder : MonoBehaviour {
 					// The prop has moved
 					mRecordingPlayer.networkView.RPC ("RecordAction", RPCMode.All, new object[]{"PositionChange", new string[]{mTime.ToString (), p.uPurchasedProp.uID, sprite.Position.x.ToString(), sprite.Position.y.ToString()}});
 					mKnownPropPositions[p.uPurchasedProp.uID] = sprite.Position;
+				}
+
+				if (sprite.ZOrder != mKnownZOrders[p.uPurchasedProp.uID]) {
+					// The prop has moved ZOrder
+					// TODO: This part doesn't work properly
+					mRecordingPlayer.networkView.RPC ("RecordAction", RPCMode.All, new object[]{"ZOrderChange", new string[]{mTime.ToString (), p.uPurchasedProp.uID, sprite.ZOrder.ToString()}});
+					mKnownZOrders[p.uPurchasedProp.uID] = sprite.ZOrder;
 				}
 			}
 		}
