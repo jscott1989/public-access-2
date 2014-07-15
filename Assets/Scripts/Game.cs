@@ -9,6 +9,11 @@ public class Game : MonoBehaviour {
 	// This means that a single "ready" is enough to move everyone on - just to hurry during testing
 	public bool DEBUG_MODE = false;
 
+	public int LOBBY_COUNTDOWN = 6;
+	public int PROP_SELECTION_COUNTDOWN = 60;
+	public int PREPARING_COUNTDOWN = 5; // 30
+	public int RECORDING_COUNTDOWN = 10; // 30
+
 	void AddProp(Prop pProp) {
 		uProps.Add (pProp.uID, pProp);
 	}

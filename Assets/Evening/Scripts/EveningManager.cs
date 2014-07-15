@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 
 public class EveningManager : SceneManager {
@@ -6,15 +7,25 @@ public class EveningManager : SceneManager {
 	NetworkManager mNetworkManager;
 	RecordingPlayer mRecordingPlayer;
 	GameObject mScreen;
+	Countdown mCountdown;
+	Game mGame;
 
 	int watchingPlayerNumber = 0;
 
 	void Awake() {
 		mNetworkManager = (NetworkManager) FindObjectOfType(typeof(NetworkManager));
 		mRecordingPlayer = (RecordingPlayer) FindObjectOfType(typeof(RecordingPlayer));
+		mCountdown = (Countdown) FindObjectOfType(typeof(Countdown));
 		mScreen = GameObject.FindGameObjectWithTag("Screen");
+		mGame = (Game) FindObjectOfType (typeof(Game));
 	}
 	void Start () {
+		Action eveningFinished = 
+			() => {
+			mNetworkManager.myPlayer.NextDay ();
+			Application.LoadLevel ("Morning");
+		};
+		mCountdown.StartCountdown(mGame.RECORDING_COUNTDOWN, eveningFinished);
 		mRecordingPlayer.Play(mNetworkManager.players[watchingPlayerNumber], mScreen);
 	}
 

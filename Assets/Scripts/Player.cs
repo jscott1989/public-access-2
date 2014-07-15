@@ -16,6 +16,8 @@ public class Player : MonoBehaviour {
 	// This is used anywhere we need to wait for everyone to be ready before continuing
 	public bool uReady = false;
 
+	public int uDay = 1;
+
 	public int uBudget = 300;
 
 	public Game mGame;
@@ -143,7 +145,6 @@ public class Player : MonoBehaviour {
 
 	[RPC] public void PurchaseProp(string pPropID) {
 		Prop prop = mGame.uProps[pPropID];
-		print("PURCHASING");
 		// Check that there is a prop.uID available
 		bool propAvailable = false;
 		foreach(Prop p in uUnpurchasedProps) {
@@ -163,7 +164,6 @@ public class Player : MonoBehaviour {
 		if (uBudget < prop.uPrice) {
 			return;
 		}
-		print ("Have budget");
 
 		// Add the prop to our props, and take away the money
 		PurchasedProp purchasedProp = new PurchasedProp(prop);
@@ -172,10 +172,10 @@ public class Player : MonoBehaviour {
 
 		mSceneManager.PropPurchased(this, purchasedProp);
 
-		print("DONE!");
-		if (networkView.isMine) {
-			networkView.RPC ("PurchaseProp", RPCMode.Others, prop.uID);
-		}
+		// I don't think we need to sync buying and selling
+//		if (networkView.isMine) {
+//			networkView.RPC ("PurchaseProp", RPCMode.Others, prop.uID);
+//		}
 	}
 
 	[RPC] public void SellProp(string pPurchasedPropID) {
@@ -190,9 +190,10 @@ public class Player : MonoBehaviour {
 
 		mSceneManager.PropSold(this, p);
 
-		if (networkView.isMine) {
-			networkView.RPC ("SellProp", RPCMode.Others, p.uID);
-		}
+		// I don't think we need to sync buying and selling
+//		if (networkView.isMine) {
+//			networkView.RPC ("SellProp", RPCMode.Others, p.uID);
+//		}
 	}
 
 	[RPC] public void RecordAction(string pActionType, string pParametersString) {
@@ -200,5 +201,9 @@ public class Player : MonoBehaviour {
 		Type t = Type.GetType (pActionType);
 		RecordingChange c = (RecordingChange)t.GetConstructors()[0].Invoke (pParameters);
 		uRecordingChanges.Add (c);
+	}
+
+	public void NextDay() {
+		uDay += 1;
 	}
 }

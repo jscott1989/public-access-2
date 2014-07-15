@@ -136,12 +136,15 @@ public class LobbyManager : SceneManager {
 		if (pPlayer.uReady) {
 			networkView.RPC ("AddChatMessage", RPCMode.All, "<br /><i style=\"color: black;\">" + pPlayer.uName + " is ready</i>");
 
+			if (mGame.DEBUG_MODE) {
+				mCountdown = -1;
+				ServerStartGame ();
+			}
+
 			// Check if all players are ready - if so we can start
-			if (!mGame.DEBUG_MODE) {
-				foreach (Player p in mNetworkManager.players) {
-					if (!p.uReady) {
-						return;
-					}
+			foreach (Player p in mNetworkManager.players) {
+				if (!p.uReady) {
+					return;
 				}
 			}
 
@@ -162,7 +165,7 @@ public class LobbyManager : SceneManager {
 	 */
 	void StartCountdown() {
 		mNetworkManager.StartGame ();
-		mCountdown = 6;
+		mCountdown = mGame.LOBBY_COUNTDOWN;
 	}
 
 	void CancelCountdown() {

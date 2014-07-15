@@ -108,6 +108,7 @@ public class PropSelectionManager : SceneManager {
 	public void BuySelectedProp() {
 		Prop purchase = mNetworkManager.myPlayer.uUnpurchasedProps[mAvailablePropsList.SelectedIndex];
 		mNetworkManager.myPlayer.PurchaseProp(purchase.uID);
+		mAvailablePropsList.SelectedIndex = -1;
 	}
 
 	public override void PropPurchased(Player pPlayer, PurchasedProp pPurchasedProp) {
@@ -190,7 +191,7 @@ public class PropSelectionManager : SceneManager {
 			}
 		};
 
-		mCountdown.StartCountdown (60, countdownFinished);
+		mCountdown.StartCountdown (mGame.PROP_SELECTION_COUNTDOWN, countdownFinished);
 	}
 
 	public void ReadyButtonPressed() {
