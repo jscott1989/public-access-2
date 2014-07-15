@@ -136,28 +136,32 @@ public class LobbyManager : SceneManager {
 		if (pPlayer.uReady) {
 			networkView.RPC ("AddChatMessage", RPCMode.All, "<br /><i style=\"color: black;\">" + pPlayer.uName + " is ready</i>");
 
-			if (mGame.DEBUG_MODE) {
-				mCountdown = -1;
-				ServerStartGame ();
-			}
-
-			// Check if all players are ready - if so we can start
-			foreach (Player p in mNetworkManager.players) {
-				if (!p.uReady) {
-					return;
-				}
-			}
-
-			// TODO: Add 3 player minimum (I'm not adding this now as it's easier to test things with 2)
-
-			// Everyone is ready, let's start the countdown
-			StartCountdown();
+			CheckForAllReady();
 		} else {
 			networkView.RPC ("AddChatMessage", RPCMode.All, "<br /><i style=\"color: black;\">" + pPlayer.uName + " is not ready</i>");
 			if (mCountdown > -1) {
 				CancelCountdown();
 			}
 		}
+	}
+
+	void CheckForAllReady() {
+		if (mGame.DEBUG_MODE2) {
+			mCountdown = -1;
+			ServerStartGame ();
+		}
+		
+		// Check if all players are ready - if so we can start
+		foreach (Player p in mNetworkManager.players) {
+			if (!p.uReady) {
+				return;
+			}
+		}
+		
+		// TODO: Add 3 player minimum (I'm not adding this now as it's easier to test things with 2)
+		
+		// Everyone is ready, let's start the countdown
+		StartCountdown();
 	}
 
 	/**

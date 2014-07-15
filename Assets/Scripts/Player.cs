@@ -20,6 +20,8 @@ public class Player : MonoBehaviour {
 
 	public int uBudget = 300;
 
+	public string uShowName = "";
+
 	public Game mGame;
 	public Dictionary<string, PurchasedProp> uPurchasedProps = new Dictionary<string, PurchasedProp>();
 
@@ -201,6 +203,10 @@ public class Player : MonoBehaviour {
 		Type t = Type.GetType (pActionType);
 		RecordingChange c = (RecordingChange)t.GetConstructors()[0].Invoke (pParameters);
 		uRecordingChanges.Add (c);
+	}
+
+	[RPC] public void SetShowName(string pShowName) {
+		uShowName = pShowName;
 	}
 
 	public void NextDay() {
