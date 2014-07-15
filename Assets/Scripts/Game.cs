@@ -10,9 +10,10 @@ public class Game : MonoBehaviour {
 	public bool DEBUG_MODE2 = false;
 
 	public int LOBBY_COUNTDOWN = 6;
-	public int PROP_SELECTION_COUNTDOWN = 60;
+	public int PROP_SELECTION_COUNTDOWN = 10; // 60
 	public int PREPARING_COUNTDOWN = 5; // 30
 	public int RECORDING_COUNTDOWN = 10; // 30
+	public int FEEDBACK_COUNTDOWN = 20; // 60
 	public int NUMBER_OF_DAYS = 5;
 
 	void AddProp(Prop pProp) {
