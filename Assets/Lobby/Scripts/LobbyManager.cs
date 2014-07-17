@@ -146,7 +146,7 @@ public class LobbyManager : SceneManager {
 	}
 
 	void CheckForAllReady() {
-		if (mGame.DEBUG_MODE2) {
+		if (Game.DEBUG_MODE) {
 			mCountdown = -1;
 			ServerStartGame ();
 		}
@@ -169,7 +169,7 @@ public class LobbyManager : SceneManager {
 	 */
 	void StartCountdown() {
 		mNetworkManager.StartGame ();
-		mCountdown = mGame.LOBBY_COUNTDOWN;
+		mCountdown = Game.LOBBY_COUNTDOWN;
 	}
 
 	void CancelCountdown() {

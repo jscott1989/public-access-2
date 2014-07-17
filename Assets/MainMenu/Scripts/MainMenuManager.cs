@@ -40,6 +40,10 @@ public class MainMenuManager : SceneManager {
 	void Start() {
 		// Start by populating the games list
 		RefreshGamesList ();
+
+		if (Game.DEBUG_MODE) {
+			uCreateGameRoomName = "test";
+		}
 	}
 
 	/**

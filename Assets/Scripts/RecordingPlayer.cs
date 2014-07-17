@@ -8,21 +8,30 @@ public class RecordingPlayer : MonoBehaviour {
 	double mTime;
 	double mLastPlayedTime;
 
+	bool mLoop = false;
+
+	public double uTime {
+		get {
+			return mTime;
+		}
+	}
+
 	/**
 	 * Start playing back pPlayer's latest episode on pScreen
 	 */
-	public void Play(Player pPlayer, GameObject pScreen) {
-		Reset(pScreen);
-		mPlayingPlayer = pPlayer;
+	public void Play(Player pPlayer, GameObject pScreen, bool uLoop = false) {
 		mPlayingScreen = pScreen;
+		Reset();
+		mLoop = uLoop;
+		mPlayingPlayer = pPlayer;
 	}
 
 	/**
 	 * Clear the screen
 	 */
-	public void Reset(GameObject mScreen) {
+	public void Reset() {
 		// Destroy all objects
-		foreach(PlayingProp p in mScreen.GetComponentsInChildren(typeof(PlayingProp))) {
+		foreach(PlayingProp p in mPlayingScreen.GetComponentsInChildren(typeof(PlayingProp))) {
 			Destroy (p.gameObject);
 		}
 		// TODO: Stop all sounds, etc.
@@ -36,7 +45,7 @@ public class RecordingPlayer : MonoBehaviour {
 	 * Jump the current playback to pTime
 	 */
 	public void Jump(float pTime) {
-		Reset (mPlayingScreen);
+		Reset ();
 //		mTime = pTime;
 //		PlayToCurrentTime();
 	}
@@ -57,6 +66,16 @@ public class RecordingPlayer : MonoBehaviour {
 		if (mPlayingPlayer != null) {
 			// We're playing
 			mTime += Time.deltaTime;
+			if (mTime > Game.RECORDING_COUNTDOWN) {
+				// We're finished
+				if (mLoop) {
+					// Start again
+					Reset();
+				} else {
+					// Stop playing
+					mPlayingPlayer = null;
+				}
+			}
 
 			PlayToCurrentTime();
 		}

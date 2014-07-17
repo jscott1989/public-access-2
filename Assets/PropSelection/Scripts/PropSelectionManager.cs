@@ -39,8 +39,6 @@ public class PropSelectionManager : SceneManager {
 	}
 
 	void Start () {
-		// TODO: Check what day it is - for now assume day 1 so give an introduction to prop selection
-
 		PopulateAvailableProps();
 		PopulatePurchasedProps();
 
@@ -51,18 +49,34 @@ public class PropSelectionManager : SceneManager {
 			}
 		}
 
-		string[] propSelectionDialogue = new string[]{
-			"text about prop selection..",
-			"little bit of an overview..."
-		};
+		if (mNetworkManager.myPlayer.uDay == 1) {
+			StartFirstDay ();
+		} else {
+			StartPropSelection ();
+		}
+	}
 
-		Action propSelectionDialogueComplete =
+	void StartFirstDay() {
+		if (!Game.DEBUG_MODE) {
+			string[] propSelectionDialogue = new string[]{
+				"text about prop selection..",
+				"little bit of an overview..."
+			};
+
+			Action propSelectionDialogueComplete =
 			() => {
-				mDialogueManager.StartDialogue("Waiting for other players to continue");
-				mNetworkManager.myPlayer.networkView.RPC("SetReady", RPCMode.All, true);
-		};
+				mDialogueManager.StartDialogue ("Waiting for other players to continue");
+				mNetworkManager.myPlayer.networkView.RPC ("SetReady", RPCMode.All, true);
+			};
 
-		mDialogueManager.StartDialogue(propSelectionDialogue, propSelectionDialogueComplete);
+			mDialogueManager.StartDialogue (propSelectionDialogue, propSelectionDialogueComplete);
+		} else {
+			mNetworkManager.myPlayer.PurchaseProp(mNetworkManager.myPlayer.uUnpurchasedProps[0].uID);
+			mNetworkManager.myPlayer.PurchaseProp(mNetworkManager.myPlayer.uUnpurchasedProps[0].uID);
+			mNetworkManager.myPlayer.PurchaseProp(mNetworkManager.myPlayer.uUnpurchasedProps[0].uID);
+
+			StartPropSelection();
+		}
 	}
 
 	void PopulateAvailableProps() {
@@ -74,6 +88,9 @@ public class PropSelectionManager : SceneManager {
 
 	void PopulatePurchasedProps() {
 		// TODO This is called when first entering the scene - ensure that the MyProps lines up with what we already own
+		foreach (PurchasedProp purchasedProp in mNetworkManager.myPlayer.uPurchasedProps.Values) {
+			mMyProps.Add(purchasedProp);
+		}
 	}
 
 	/**
@@ -156,7 +173,7 @@ public class PropSelectionManager : SceneManager {
 	public override void ReadyStatusChanged(Player pPlayer) {
 		if (pPlayer.uReady) {
 			// Check if all players are ready - if so we can start
-			if (!mGame.DEBUG_MODE2) {
+			if (!Game.DEBUG_MODE) {
 				foreach (Player p in mNetworkManager.players) {
 					if (!p.uReady) {
 						return;
@@ -191,7 +208,7 @@ public class PropSelectionManager : SceneManager {
 			}
 		};
 
-		mCountdown.StartCountdown (mGame.PROP_SELECTION_COUNTDOWN, countdownFinished);
+		mCountdown.StartCountdown (Game.PROP_SELECTION_COUNTDOWN, countdownFinished);
 	}
 
 	public void ReadyButtonPressed() {

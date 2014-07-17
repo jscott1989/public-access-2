@@ -10,6 +10,7 @@ public class FeedbackManager : SceneManager {
 	DialogueManager mDialogueManager;
 	NetworkManager mNetworkManager;
 	GameObject mScreen;
+	ViewerChart mViewerChart;
 
 	void Awake() {
 		mGame = FindObjectOfType<Game> ();
@@ -18,6 +19,7 @@ public class FeedbackManager : SceneManager {
 		mDialogueManager = FindObjectOfType<DialogueManager> ();
 		mNetworkManager = FindObjectOfType<NetworkManager> ();
 		mScreen = GameObject.FindGameObjectWithTag ("Screen");
+		mViewerChart = FindObjectOfType<ViewerChart> ();
 	}
 
 
@@ -53,10 +55,11 @@ public class FeedbackManager : SceneManager {
 			mDialogueManager.StartDialogue("Waiting for other players to continue");
 			mNetworkManager.myPlayer.networkView.RPC("SetReady", RPCMode.All, true);
 		};
-		mCountdown.StartCountdown (mGame.FEEDBACK_COUNTDOWN, countdownFinished);
+		mCountdown.StartCountdown (Game.FEEDBACK_COUNTDOWN, countdownFinished);
 		
 		// Start the playback
-		mRecordingPlayer.Play (mNetworkManager.myPlayer, mScreen);
+		mViewerChart.StartViewer (mRecordingPlayer);
+		mRecordingPlayer.Play (mNetworkManager.myPlayer, mScreen, true);
 	}
 
 	/**
@@ -64,7 +67,7 @@ public class FeedbackManager : SceneManager {
 	 */
 	public override void ReadyStatusChanged(Player pPlayer) {
 		if (pPlayer.uReady) {
-			if (!mGame.DEBUG_MODE2) {
+			if (!Game.DEBUG_MODE) {
 				// Check if all players are ready - if so we can start
 				foreach (Player p in mNetworkManager.players) {
 					if (!p.uReady) {

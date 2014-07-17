@@ -23,14 +23,14 @@ public class EveningManager : SceneManager {
 		Action eveningFinished = 
 			() => {
 			mNetworkManager.myPlayer.NextDay ();
-			if (mNetworkManager.myPlayer.uDay > mGame.NUMBER_OF_DAYS) {
+			if (mNetworkManager.myPlayer.uDay > Game.NUMBER_OF_DAYS) {
 				// Move to the end of game
 				Application.LoadLevel ("EndOfGame");
 			} else {
 				Application.LoadLevel ("Morning");
 			}
 		};
-		mCountdown.StartCountdown(mGame.RECORDING_COUNTDOWN, eveningFinished);
+		mCountdown.StartCountdown(Game.RECORDING_COUNTDOWN, eveningFinished);
 		mRecordingPlayer.Play(mNetworkManager.players[watchingPlayerNumber], mScreen);
 	}
 

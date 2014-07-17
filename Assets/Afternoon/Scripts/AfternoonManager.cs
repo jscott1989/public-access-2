@@ -39,18 +39,30 @@ public class AfternoonManager : SceneManager {
 			}
 		}
 
-		string[] afternoon1Dialogue = new string[] {
-			"Some stuff about afternoon...",
-			"introduce it..."
-		};
+		if (mNetworkManager.myPlayer.uDay == 1) {
+			StartDay1 ();
+		} else {
+			StartPreparing();
+		}
+	}
 
-		Action afternoon1DialogueComplete =
-			() => {
-				mDialogueManager.StartDialogue("Waiting for other players to continue");
-				mNetworkManager.myPlayer.networkView.RPC("SetReady", RPCMode.All, true);
-		};
-
-		mDialogueManager.StartDialogue(afternoon1Dialogue, afternoon1DialogueComplete);
+	void StartDay1() {
+		if (!Game.DEBUG_MODE) {
+			string[] afternoon1Dialogue = new string[] {
+				"Some stuff about afternoon...",
+				"introduce it..."
+			};
+		
+			Action afternoon1DialogueComplete =
+				() => {
+					mDialogueManager.StartDialogue ("Waiting for other players to continue");
+					mNetworkManager.myPlayer.networkView.RPC ("SetReady", RPCMode.All, true);
+			};
+		
+			mDialogueManager.StartDialogue (afternoon1Dialogue, afternoon1DialogueComplete);
+		} else {
+			StartPreparing();
+		}
 	}
 
 	/**
@@ -59,7 +71,7 @@ public class AfternoonManager : SceneManager {
 	public override void ReadyStatusChanged(Player pPlayer) {
 		if (pPlayer.uReady) {
 			// Check if all players are ready
-			if (!mGame.DEBUG_MODE2) {
+			if (!Game.DEBUG_MODE) {
 				foreach (Player p in mNetworkManager.players) {
 					if (!p.uReady) {
 						return;
@@ -94,7 +106,7 @@ public class AfternoonManager : SceneManager {
 			StartRecording();
 		};
 
-		mCountdown.StartCountdown (mGame.PREPARING_COUNTDOWN, finishedPreparing);
+		mCountdown.StartCountdown (Game.PREPARING_COUNTDOWN, finishedPreparing);
 	}
 
 	void StartRecording() {
@@ -107,7 +119,7 @@ public class AfternoonManager : SceneManager {
 			mNetworkManager.myPlayer.networkView.RPC("SetReady", RPCMode.All, true);
 		};
 
-		mCountdown.StartCountdown (mGame.RECORDING_COUNTDOWN, finishedRecording);
+		mCountdown.StartCountdown (Game.RECORDING_COUNTDOWN, finishedRecording);
 	}
 
 	/**

@@ -7,14 +7,14 @@ public class Game : MonoBehaviour {
 	public Dictionary<string, Prop> uProps = new Dictionary<string, Prop>();
 
 	// This means that a single "ready" is enough to move everyone on - just to hurry during testing
-	public bool DEBUG_MODE2 = false;
+	public const bool DEBUG_MODE = true;
 
-	public int LOBBY_COUNTDOWN = 6;
-	public int PROP_SELECTION_COUNTDOWN = 10; // 60
-	public int PREPARING_COUNTDOWN = 5; // 30
-	public int RECORDING_COUNTDOWN = 10; // 30
-	public int FEEDBACK_COUNTDOWN = 20; // 60
-	public int NUMBER_OF_DAYS = 5;
+	public const int LOBBY_COUNTDOWN = 6;
+	public const int PROP_SELECTION_COUNTDOWN = 10; // 60
+	public const int PREPARING_COUNTDOWN = 5; // 30
+	public const int RECORDING_COUNTDOWN = 30; // 30
+	public const int FEEDBACK_COUNTDOWN = 60; // 60
+	public const int NUMBER_OF_DAYS = 5;
 
 	void AddProp(Prop pProp) {
 		uProps.Add (pProp.uID, pProp);

@@ -38,7 +38,7 @@ public class MorningManager : SceneManager {
 
 		if (mNetworkManager.myPlayer.uDay == 1) {
 			FirstDay();
-		} else if(mNetworkManager.myPlayer.uDay < mGame.NUMBER_OF_DAYS) {
+		} else if(mNetworkManager.myPlayer.uDay < Game.NUMBER_OF_DAYS) {
 			MiddleDay();
 		} else {
 			LastDay();
@@ -77,7 +77,13 @@ public class MorningManager : SceneManager {
 			mDialogueManager.StartDialogue(day1SecondDialogue, day1DialogueFinished);
 		};
 
-		mDialogueManager.StartDialogue(day1FirstDialogue, day1FirstDialogueFinished);
+		if (Game.DEBUG_MODE) {
+			mNetworkManager.myPlayer.networkView.RPC ("SetShowName", RPCMode.All, "TempShowName");
+			mDialogueManager.StartDialogue ("Waiting for other players to continue");
+			mNetworkManager.myPlayer.networkView.RPC ("SetReady", RPCMode.All, true);
+		} else {
+			mDialogueManager.StartDialogue (day1FirstDialogue, day1FirstDialogueFinished);
+		}
 	}
 
 	void MiddleDay() {
@@ -85,10 +91,16 @@ public class MorningManager : SceneManager {
 		// for now we just show middle
 		Action dialogueFinished =
 			() => {
-				Application.LoadLevel("Feedback");
+				mDialogueManager.StartDialogue("Waiting for other players to continue");
+				mNetworkManager.myPlayer.networkView.RPC("SetReady", RPCMode.All, true);
 		};
 
-		mDialogueManager.StartDialogue(mMiddleDialogues[0], dialogueFinished);
+		if (Game.DEBUG_MODE) {
+			mDialogueManager.StartDialogue ("Waiting for other players to continue");
+			mNetworkManager.myPlayer.networkView.RPC ("SetReady", RPCMode.All, true);
+		} else {
+			mDialogueManager.StartDialogue (mMiddleDialogues [0], dialogueFinished);
+		}
 	}
 
 	void LastDay() {
@@ -98,7 +110,8 @@ public class MorningManager : SceneManager {
 			() => {
 				Action dialogueFinished =
 					() => {
-						Application.LoadLevel("Feedback");
+						mDialogueManager.StartDialogue("Waiting for other players to continue");
+						mNetworkManager.myPlayer.networkView.RPC("SetReady", RPCMode.All, true);
 				};
 
 				string[] lastDialogue = new string[] {
@@ -108,7 +121,12 @@ public class MorningManager : SceneManager {
 				mDialogueManager.StartDialogue(lastDialogue, dialogueFinished);
 		};
 
-		mDialogueManager.StartDialogue(mMiddleDialogues[0], firstDialogueFinished);
+		if (Game.DEBUG_MODE) {
+			mDialogueManager.StartDialogue ("Waiting for other players to continue");
+			mNetworkManager.myPlayer.networkView.RPC ("SetReady", RPCMode.All, true);
+		} else {
+			mDialogueManager.StartDialogue (mMiddleDialogues [0], firstDialogueFinished);
+		}
 	}
 
 	/**
@@ -116,7 +134,7 @@ public class MorningManager : SceneManager {
 	 */
 	public override void ReadyStatusChanged(Player pPlayer) {
 		if (pPlayer.uReady) {
-			if (!mGame.DEBUG_MODE2) {
+			if (!Game.DEBUG_MODE) {
 				// Check if all players are ready - if so we can start
 				foreach (Player p in mNetworkManager.players) {
 					if (!p.uReady) {
@@ -135,6 +153,10 @@ public class MorningManager : SceneManager {
 	 */
 	[RPC] void MoveToNextScene() {
 		mDialogueManager.EndDialogue();
-		Application.LoadLevel ("PropSelection");
+		if (mNetworkManager.myPlayer.uDay == 1) {
+			Application.LoadLevel ("PropSelection");
+		} else {
+			Application.LoadLevel("Feedback");
+		}
 	}
 }
