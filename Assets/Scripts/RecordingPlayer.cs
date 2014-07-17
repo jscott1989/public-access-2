@@ -1,14 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class RecordingPlayer : MonoBehaviour {
 	Player mPlayingPlayer;
 	GameObject mPlayingScreen;
 
 	double mTime;
-	double mLastPlayedTime;
 
 	bool mLoop = false;
+
+	List<RecordingChange> mPlayedChanges = new List<RecordingChange>();
 
 	public double uTime {
 		get {
@@ -36,9 +38,11 @@ public class RecordingPlayer : MonoBehaviour {
 		}
 		// TODO: Stop all sounds, etc.
 
+		mPlayedChanges.Clear ();
+
 		// Reset the time
 		mTime = 0;
-		mLastPlayedTime = -1;
+
 	}
 	
 	/**
@@ -52,11 +56,9 @@ public class RecordingPlayer : MonoBehaviour {
 
 	void PlayToCurrentTime() {
 		foreach(RecordingChange rc in mPlayingPlayer.uRecordingChanges) {
-			if (rc.uTime > mTime) {
-				mLastPlayedTime = mTime;
-				return;
-			} else if (rc.uTime > mLastPlayedTime) {
+			if (rc.uTime < mTime && !mPlayedChanges.Contains(rc)) {
 				// Needs activated
+				mPlayedChanges.Add (rc);
 				rc.run (mPlayingScreen);
 			}
 		}

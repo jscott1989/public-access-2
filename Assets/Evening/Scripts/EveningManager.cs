@@ -34,10 +34,6 @@ public class EveningManager : SceneManager {
 		mRecordingPlayer.Play(mNetworkManager.players[watchingPlayerNumber], mScreen);
 	}
 
-	public void Jump() {
-		mRecordingPlayer.Jump (10);
-	}
-
 	public void ChannelUp() {
 		watchingPlayerNumber += 1;
 		if (watchingPlayerNumber >= mNetworkManager.players.Length) {

@@ -19,6 +19,7 @@ public class Recorder : MonoBehaviour {
 	public void StartRecording(Player pPlayer, GameObject pScreen) {
 		mTime = 0;
 		mKnownPropIDs = new string[0];
+		pPlayer.uRecordingChanges.Clear ();
 		mRecordingPlayer = pPlayer;
 		mRecordingScreen = pScreen;
 	}

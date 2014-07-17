@@ -24,7 +24,7 @@ public class InstantiationChange : RecordingChange {
 	GameObject mPlayingPropPrefab;
 
 	public InstantiationChange(String pTime, string pPropID, string pID, string pNewX, string pNewY) {
-		Debug.Log("INSIDE THE CHANGE");
+		uTime = Convert.ToDouble (pTime);
 		mPropID = pPropID;
 		mID = pID;
 		mNewX = pNewX;
@@ -33,8 +33,6 @@ public class InstantiationChange : RecordingChange {
 	}
 
 	public override void run(GameObject pScreen) {
-		// TODO: Instantiate the object in pScreen
-		Debug.Log("Create " + mPropID + "(" + mID + ") at " + mNewX + "," + mNewY);
 		GameObject g = (GameObject) GameObject.Instantiate(mPlayingPropPrefab, Vector3.zero, Quaternion.identity);
 		g.transform.parent = pScreen.transform;
 
