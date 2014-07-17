@@ -9,7 +9,7 @@ public class RecordingPlayer : MonoBehaviour {
 	double mTime;
 
 	bool mLoop = false;
-
+	bool mIsPaused = false;
 	List<RecordingChange> mPlayedChanges = new List<RecordingChange>();
 
 	public double uTime {
@@ -27,6 +27,15 @@ public class RecordingPlayer : MonoBehaviour {
 		mLoop = uLoop;
 		mPlayingPlayer = pPlayer;
 	}
+
+	public void Pause() {
+		mIsPaused = true;
+	}
+
+	public void Continue() {
+		mIsPaused = false;
+	}
+
 
 	/**
 	 * Clear the screen
@@ -50,8 +59,8 @@ public class RecordingPlayer : MonoBehaviour {
 	 */
 	public void Jump(float pTime) {
 		Reset ();
-//		mTime = pTime;
-//		PlayToCurrentTime();
+		mTime = pTime;
+		PlayToCurrentTime();
 	}
 
 	void PlayToCurrentTime() {
@@ -65,7 +74,7 @@ public class RecordingPlayer : MonoBehaviour {
 	}
 
 	void Update() {
-		if (mPlayingPlayer != null) {
+		if (mPlayingPlayer != null && !mIsPaused) {
 			// We're playing
 			mTime += Time.deltaTime;
 			if (mTime > Game.RECORDING_COUNTDOWN) {

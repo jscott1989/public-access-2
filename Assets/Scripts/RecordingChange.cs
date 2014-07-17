@@ -41,6 +41,7 @@ public class InstantiationChange : RecordingChange {
 		sprite.Position = new Vector2(float.Parse(mNewX), float.Parse (mNewY));
 		PlayingProp r = (PlayingProp)g.GetComponent (typeof(PlayingProp));
 		r.uID = mID;
+		sprite.enabled = true;
 	}
 }
 
