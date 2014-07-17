@@ -31,6 +31,11 @@ public class FeedbackManager : SceneManager {
 			}
 		}
 
+		int[] data = new int[]{1,4,5,2,6,3,1,7,4,7,8,10,3,4,5,6,3,7,3,10,0,1,1,0,5,3,6,4,7,3};
+
+		// First push the calculated viewers onto the chart
+		mViewerChart.UpdateChart (10, data);
+
 		// If it's day 1 show an introduction
 		if (mNetworkManager.myPlayer.uDay == 1) {
 			string[] dialogue = new string[] {
@@ -79,6 +84,16 @@ public class FeedbackManager : SceneManager {
 			// Everyone is ready, let's move to the next scene
 			networkView.RPC ("MoveToNextScene", RPCMode.All);
 		}
+	}
+
+	public void ReadyButtonPressed() {
+		// Once ready is pressed we need to block the rest of the scene, so we'll show a cancellable dialogue
+		Action readyCancelled =
+		() => {
+			mNetworkManager.myPlayer.networkView.RPC("SetReady", RPCMode.All, false);
+		};
+		mDialogueManager.StartDialogue ("Waiting for other players...", readyCancelled, "Cancel");
+		mNetworkManager.myPlayer.networkView.RPC("SetReady", RPCMode.All, true);
 	}
 
 	[RPC] public void MoveToNextScene() {
