@@ -22,6 +22,18 @@ public class AfternoonManager : SceneManager {
 		}
 	}
 
+	public string uShowTitle {
+		get {
+			return mNetworkManager.myPlayer.uShowName;
+		}
+	}
+	
+	public string uShowDescription {
+		get {
+			return mNetworkManager.myPlayer.uTheme;
+		}
+	}
+
 	void Awake() {
 		mNetworkManager = (NetworkManager) FindObjectOfType(typeof(NetworkManager));
 		mDialogueManager = (DialogueManager) FindObjectOfType(typeof(DialogueManager));
