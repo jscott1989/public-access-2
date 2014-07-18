@@ -5,6 +5,7 @@ using System.Collections;
 public class MorningManager : SceneManager {
 	NetworkManager mNetworkManager;
 	DialogueManager mDialogueManager;
+	QuestionPanel mQuestionPanel;
 	Game mGame;
 
 	string[] mGoodDialogues = new string[]{
@@ -23,9 +24,10 @@ public class MorningManager : SceneManager {
 	};
 
 	void Awake() {
-		mNetworkManager = (NetworkManager)FindObjectOfType (typeof(NetworkManager));
-		mDialogueManager = (DialogueManager)FindObjectOfType (typeof(DialogueManager));
-		mGame = (Game)FindObjectOfType(typeof(Game));
+		mNetworkManager = FindObjectOfType<NetworkManager>();
+		mDialogueManager = FindObjectOfType<DialogueManager>();
+		mQuestionPanel = FindObjectOfType<QuestionPanel>();
+		mGame = FindObjectOfType<Game>();
 	}
 
 	void Start () {
@@ -56,23 +58,28 @@ public class MorningManager : SceneManager {
 
 			Action day1DialogueFinished =
 			() => {
-				mNetworkManager.myPlayer.networkView.RPC ("SetShowName", RPCMode.All, "TempShowName");
-				mDialogueManager.StartDialogue("Waiting for other players to continue");
-				mNetworkManager.myPlayer.networkView.RPC("SetReady", RPCMode.All, true);
-			};
+				Action<string> showNameSelected =
+					(string pShowName) => {
+						mNetworkManager.myPlayer.networkView.RPC ("SetShowName", RPCMode.All, pShowName);
+						mDialogueManager.StartDialogue("Waiting for other players to continue");
+						mNetworkManager.myPlayer.networkView.RPC("SetReady", RPCMode.All, true);
+				};
 
-			// TODO: Add the input for the show name
+				mQuestionPanel.AskQuestion ("The show will be \"" + mNetworkManager.myPlayer.uTheme + "\"\n\nWhat shall we call the new show?", showNameSelected);
+
+			};
 
 			string[] day1SecondDialogue = new string[]{
-				"Good morning (player's name)!",
+				"Good morning " + mNetworkManager.myPlayer.uName + "!",
 				"Listen... I've been meaning to talk to you",
-				"You see, things aren't going so great at (station name)",
+				"You see, things aren't going so great at " + mNetworkManager.myPlayer.uSelectedStation.uName,
 				"(other station name) are killing us in the ratings",
 				"The bosses... they wanted to let you go... (old tv theme) just isn't doing it any more",
-				"We're trying to recreate (station name) to be new, exciting, vibrant",
+				"We're trying to recreate " + mNetworkManager.myPlayer.uSelectedStation.uName + " to be new, exciting, vibrant",
 				"You've got one week to turn it around - and we're giving you a new show to run",
-				"Our market research suggests that (theme) would really be a big hit with modern audiences",
+				"Our market research suggests that " + mNetworkManager.myPlayer.uTheme + " would really be a big hit with modern audiences",
 			};
+
 			
 			mDialogueManager.StartDialogue(day1SecondDialogue, day1DialogueFinished);
 		};
