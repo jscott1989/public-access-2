@@ -90,6 +90,8 @@ public class ViewerChart : MonoBehaviour {
 
 		for (int i = 0; i < Game.RECORDING_COUNTDOWN; i++) {
 			l[i].Texture = GetTexture(pNumberOfPlayers, data[i]);
+			dfLabel label = l[i].gameObject.GetComponentInChildren<dfLabel>();
+			label.Text = data[i].ToString();
 		}
 	}
 }
