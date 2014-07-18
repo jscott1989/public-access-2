@@ -47,7 +47,7 @@ public class MorningManager : SceneManager {
 
 	void FirstDay() {
 		string[] day1FirstDialogue = new string[]{
-			"This is (station name). The public access TV station you've worked at for several years",
+			"This is " + mNetworkManager.myPlayer.uSelectedStation.uName + ". The public access TV station you've worked at for several years",
 			"Here comes your boss, (boss' name)"
 		};
 

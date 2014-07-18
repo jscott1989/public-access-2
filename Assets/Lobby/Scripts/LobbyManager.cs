@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class LobbyManager : SceneManager {
 	GameObject mMyPlayerInfoPrefab;
@@ -51,6 +53,12 @@ public class LobbyManager : SceneManager {
 		dfLabel nameLabel = (dfLabel)playerInfo.GetComponentsInChildren (typeof(dfLabel))[0];
 		dfPropertyBinding.Bind (nameLabel.gameObject, pPlayer,"uName", nameLabel,"Text");
 
+		dfLabel stationLabel = (dfLabel)playerInfo.GetComponentsInChildren (typeof(dfLabel))[1];
+		dfPropertyBinding.Bind (stationLabel.gameObject, pPlayer,"uStationName", stationLabel,"Text");
+
+		dfTextureSprite stationLogo = playerInfo.GetComponentsInChildren<dfTextureSprite>()[1];
+		dfPropertyBinding.Bind (stationLogo.gameObject, pPlayer,"uStationLogo", stationLogo,"Texture");
+
 		PlayerInfoBox p = (PlayerInfoBox)playerInfo.GetComponent (typeof(PlayerInfoBox));
 		p.uID = pPlayer.uID;
 
@@ -68,6 +76,15 @@ public class LobbyManager : SceneManager {
 		dfTextbox myNameTextBox = (dfTextbox)playerInfo.GetComponentInChildren (typeof(dfTextbox));
 		myNameTextBox.Text = pPlayer.uName;
 		dfPropertyBinding.Bind (myNameTextBox.gameObject, myNameTextBox,"Text",pPlayer,"uName");
+
+		dfDropdown myStation = (dfDropdown)playerInfo.GetComponentInChildren (typeof(dfDropdown));
+
+		dfEventDrivenPropertyBinding.Bind (myStation.gameObject, pPlayer, "uAvailableStationNames", "AvailableStationsHaveChanged", myStation, "Items", null);
+
+		dfPropertyBinding.Bind (myStation.gameObject, myStation, "SelectedIndex", pPlayer, "uSelectedStationIndex");
+
+		dfTextureSprite stationLogo = playerInfo.GetComponentsInChildren<dfTextureSprite>()[1];
+		dfPropertyBinding.Bind (stationLogo.gameObject, pPlayer,"uStationLogo", stationLogo,"Texture");
 
 		dfTextureSprite d = (dfTextureSprite) playerInfo.GetComponentsInChildren (typeof(dfTextureSprite))[0];
 		dfPropertyBinding.Bind (d.gameObject, pPlayer,"uReadyTexture",d,"Texture");
@@ -198,7 +215,12 @@ public class LobbyManager : SceneManager {
 		networkView.RPC ("StartingGame", RPCMode.All);
 		Player[] players = mNetworkManager.players;
 		GameSetup gameSetup = GameSetup.generate (players.Length);
+		System.Random r = new System.Random();
 		for (var i = 0; i < players.Length; i++) {
+			if (players[i].uSelectedStation.uID == Game.RANDOM_STATION_ID) {
+				// We need to pick an available station at random for this user
+				players[i].networkView.RPC ("SetSelectedStation", RPCMode.All, players[i].uAvailableStations[r.Next (players[i].uAvailableStations.Count())].uID);
+			}
 			players[i].networkView.RPC ("SetGameInfo",RPCMode.All, gameSetup.uThemes[i], gameSetup.uNeeds[i], RPCEncoder.Encode(gameSetup.uAvailableProps));
 		}
 		networkView.RPC ("StartGame", RPCMode.All);

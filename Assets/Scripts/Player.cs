@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
@@ -9,6 +10,9 @@ using System.Reflection;
  * to interact with the player
  */
 public class Player : MonoBehaviour {
+
+	public delegate void AvailableStationsHaveChangedEvent();
+	public event AvailableStationsHaveChangedEvent AvailableStationsHaveChanged;
 
 	// The player's ID
 	public int uID;
@@ -29,6 +33,8 @@ public class Player : MonoBehaviour {
 	Texture2D mNotReadyTexture;
 
 	public List<RecordingChange> uRecordingChanges = new List<RecordingChange>();
+
+	NetworkManager mNetworkManager;
 
 	/**
 	 * I don't think this should be here - as it's lobby specific - but I'm not sure 
@@ -51,6 +57,58 @@ public class Player : MonoBehaviour {
 		}
 		set {
 			SetInfo(uID, value);
+		}
+	}
+
+	public Station uSelectedStation;
+
+	public string uStationName {
+		get {
+			return uSelectedStation.uName;
+		}
+	}
+
+	public Texture2D uStationLogo {
+		get {
+			return uSelectedStation.uLogo;
+		}
+	}
+
+	public Station[] uAvailableStations {
+		get {
+			// First list stations which are already taken
+			IEnumerable<string> takenStationIDS = (from player in mNetworkManager.players where (player.uID != mNetworkManager.myPlayer.uID && player.uSelectedStation.uID != Game.RANDOM_STATION_ID) select player.uSelectedStation.uID);
+			return (from station in mGame.uStations where !(takenStationIDS.Contains(station.uID)) select station).ToArray ();
+		}
+	}
+
+	public string[] uAvailableStationNames {
+		get {
+			return (from station in uAvailableStations select station.uName).ToArray();
+		}
+	}
+
+	public int uSelectedStationIndex {
+		get {
+			Station[] s = uAvailableStations;
+			for(int i = 0; i < s.Count(); i++) {
+				if (s[i].uID == uSelectedStation.uID) {
+					return i;
+				}
+			}
+			return 0;
+		}
+		set {
+			uSelectedStation = uAvailableStations[value];
+			networkView.RPC ("SetSelectedStation", RPCMode.Others, uSelectedStation.uID);
+		}
+	}
+
+	// This is called over the network when another player chooses a station
+	[RPC] public void SetSelectedStation(string pSelectedStationID) {
+		uSelectedStation = mGame.uStationsByID[pSelectedStationID];
+		if (mNetworkManager.myPlayer.AvailableStationsHaveChanged != null) {
+			mNetworkManager.myPlayer.AvailableStationsHaveChanged();
 		}
 	}
 
@@ -97,6 +155,9 @@ public class Player : MonoBehaviour {
 		mReadyTexture = (Texture2D)Resources.Load ("Lobby/Images/ready");
 		mNotReadyTexture = (Texture2D)Resources.Load ("Lobby/Images/not_ready");
 		mGame = (Game)FindObjectOfType(typeof(Game));
+		mNetworkManager = FindObjectOfType<NetworkManager>();
+
+		uSelectedStation = mGame.uStationsByID[Game.RANDOM_STATION_ID];
 
 		// Ensure we configure ourselves for the level we're created on
 		OnLevelWasLoaded (0);
@@ -124,6 +185,7 @@ public class Player : MonoBehaviour {
 		uID = pID;
 		_name = pName;
 
+
 		if (networkView.isMine) {
 			networkView.RPC ("SetInfo", RPCMode.Others, pID, pName);
 		}
@@ -134,9 +196,8 @@ public class Player : MonoBehaviour {
 	 */
 	public void SendInfoTo(NetworkPlayer pPlayer) {
 		networkView.RPC ("SetInfo", pPlayer, uID, uName);
+		networkView.RPC ("SetSelectedStation", pPlayer, uSelectedStation.uID);
 	}
-
-
 
 	/**
 	 * Ensure that I have at least X props (so that the recording stage is playable
@@ -155,8 +216,6 @@ public class Player : MonoBehaviour {
 				break;
 			}
 		}
-
-		print (propAvailable);
 
 		if (!propAvailable) {
 			return;

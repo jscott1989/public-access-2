@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 /**
  * This class sets up and then maintains the server/client
@@ -39,26 +40,37 @@ public class NetworkManager : MonoBehaviour {
 
 	public Player[] players {
 		get {
-			return (Player[])GameObject.FindObjectsOfType (typeof(Player));
+			return GameObject.FindObjectsOfType<Player>();
 		}
 	}
 
+
+	Player _myPlayer = null;
 	public Player myPlayer {
 		get {
+			if (_myPlayer != null) {
+				return _myPlayer;
+			}
 			foreach (Player player in players) {
 				if (player.uID == mMyClientID) {
-					return player;
+					_myPlayer = player;
+					return _myPlayer;
 				}
 			}
 			return null;
 		}
 	}
 
+	Dictionary<int, Player> playerByID = new Dictionary<int, Player>();
 	public Player GetPlayerWithID(int pID) {
+		if (playerByID.ContainsKey (pID)) {
+			return playerByID[pID];
+		}
 		foreach (Player player in players) {
-			if (player.uID == pID) {
-				return player;
-			}
+			playerByID[player.uID] = player;
+		}
+		if (playerByID.ContainsKey (pID)) {
+			return playerByID[pID];
 		}
 		return null;
 	}
