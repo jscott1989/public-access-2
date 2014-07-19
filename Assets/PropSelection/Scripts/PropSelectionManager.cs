@@ -31,6 +31,9 @@ public class PropSelectionManager : SceneManager {
 
 	public string uShowTitle {
 		get {
+			if (mNetworkManager == null) {
+				return "";
+			}
 			return mNetworkManager.myPlayer.uShowName;
 		}
 	}

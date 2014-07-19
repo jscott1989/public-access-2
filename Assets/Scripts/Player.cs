@@ -26,6 +26,8 @@ public class Player : MonoBehaviour {
 
 	public string uShowName = "";
 
+	public int uLastWatchedChannel = -1;
+
 	public Game mGame;
 	public Dictionary<string, PurchasedProp> uPurchasedProps = new Dictionary<string, PurchasedProp>();
 

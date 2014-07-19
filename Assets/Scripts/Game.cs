@@ -15,8 +15,10 @@ public class Game : MonoBehaviour {
 	public const int PROP_SELECTION_COUNTDOWN = 10; // 60
 	public const int PREPARING_COUNTDOWN = 5; // 30
 	public const int RECORDING_COUNTDOWN = 30; // 30
+	public const int EVENING_PREPARING_COUNTDOWN = 5;
 	public const int FEEDBACK_COUNTDOWN = 60; // 60
 	public const int NUMBER_OF_DAYS = 5;
+	public const int CHANNEL_INFORMATION_COUNTDOWN = 2;
 
 
 	public const string RANDOM_STATION_ID = "random";

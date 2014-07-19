@@ -24,12 +24,18 @@ public class AfternoonManager : SceneManager {
 
 	public string uShowTitle {
 		get {
+			if (mNetworkManager == null) {
+				return "";
+			}
 			return mNetworkManager.myPlayer.uShowName;
 		}
 	}
 	
 	public string uShowDescription {
 		get {
+			if (mNetworkManager == null) {
+				return "";
+			}
 			return mNetworkManager.myPlayer.uTheme;
 		}
 	}

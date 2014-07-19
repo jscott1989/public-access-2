@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -35,12 +36,43 @@ public class NetworkManager : MonoBehaviour {
 	private Action<HostData[]> mRefreshHostCallback;
 
 	private SceneManager mSceneManager;
+	private Game mGame;
 
 	public int mMyClientID;
 
 	public Player[] players {
 		get {
 			return GameObject.FindObjectsOfType<Player>();
+		}
+	}
+
+	private Player[] _playersOrderedByStation;
+
+	/**
+	 * This caches the players ordered by the station they selected
+	 * this ensures that every player will be ordered in the same way on all clients
+	 */
+	public Player[] playersOrderedByStation {
+		get {
+			if (_playersOrderedByStation != null) {
+				return _playersOrderedByStation;
+			}
+			List<Player> p = new List<Player>();
+
+			Dictionary<Station, Player> stationToPlayer = new Dictionary<Station, Player>();
+
+			foreach(Player pp in players) {
+				stationToPlayer[pp.uSelectedStation] = pp;
+			}
+
+			foreach(Station s in mGame.uStations) {
+				if (stationToPlayer.ContainsKey(s)) {
+					p.Add (stationToPlayer[s]);
+				}
+			}
+
+			_playersOrderedByStation = p.ToArray ();
+			return _playersOrderedByStation;
 		}
 	}
 
@@ -82,8 +114,9 @@ public class NetworkManager : MonoBehaviour {
 //		MasterServer.ipAddress = "127.0.0.1";
 //		MasterServer.port = 23466;
 
-		mErrorPanel = (ErrorPanel)GameObject.FindObjectOfType (typeof(ErrorPanel));
-		mPlayerPrefab = (GameObject)Resources.Load ("Prefabs/Player");
+		mErrorPanel = GameObject.FindObjectOfType<ErrorPanel>();
+		mPlayerPrefab = Resources.Load<GameObject>("Prefabs/Player");
+		mGame = FindObjectOfType<Game>();
 		/**
 		 * Persist the NetworkManager between scenes
 		 */
