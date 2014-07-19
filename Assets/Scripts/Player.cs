@@ -273,4 +273,19 @@ public class Player : MonoBehaviour {
 	public void NextDay() {
 		uDay += 1;
 	}
+
+	List<WatchedStationAction> mWatchedStationActions = new List<WatchedStationAction>();
+
+	[RPC] public void StartWatchingStation(string pPlayerID, string pStartTime) {
+		// TODO: Clear on day 2
+
+		if (mWatchedStationActions.Count > 0) {
+			mWatchedStationActions.Last().uEndTime = float.Parse(pStartTime);
+		}
+
+		mWatchedStationActions.Add (new WatchedStationAction(mNetworkManager.GetPlayerWithID(int.Parse(pPlayerID)), float.Parse(pStartTime)));
+		if (networkView.isMine) {
+			networkView.RPC ("StartWatchingStation", RPCMode.Others, pPlayerID, pStartTime);
+		}
+	}
 }

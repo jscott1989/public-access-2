@@ -13,6 +13,7 @@ public class EveningManager : SceneManager {
 	// The player who's station we are watching
 	int mWatchingPlayer = 0;
 	float mInformationCountdown = -1;
+	float mTime = 0;
 
 	const int PREPARING = 0;
 	const int PLAYING = 1;
@@ -58,7 +59,9 @@ public class EveningManager : SceneManager {
 	}
 
 	void StartPlaying() {
+		mTime = 0;
 		stage = PLAYING;
+		mRecordingPlayer.Play(mNetworkManager.playersOrderedByStation[mWatchingPlayer], mScreen);
 		Action eveningFinished = 
 		() => {
 			mNetworkManager.myPlayer.NextDay ();
@@ -76,6 +79,9 @@ public class EveningManager : SceneManager {
 		uStationInformationIsVisible = true;
 		mWatchingPlayer = pChannelNumber;
 		mInformationCountdown = Game.CHANNEL_INFORMATION_COUNTDOWN;
+		mRecordingPlayer.Play(mNetworkManager.playersOrderedByStation[mWatchingPlayer], mScreen);
+		mRecordingPlayer.Jump(mTime);
+		mNetworkManager.myPlayer.StartWatchingStation(mNetworkManager.playersOrderedByStation[mWatchingPlayer].uID.ToString(), mTime.ToString ());
 	}
 
 	public void ChannelUp() {
@@ -104,7 +110,6 @@ public class EveningManager : SceneManager {
 			ChannelDown();
 		}
 
-		print(mInformationCountdown);
 		if (mInformationCountdown != -1) {
 			mInformationCountdown -= Time.deltaTime;
 
@@ -114,6 +119,9 @@ public class EveningManager : SceneManager {
 			}
 		}
 
+		if (stage == PLAYING) {
+			mTime += Time.deltaTime;
+		}
 	}
 
 	public bool uStationInformationIsVisible;
