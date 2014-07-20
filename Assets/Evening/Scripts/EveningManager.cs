@@ -22,6 +22,26 @@ public class EveningManager : SceneManager {
 
 	int stage = 0;
 
+	public int uTodaysScore {
+		get {
+			if (mNetworkManager == null) {
+				return 0;
+			} else if (mNetworkManager.myPlayer.uDailyWatchingScore.Count == 0) {
+				return 0;
+			}
+			return mNetworkManager.myPlayer.uDailyWatchingScore.Last ();
+		}
+	}
+
+	public string uTodaysNeeds {
+		get {
+			if (mNetworkManager == null) {
+				return "";
+			}
+			return mNetworkManager.myPlayer.uNeed;
+		}
+	}
+
 	void Awake() {
 		mNetworkManager = (NetworkManager) FindObjectOfType(typeof(NetworkManager));
 		mRecordingPlayer = (RecordingPlayer) FindObjectOfType(typeof(RecordingPlayer));
