@@ -4,4 +4,5 @@ using System.Collections;
 public class PlayingProp : MonoBehaviour {
 	
 	public string uID;
+	public Prop uProp;
 }

@@ -152,10 +152,10 @@ public class EveningManager : SceneManager {
 				mCheckScoreTimeout = 0;
 
 				// Check what we can give score for
-				foreach(Prop p in mScreen.GetComponentsInChildren<PlayingProp>()) {
+				foreach(PlayingProp p in mScreen.GetComponentsInChildren<PlayingProp>()) {
 					// TODO: First check that they are actually visible on screen at all
 					// but for now let's just give points for all of them
-					if (p.uTags.Contains(mNetworkManager.myPlayer.uNeed)) {
+					if (p.uProp.uTags.Contains(mNetworkManager.myPlayer.uNeed)) {
 						AddScore(mNetworkManager.myPlayer.uNeed);
 					}
 				}
@@ -168,7 +168,7 @@ public class EveningManager : SceneManager {
 	 */
 	void AddScore(string need) {
 		// TODO: Show some output that the need has been met
-		mNetworkManager.myPlayer.uDailyWatchingScore.Last () += 1;
+		mNetworkManager.myPlayer.uDailyWatchingScore[mNetworkManager.myPlayer.uDailyWatchingScore.Count - 1] += 1;
 	}
 
 	public bool uStationInformationIsVisible;
