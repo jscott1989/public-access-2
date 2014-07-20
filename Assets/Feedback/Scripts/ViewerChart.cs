@@ -55,29 +55,38 @@ public class ViewerChart : MonoBehaviour {
 		float a = pAmount;
 
 		string r = "";
+		// TODO: This divison might have problems with float precision
 		if (pAmount == 0) {
 			// Return 0
 			r = "0";
-		} else if (pAmount == 10) {
+		} else if (a == n) {
 			// Return 1
 			r = "1";
 		} else if (a / n == 2) {
 			// Return 10_5
 			r = "10_5";
 		} else if (a / n == (1 / 3)) {
-			r = "12_4"; // TODO: Create this image
+			r = "12_4";
 		} else if (a / n == (2 / 3)) {
-			r = "12_8"; // TODO: Create this image
+			r = "12_8";
 		} else if (a / n == (1 / 4)) {
-			r = "12_3"; // TODO: Create this image
+			r = "12_3";
 		} else if (a / n == (3 / 4)) {
-			r = "12_9"; // TODO: Create this image
+			r = "12_9";
 		} else if (a / n == (1 / 6)) {
-			r = "12_2"; // TODO: Create this image
+			r = "12_2";
 		} else if (a / n == (5 / 6)) {
-			r = "12_10"; // TODO: Create this image
+			r = "12_10";
+		} else if (a / n == (1 / 5)) {
+			r = "10_2";
+		} else if (a / n == (2 / 5)) {
+			r = "10_4";
+		} else if (a / n == (3 / 5)) {
+			r = "10_6";
+		} else if (a / n == (4 / 5)) {
+			r = "10_8";
 		} else {
-			// TODO: Add 1/5, 2/5, 3/5, 4/5, 1/7, 2/7, 3/7, 4/7, 5/7, 6/7, 1/8, 3/8, 5/8, 7/8, 1/8, 1/9, 2/9, 4/9, 5/9, 7/9, 8/9
+			// TODO: 1/8, 3/8, 5/8, 7/8, 1/8, 1/9, 2/9, 4/9, 5/9, 7/9, 8/9
 			r = pNumberOfPlayers.ToString () + "_" + pAmount.ToString ();
 		}
 		return (Texture2D) Resources.Load ("Feedback/Images/Chart/" + r);
