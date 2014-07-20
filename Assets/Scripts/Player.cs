@@ -28,6 +28,8 @@ public class Player : MonoBehaviour {
 
 	public int uLastWatchedChannel = -1;
 
+	public List<int> uDailyCreatorScore = new List<int>();
+
 	public Game mGame;
 	public Dictionary<string, PurchasedProp> uPurchasedProps = new Dictionary<string, PurchasedProp>();
 
@@ -274,16 +276,19 @@ public class Player : MonoBehaviour {
 		uDay += 1;
 	}
 
-	List<WatchedStationAction> mWatchedStationActions = new List<WatchedStationAction>();
+	public List<WatchedStationAction> uWatchedStationActions = new List<WatchedStationAction>();
 
 	[RPC] public void StartWatchingStation(string pPlayerID, string pStartTime) {
 		// TODO: Clear on day 2
 
-		if (mWatchedStationActions.Count > 0) {
-			mWatchedStationActions.Last().uEndTime = float.Parse(pStartTime);
+		if (uWatchedStationActions.Count > 0) {
+			uWatchedStationActions.Last().uEndTime = float.Parse(pStartTime);
 		}
 
-		mWatchedStationActions.Add (new WatchedStationAction(mNetworkManager.GetPlayerWithID(int.Parse(pPlayerID)), float.Parse(pStartTime)));
+		Player player = mNetworkManager.GetPlayerWithID(int.Parse(pPlayerID));
+		float time = float.Parse(pStartTime);
+		WatchedStationAction wsa = new WatchedStationAction(player, time);
+		uWatchedStationActions.Add (wsa);
 		if (networkView.isMine) {
 			networkView.RPC ("StartWatchingStation", RPCMode.Others, pPlayerID, pStartTime);
 		}

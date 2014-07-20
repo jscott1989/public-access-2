@@ -14,6 +14,7 @@ public class EveningManager : SceneManager {
 	int mWatchingPlayer = 0;
 	float mInformationCountdown = -1;
 	float mTime = 0;
+	int mMyChannel = 0;
 
 	const int PREPARING = 0;
 	const int PLAYING = 1;
@@ -33,13 +34,13 @@ public class EveningManager : SceneManager {
 
 		if (mNetworkManager.myPlayer.uLastWatchedChannel < 0) {
 			// This is our first time in Evening, so we need to decide which channel to start with
-			int myChannel = Array.IndexOf (mNetworkManager.playersOrderedByStation, mNetworkManager.myPlayer);
-			if (myChannel == 0) {
+			mMyChannel = Array.IndexOf (mNetworkManager.playersOrderedByStation, mNetworkManager.myPlayer);
+			if (mMyChannel == 0) {
 				// If I'm the first channel then we should start on the last channel
 				StartPreparing(mNetworkManager.players.Length - 1);
 			} else {
 				// Otherwise start on myChannel - 1
-				StartPreparing(myChannel - 1);
+				StartPreparing(mMyChannel - 1);
 			}
 		}
 	}
@@ -85,21 +86,31 @@ public class EveningManager : SceneManager {
 	}
 
 	public void ChannelUp() {
+		int nextChannel;
 		if (mWatchingPlayer == (mNetworkManager.players.Length - 1)) {
 			// Move to 0
-			ShowChannel(0);
+			nextChannel = 0;
 		} else {
-			ShowChannel(mWatchingPlayer + 1);
+			nextChannel = mWatchingPlayer + 1;
 		}
+//		if (nextChannel == mMyChannel) {
+//			nextChannel += 1;
+//		}
+		ShowChannel(nextChannel);
 	}
 
 	public void ChannelDown() {
+		int nextChannel;
 		if (mWatchingPlayer == 0) {
 			// Move to max
-			ShowChannel((mNetworkManager.players.Length - 1));
+			nextChannel = mNetworkManager.players.Length - 1;
 		} else {
-			ShowChannel(mWatchingPlayer - 1);
+			nextChannel = mWatchingPlayer - 1;
 		}
+//		if (nextChannel == mMyChannel) {
+//			nextChannel -= 1;
+//		}
+		ShowChannel(nextChannel);
 	}
 
 	void Update() {

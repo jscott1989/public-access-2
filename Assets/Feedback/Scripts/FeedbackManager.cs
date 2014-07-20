@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections;
+using System.Linq;
 
 public class FeedbackManager : SceneManager {
 
@@ -22,6 +23,29 @@ public class FeedbackManager : SceneManager {
 		mViewerChart = FindObjectOfType<ViewerChart> ();
 	}
 
+	int[] GenerateViewerData() {
+		int[] viewerData = new int[]{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+		foreach(Player p in mNetworkManager.players) {
+			// TODO: We can ignore our own player
+			foreach(WatchedStationAction a in p.uWatchedStationActions) {
+				if (a.uPlayer == mNetworkManager.myPlayer) {
+					float endTime = a.uEndTime;
+					if (endTime == -1) {
+						endTime = 31;
+					}
+					// Check each second if it falls inside the watched time
+					for(int i = 0; i < 30; i++) {
+						if ((i >= a.uStartTime && i <= endTime) && (i + 1 >= a.uStartTime && i <= endTime)) {
+							// This will show everyone who watched for at least one second
+							viewerData[i] += 1;
+						}
+					}
+				}
+			}
+		}
+
+		return viewerData;
+	}
 
 	void Start () {
 		// First we need to set everyone to "Not Ready"
@@ -31,10 +55,14 @@ public class FeedbackManager : SceneManager {
 			}
 		}
 
-		int[] data = new int[]{1,4,5,2,6,3,1,7,4,7,8,10,3,4,5,6,3,7,3,10,0,1,1,0,5,3,6,4,7,3};
+		int[] data = GenerateViewerData();
+
+		// Add today's total viewer seconds to the score record
+		// TODO: This isn't a very good scoring mechanism - replace this with something more accurate
+		mNetworkManager.myPlayer.uDailyCreatorScore.Add (data.Sum());
 
 		// First push the calculated viewers onto the chart
-		mViewerChart.UpdateChart (10, data);
+		mViewerChart.UpdateChart (mNetworkManager.players.Length, data); // TODO: put Length - 1 when we ban people watching their own show
 
 		// If it's day 1 show an introduction
 		if (mNetworkManager.myPlayer.uDay == 1) {
