@@ -86,7 +86,6 @@ public class ViewerChart : MonoBehaviour {
 		} else if (a / n == (4 / 5)) {
 			r = "10_8";
 		} else {
-			// TODO: 1/8, 3/8, 5/8, 7/8, 1/8, 1/9, 2/9, 4/9, 5/9, 7/9, 8/9
 			r = pNumberOfPlayers.ToString () + "_" + pAmount.ToString ();
 		}
 		return (Texture2D) Resources.Load ("Feedback/Images/Chart/" + r);

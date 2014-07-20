@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections;
+using System.Linq;
 
 public class EveningManager : SceneManager {
 
@@ -60,6 +61,7 @@ public class EveningManager : SceneManager {
 	}
 
 	void StartPlaying() {
+		mNetworkManager.myPlayer.uDailyWatchingScore.Add(0);
 		mTime = 0;
 		stage = PLAYING;
 		mRecordingPlayer.Play(mNetworkManager.playersOrderedByStation[mWatchingPlayer], mScreen);
@@ -132,7 +134,41 @@ public class EveningManager : SceneManager {
 
 		if (stage == PLAYING) {
 			mTime += Time.deltaTime;
+
+			CheckScore();
 		}
+	}
+
+	float mCheckScoreTimeout = 0;
+
+	/**
+	 * This will check what "needs" are currently active, and add appropriate scores for those present
+	 */
+	void CheckScore() {
+		if (stage == PLAYING) {
+			mCheckScoreTimeout += Time.deltaTime;
+
+			if (mCheckScoreTimeout >= Game.CHECKSCORE_TIMEOUT) {
+				mCheckScoreTimeout = 0;
+
+				// Check what we can give score for
+				foreach(Prop p in mScreen.GetComponentsInChildren<PlayingProp>()) {
+					// TODO: First check that they are actually visible on screen at all
+					// but for now let's just give points for all of them
+					if (p.uTags.Contains(mNetworkManager.myPlayer.uNeed)) {
+						AddScore(mNetworkManager.myPlayer.uNeed);
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Add to our viewer score for the given need
+	 */
+	void AddScore(string need) {
+		// TODO: Show some output that the need has been met
+		mNetworkManager.myPlayer.uDailyWatchingScore.Last () += 1;
 	}
 
 	public bool uStationInformationIsVisible;

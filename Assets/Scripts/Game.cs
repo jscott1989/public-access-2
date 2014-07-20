@@ -20,6 +20,8 @@ public class Game : MonoBehaviour {
 	public const int NUMBER_OF_DAYS = 5;
 	public const int CHANNEL_INFORMATION_COUNTDOWN = 2;
 
+	public const float CHECKSCORE_TIMEOUT = 0.1;
+
 
 	public const string RANDOM_STATION_ID = "random";
 

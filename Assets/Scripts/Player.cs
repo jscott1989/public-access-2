@@ -29,6 +29,7 @@ public class Player : MonoBehaviour {
 	public int uLastWatchedChannel = -1;
 
 	public List<int> uDailyCreatorScore = new List<int>();
+	public List<int> uDailyWatchingScore = new List<int>();
 
 	public Game mGame;
 	public Dictionary<string, PurchasedProp> uPurchasedProps = new Dictionary<string, PurchasedProp>();
