@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class WatchedStationAction : Object {
+public class WatchedStationAction {
 	public Player uPlayer;
 	public float uStartTime;
 	public float uEndTime;
