@@ -9,7 +9,7 @@ public class Game : MonoBehaviour {
 	public Dictionary<string, Prop> uProps = new Dictionary<string, Prop>();
 	public List<Station> uStations = new List<Station>();
 	public Dictionary<string, Station> uStationsByID = new Dictionary<string, Station>();
-	public static List<string> uTags = new List<string>();
+	public List<string> uTags = new List<string>();
 
 	// This means that a single "ready" is enough to move everyone on - just to hurry during testing
 	public const bool DEBUG_MODE = false;
