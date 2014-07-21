@@ -145,6 +145,6 @@ public class AfternoonManager : SceneManager {
 	 */
 	[RPC] void MoveToNextScene() {
 		mDialogueManager.EndDialogue();
-		Application.LoadLevel ("Evening");
+		mNetworkManager.LoadLevel ("Evening");
 	}
 }

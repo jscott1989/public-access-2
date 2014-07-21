@@ -108,12 +108,14 @@ public class NetworkManager : MonoBehaviour {
 	}
 	
 	ErrorPanel mErrorPanel;
+	DialogueManager mDialogueManager;
 
 	void Awake() {
 		// This is just for during testing - as the unity master server keeps banning me!
 //		MasterServer.ipAddress = "127.0.0.1";
 //		MasterServer.port = 23466;
 
+		mDialogueManager = GameObject.FindObjectOfType<DialogueManager>();
 		mErrorPanel = GameObject.FindObjectOfType<ErrorPanel>();
 		mPlayerPrefab = Resources.Load<GameObject>("Prefabs/Player");
 		mGame = FindObjectOfType<Game>();
@@ -244,13 +246,17 @@ public class NetworkManager : MonoBehaviour {
 				mErrorPanel.ShowError("You have been disconnected from the server.");
 			}
 		}
+		ReturnToMainMenu();
+	}
+
+	public void ReturnToMainMenu() {
 		foreach (Player player in players) {
 			Destroy (player.gameObject);
 		}
 		
 		Destroy (gameObject);
-
-		Application.LoadLevel ("MainMenu");
+		mDialogueManager.EndDialogue();
+		LoadLevel ("MainMenu");
 	}
 
 	void OnLevelWasLoaded(int level) {
@@ -275,5 +281,26 @@ public class NetworkManager : MonoBehaviour {
 			}
 		}
 		Network.Disconnect();
+	}
+
+	/**
+	 * This is used because if you don't reset the level prefix before loading a new scene
+	 * the RPC system gets confused and routes the RPCs all over the place
+	 * 
+	 * I ran into this problem earlier which led to some ugly code where I store game state
+	 * inside the players instead of the Game object
+	 * 
+	 * TODO: Go back and move stuff like the gameSetup to the Game object rather than
+	 * the players
+	 */
+	public void LoadLevel(string pLevelName) {
+		// Since we have all scenes let's just hardcode the possible level prefixes
+
+		string[] levels = new string[]{
+			"MainMenu", "Lobby", "Morning", "PropSelection", "Afternoon", "Evening", "Feedback", "EndOfGame"
+		};
+
+		Network.SetLevelPrefix(Array.IndexOf (levels, pLevelName));
+		Application.LoadLevel(pLevelName);
 	}
 }

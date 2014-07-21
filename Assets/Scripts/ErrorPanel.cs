@@ -12,8 +12,8 @@ public class ErrorPanel : MonoBehaviour {
 	Action mErrorCallback = null;
 	
 	void Awake () {
-		mPanel = (dfPanel)gameObject.GetComponent (typeof(dfPanel));
-		mErrorText = (dfLabel)gameObject.GetComponentInChildren (typeof(dfLabel));
+		mPanel = gameObject.GetComponent<dfPanel>();
+		mErrorText = gameObject.GetComponentsInChildren<dfLabel>()[1];
 		mPanel.enabled = false;
 		
 		/**

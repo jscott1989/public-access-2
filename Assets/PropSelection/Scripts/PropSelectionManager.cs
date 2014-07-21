@@ -251,6 +251,6 @@ public class PropSelectionManager : SceneManager {
 	 * Move to afternoon scene
 	 */
 	[RPC] void MoveToNextScene() {
-		Application.LoadLevel ("Afternoon");
+		mNetworkManager.LoadLevel ("Afternoon");
 	}
 }

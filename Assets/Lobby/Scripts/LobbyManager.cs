@@ -208,7 +208,7 @@ public class LobbyManager : SceneManager {
 	 */
 	[RPC] void StartGame() {
 		mLoadingPanel.HideAlert ();
-		Application.LoadLevel ("Morning");
+		mNetworkManager.LoadLevel ("Morning");
 	}
 
 	void ServerStartGame() {

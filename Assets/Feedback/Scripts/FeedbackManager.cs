@@ -126,6 +126,6 @@ public class FeedbackManager : SceneManager {
 
 	[RPC] public void MoveToNextScene() {
 		mDialogueManager.EndDialogue ();
-		Application.LoadLevel ("PropSelection");
+		mNetworkManager.LoadLevel ("PropSelection");
 	}
 }

@@ -90,9 +90,9 @@ public class EveningManager : SceneManager {
 			mNetworkManager.myPlayer.NextDay ();
 			if (mNetworkManager.myPlayer.uDay > Game.NUMBER_OF_DAYS) {
 				// Move to the end of game
-				Application.LoadLevel ("EndOfGame");
+				mNetworkManager.LoadLevel ("EndOfGame");
 			} else {
-				Application.LoadLevel ("Morning");
+				mNetworkManager.LoadLevel ("Morning");
 			}
 		};
 		mCountdown.StartCountdown(Game.RECORDING_COUNTDOWN, eveningFinished);

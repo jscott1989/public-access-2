@@ -65,6 +65,26 @@ public class Player : MonoBehaviour {
 		}
 	}
 
+	public Dictionary<string, int> uSpecialScores = new Dictionary<string, int>();
+
+	public int uOverallScore {
+		get {
+			return uCreatorScore + uWatcherScore;
+		}
+	}
+
+	public int uCreatorScore {
+		get {
+			return uDailyCreatorScore.Sum ();
+		}
+	}
+
+	public int uWatcherScore {
+		get {
+			return uDailyWatchingScore.Sum ();
+		}
+	}
+
 	public Station uSelectedStation;
 
 	public string uStationName {

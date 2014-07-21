@@ -161,9 +161,9 @@ public class MorningManager : SceneManager {
 	[RPC] void MoveToNextScene() {
 		mDialogueManager.EndDialogue();
 		if (mNetworkManager.myPlayer.uDay == 1) {
-			Application.LoadLevel ("PropSelection");
+			mNetworkManager.LoadLevel ("PropSelection");
 		} else {
-			Application.LoadLevel("Feedback");
+			mNetworkManager.LoadLevel("Feedback");
 		}
 	}
 }
