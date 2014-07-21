@@ -8,7 +8,7 @@ using System.Linq;
  * This represents a collection of props, themes, and needs which are balanced
  * to make the game interesting and winnable
  */
-public class GameSetup : Object {
+public class GameSetup : UnityEngine.Object {
 
 	public string[] uAvailableProps;
 	public string[] uThemes;
@@ -33,8 +33,8 @@ public class GameSetup : Object {
 
 		int numberOfTags = (pPlayers * Game.NUMBER_OF_DAYS) / 2;
 
-		Random rnd = new Random();
-		string[] tags = Game.uTags.OrderBy(x => rnd.Next()).Take(numberOfTags);
+		System.Random rnd = new System.Random();
+		string[] tags = Game.uTags.OrderBy(x => rnd.Next()).Take(numberOfTags).ToArray();
 
 		// From the tags array we will pull the needs and select appropriate props and themes
 
