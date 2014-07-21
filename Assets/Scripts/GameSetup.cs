@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +33,7 @@ public class GameSetup : Object {
 
 		int numberOfTags = (pPlayers * Game.NUMBER_OF_DAYS) / 2;
 
+		Random rnd = new Random();
 		string[] tags = Game.uTags.OrderBy(x => rnd.Next()).Take(numberOfTags);
 
 		// From the tags array we will pull the needs and select appropriate props and themes
