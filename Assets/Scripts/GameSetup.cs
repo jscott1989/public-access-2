@@ -15,9 +15,6 @@ public class GameSetup : Object {
 	public int uPlayers;
 
 	public static GameSetup generate(int pPlayers) {
-		// For now we're going to just hardcode some test data
-		// TODO: Implement this generator
-
 		GameSetup setup = new GameSetup ();
 
 		List<string> themes = new List<string> ();
@@ -29,15 +26,22 @@ public class GameSetup : Object {
 						"When Barack Obama met Clint Eastwood"
 				});
 
-		// TODO: Needs will be more complex than this - but right now it's just a single tag per person
-		// at the least I'd like multiple tags and a human readable description of the need
-		// if there's time it would be nice to specify things like "animals moving fast"
-
 		List<string> needs = new List<string> ();
 		needs.AddRange (new string[]{"toy", "space", "red", "black", "music", "loud"});
 
+
+		int numberOfTags = (pPlayers * Game.NUMBER_OF_DAYS) / 2;
+
+		string[] tags = Game.uTags.OrderBy(x => rnd.Next()).Take(numberOfTags);
+
+		// From the tags array we will pull the needs and select appropriate props and themes
+
+		int numberOfAvailableProps = numberOfTags * 2;
+
+
+
 		setup.uPlayers = pPlayers;
-		setup.uAvailableProps = new string[]{"bear","bear","bear","bear","bear","bible","bible","bible","bible","bible","soldier","soldier","soldier","soldier","soldier"};
+		setup.uAvailableProps = new string[]{"dog", "cat", "strawberry", "tv"};
 		setup.uThemes = themes.Take (pPlayers).ToArray ();
 		setup.uNeeds = needs.Take (pPlayers).ToArray ();
 

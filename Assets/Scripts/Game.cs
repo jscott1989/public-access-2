@@ -9,6 +9,7 @@ public class Game : MonoBehaviour {
 	public Dictionary<string, Prop> uProps = new Dictionary<string, Prop>();
 	public List<Station> uStations = new List<Station>();
 	public Dictionary<string, Station> uStationsByID = new Dictionary<string, Station>();
+	public static List<string> uTags = new List<string>();
 
 	// This means that a single "ready" is enough to move everyone on - just to hurry during testing
 	public const bool DEBUG_MODE = false;
@@ -23,7 +24,6 @@ public class Game : MonoBehaviour {
 	public const int CHANNEL_INFORMATION_COUNTDOWN = 2;
 
 	public const double CHECKSCORE_TIMEOUT = 0.1;
-
 
 	public const string RANDOM_STATION_ID = "random";
 
@@ -48,7 +48,13 @@ public class Game : MonoBehaviour {
 					hasReadFirst = true;
 					continue;
 				}
-				AddProp (new Prop(row[0], row[1], int.Parse(row[2]),row[3].Split (',')));
+				string[] tags = row[3].Split (',');
+				foreach(string tag in tags) {
+					if (!uTags.Contains (tag)) {
+						uTags.Add (tag);
+					}
+				}
+				AddProp (new Prop(row[0], row[1], int.Parse(row[2]), tags));
 			}
 		}
 
