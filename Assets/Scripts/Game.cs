@@ -37,21 +37,20 @@ public class Game : MonoBehaviour {
 	}
 
 	void Start() {
-		// Set up props
-		AddProp (new Prop("bear", "Bear", 100, new string[]{"animal", "cute", "toy", "brown"}));
-		AddProp (new Prop("bible", "bible", 50, new string[]{"religious", "book", "red"}));
-		AddProp (new Prop("soldier", "Soldier", 100, new string[]{"toy", "war", "green"}));
-
 		//Reading prop data CSV file containing list of available props for theme generation
-		// TODO: Prop Files != CSV - that's why it's not able to load anything
-//		using (PropFileReader reader = new PropFileReader("Assets/PropSelection.csv"))
-//		{
-//			CsvRow row = new CsvRow();
-//			while (reader.ReadRow(row))
-//			{
-//				AddProp (new Prop(row[0], row[1], int.Parse(row[2]), row[3].Split (',')));
-//			}
-//		}
+		using (PropFileReader reader = new PropFileReader("Assets/PropSelection.csv"))
+		{
+			CsvRow row = new CsvRow();
+			bool hasReadFirst = false;
+			while (reader.ReadRow(row))
+			{
+				if (!hasReadFirst) {
+					hasReadFirst = true;
+					continue;
+				}
+				AddProp (new Prop(row[0], row[1], int.Parse(row[2]),row[3].Split (',')));
+			}
+		}
 
 		// Set up stations
 		AddStation(new Station("random", "Random", ""));
