@@ -1,6 +1,8 @@
 fileFormatVersion: 2
 guid: 115cef836f6ee46938ad6ce16f60a251
 TextureImporter:
+  fileIDToRecycleName:
+    21300000: soldier
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
