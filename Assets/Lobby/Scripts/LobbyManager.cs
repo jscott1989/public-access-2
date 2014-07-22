@@ -219,7 +219,7 @@ public class LobbyManager : SceneManager {
 		for (var i = 0; i < players.Length; i++) {
 			if (players[i].uSelectedStation.uID == Game.RANDOM_STATION_ID) {
 				// We need to pick an available station at random for this user
-				players[i].networkView.RPC ("SetSelectedStation", RPCMode.All, players[i].uAvailableStations[r.Next (players[i].uAvailableStations.Count())].uID);
+				players[i].networkView.RPC ("SetSelectedStation", RPCMode.All, players[i].uAvailableStations[r.Next (1, players[i].uAvailableStations.Count())].uID);
 			}
 			players[i].networkView.RPC ("SetGameInfo",RPCMode.All, gameSetup.uThemes[i], RPCEncoder.Encode(gameSetup.uNeeds[i]), RPCEncoder.Encode(gameSetup.uAvailableProps));
 		}

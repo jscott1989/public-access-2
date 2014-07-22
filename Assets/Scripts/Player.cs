@@ -32,6 +32,7 @@ public class Player : MonoBehaviour {
 	public List<int> uDailyWatchingScore = new List<int>();
 
 	public Dictionary<string, int> uScoreFromWatching = new Dictionary<string, int>();
+	public Dictionary<string, int> uScoreLostFromWatching = new Dictionary<string, int>();
 
 	/**
 	 * Record that a point has been gained from watching TV
@@ -47,6 +48,23 @@ public class Player : MonoBehaviour {
 			uScoreFromWatching[pNeed] = 1;
 		} else {
 			uScoreFromWatching[pNeed] += 1;
+		}
+	}
+
+	/**
+	 * Record that a point has been gained from watching TV
+	 */
+	[RPC] public void LoseWatchingScore(string pNeed) {
+		while (uDailyWatchingScore.Count < uDay) {
+			uDailyWatchingScore.Add (0);
+		}
+		
+		uDailyWatchingScore[uDailyWatchingScore.Count - 1] -= 1;
+		
+		if (!uScoreLostFromWatching.ContainsKey(pNeed)) {
+			uScoreLostFromWatching[pNeed] = 1;
+		} else {
+			uScoreLostFromWatching[pNeed] += 1;
 		}
 	}
 

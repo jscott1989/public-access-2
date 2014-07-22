@@ -38,13 +38,28 @@ public class EveningManager : SceneManager {
 			if (mNetworkManager == null) {
 				return new string[]{};
 			}
-			return mNetworkManager.myPlayer.uNeeds.Take (mNetworkManager.myPlayer.uDay).ToArray();
+			return mNetworkManager.myPlayer.uNeeds.Take (mNetworkManager.myPlayer.uDay).Where (s => !s.StartsWith("-")).ToArray();
+		}
+	}
+
+	public string[] uTodaysDislikes {
+		get {
+			if (mNetworkManager == null) {
+				return new string[]{};
+			}
+			return mNetworkManager.myPlayer.uNeeds.Take (mNetworkManager.myPlayer.uDay).Where (s => s.StartsWith("-")).Select (s => s.Substring(1)).ToArray();
 		}
 	}
 
 	public string uTodaysLikesString {
 		get {
 			return string.Join("\n", uTodaysLikes);
+		}
+	}
+
+	public string uTodaysDislikesString {
+		get {
+			return string.Join("\n", uTodaysDislikes);
 		}
 	}
 
@@ -185,6 +200,12 @@ public class EveningManager : SceneManager {
 							AddScore(need);
 						}
 					}
+
+					foreach(string need in uTodaysDislikes) {
+						if (p.uProp.uTags.Contains(need)) {
+							LoseScore(need);
+						}
+					}
 				}
 			}
 		}
@@ -196,6 +217,14 @@ public class EveningManager : SceneManager {
 	void AddScore(string need) {
 		// TODO: Show some output that the need has been met
 		mNetworkManager.myPlayer.networkView.RPC ("AddWatchingScore", RPCMode.All, need);
+	}
+
+	/**
+	 * Subtract to our viewer score for the given need
+	 */
+	void LoseScore(string need) {
+		// TODO: Show some output that the need has been lost
+		mNetworkManager.myPlayer.networkView.RPC ("LoseWatchingScore", RPCMode.All, need);
 	}
 
 	public bool uStationInformationIsVisible;

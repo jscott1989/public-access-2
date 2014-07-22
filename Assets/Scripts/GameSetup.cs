@@ -87,6 +87,7 @@ public class GameSetup : UnityEngine.Object {
 			for (int n = 0; n < Game.NUMBER_OF_DAYS; n++) {
 
 				if (distributingNeeds.Count == 0) {
+					// When the list of remaining needs is empty, refill it
 					distributingNeeds.AddRange (tags);
 					distributingNeeds = distributingNeeds.OrderBy (s => rnd.Next ()).ToList ();
 				}
@@ -96,6 +97,16 @@ public class GameSetup : UnityEngine.Object {
 				oneNeeds.Add(tag);
 			}
 			needs.Add (oneNeeds);
+		}
+
+
+		foreach(List<string> n in needs) {
+			// Now for each player, set every second need as a negative one (a "dislike")
+			for(int i = 0; i < n.Count; i++) {
+				if (i % 2 == 1) {
+					n[i] = "-" + n[i];
+				}
+			}
 		}
 
 		List<string> themes = new List<string>();
