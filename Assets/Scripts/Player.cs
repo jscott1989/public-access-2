@@ -31,6 +31,33 @@ public class Player : MonoBehaviour {
 	public List<int> uDailyCreatorScore = new List<int>();
 	public List<int> uDailyWatchingScore = new List<int>();
 
+	public Dictionary<string, int> uScoreFromWatching = new Dictionary<string, int>();
+
+	/**
+	 * Record that a point has been gained from watching TV
+	 */
+	[RPC] public void AddWatchingScore(string pNeed) {
+		while (uDailyWatchingScore.Count < uDay) {
+			uDailyWatchingScore.Add (0);
+		}
+
+		uDailyWatchingScore[uDailyWatchingScore.Count - 1] += 1;
+
+		if (!uScoreFromWatching.ContainsKey(pNeed)) {
+			uScoreFromWatching[pNeed] = 1;
+		} else {
+			uScoreFromWatching[pNeed] += 1;
+		}
+	}
+
+	/**
+	 * Record the total points gained from views at the end of a day
+	 */
+	[RPC] public void AddDailyCreatorScore(string pScore) {
+		int score = int.Parse(pScore);
+		uDailyCreatorScore.Add (score);
+	}
+
 	public Game mGame;
 	public Dictionary<string, PurchasedProp> uPurchasedProps = new Dictionary<string, PurchasedProp>();
 
@@ -159,17 +186,18 @@ public class Player : MonoBehaviour {
 	public List<Prop> uAvailableProps = new List<Prop>();
 
 	public string uTheme;
-	public string uNeed;
+	public string[] uNeeds;
 
-	[RPC] public void SetGameInfo (string pTheme, string pNeed, string pPropsString) {
+	[RPC] public void SetGameInfo (string pTheme, string pNeeds, string pPropsString) {
 		uAvailableProps.Clear ();
 		string[] propIDs = RPCEncoder.Decode(pPropsString);
+		string[] needs = RPCEncoder.Decode(pNeeds);
 		foreach(var pID in propIDs) {
 			uAvailableProps.Add (mGame.uProps[pID]);
 		}
 
 		uTheme = pTheme;
-		uNeed = pNeed;
+		uNeeds = needs;
 	}
 
 	

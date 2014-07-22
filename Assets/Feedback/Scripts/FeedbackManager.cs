@@ -59,7 +59,7 @@ public class FeedbackManager : SceneManager {
 
 		// Add today's total viewer seconds to the score record
 		// TODO: This isn't a very good scoring mechanism - replace this with something more accurate
-		mNetworkManager.myPlayer.uDailyCreatorScore.Add (data.Sum());
+		mNetworkManager.myPlayer.networkView.RPC ("AddDailyCreatorScore", RPCMode.All, data.Sum ().ToString ());
 
 		// First push the calculated viewers onto the chart
 		mViewerChart.UpdateChart (mNetworkManager.players.Length, data); // TODO: put Length - 1 when we ban people watching their own show

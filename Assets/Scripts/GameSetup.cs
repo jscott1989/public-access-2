@@ -15,6 +15,47 @@ public class GameSetup : UnityEngine.Object {
 	public string[][] uNeeds;
 	public int uPlayers;
 
+	Dictionary<string, string[]> shows = new Dictionary<string, string[]>() {
+		{"A", new string[]{"B","C"}},
+		{"B", new string[]{"B","C"}},
+	};
+	
+	string[] themeTemplates = new string[] {
+		"like (show) but with (thing)",
+		"(activity) with (person)",
+		"when (person) met (person)"
+	};
+
+
+	string GenerateTheme() {
+		System.Random rnd = new System.Random();
+		string template = themeTemplates[rnd.Next(themeTemplates.Count())];
+
+
+		// TODO: Collect all tags used by all other players
+
+		// TODO: Then select two shows, two activities, two things, and two people who cover as many of those tags as possible
+		string showToUse1 = "";
+		string showToUse2 = "";
+		string activityToUse1 = "";
+		string activityToUse2 = "";
+		string thingToUse1 = "";
+		string thingToUse2 = "";
+		string personToUse1 = "";
+		string personToUse2 = "";
+
+		template = template.Replace ("(show)", showToUse1);
+		template = template.Replace ("(show)", showToUse2);
+		template = template.Replace ("(activity)", activityToUse1);
+		template = template.Replace ("(activity)", activityToUse2);
+		template = template.Replace ("(thing)", thingToUse1);
+		template = template.Replace ("(thing)", thingToUse2);
+		template = template.Replace ("(person)", personToUse1);
+		template = template.Replace ("(person)", personToUse2);
+
+		return template;
+	}
+
 	public GameSetup(int pPlayers) {
 
 		Game mGame = FindObjectOfType<Game>();
@@ -33,10 +74,6 @@ public class GameSetup : UnityEngine.Object {
 		foreach(string tag in tags) {
 			availableProps.AddRange(mGame.uProps.Where(p => p.Value.uTags.Contains(tag)).OrderBy (x => rnd.Next ()).Take (2).Select (p => p.Value.uID));
 		}
-
-		string[] themes = new string[]{
-			"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t"
-		};
 
 		List<List<string>> needs = new List<List<string>>();
 
@@ -61,11 +98,11 @@ public class GameSetup : UnityEngine.Object {
 			needs.Add (oneNeeds);
 		}
 
-		string[] themeTemplates = new string[] {
-			"like (show) but with (aspect)",
-			"(activity) with (person)",
-			"when (person) met (person)"
-		};
+		List<string> themes = new List<string>();
+		for(int i = 0; i < pPlayers; i++) {
+			themes.Add (GenerateTheme());
+		}
+
 
 		List<string[]> needsAsArray = new List<string[]>();
 		foreach(List<string> s in needs) {
@@ -74,7 +111,7 @@ public class GameSetup : UnityEngine.Object {
 
 		uPlayers = pPlayers;
 		uAvailableProps = availableProps.ToArray ();
-		uThemes = themes.Take (pPlayers).ToArray ();
+		uThemes = themes.ToArray ();
 		uNeeds = needsAsArray.ToArray (); // TODO: Right now needs is just a list of tags - we need to have a human readable description of the need
 	}
 }

@@ -33,12 +33,18 @@ public class EveningManager : SceneManager {
 		}
 	}
 
-	public string uTodaysNeeds {
+	public string[] uTodaysLikes {
 		get {
 			if (mNetworkManager == null) {
-				return "";
+				return new string[]{};
 			}
-			return mNetworkManager.myPlayer.uNeed;
+			return mNetworkManager.myPlayer.uNeeds.Take (mNetworkManager.myPlayer.uDay).ToArray();
+		}
+	}
+
+	public string uTodaysLikesString {
+		get {
+			return string.Join("\n", uTodaysLikes);
 		}
 	}
 
@@ -81,7 +87,6 @@ public class EveningManager : SceneManager {
 	}
 
 	void StartPlaying() {
-		mNetworkManager.myPlayer.uDailyWatchingScore.Add(0);
 		mTime = 0;
 		stage = PLAYING;
 		mRecordingPlayer.Play(mNetworkManager.playersOrderedByStation[mWatchingPlayer], mScreen);
@@ -175,8 +180,10 @@ public class EveningManager : SceneManager {
 				foreach(PlayingProp p in mScreen.GetComponentsInChildren<PlayingProp>()) {
 					// TODO: First check that they are actually visible on screen at all
 					// but for now let's just give points for all of them
-					if (p.uProp.uTags.Contains(mNetworkManager.myPlayer.uNeed)) {
-						AddScore(mNetworkManager.myPlayer.uNeed);
+					foreach(string need in uTodaysLikes) {
+						if (p.uProp.uTags.Contains(need)) {
+							AddScore(need);
+						}
 					}
 				}
 			}
@@ -188,7 +195,7 @@ public class EveningManager : SceneManager {
 	 */
 	void AddScore(string need) {
 		// TODO: Show some output that the need has been met
-		mNetworkManager.myPlayer.uDailyWatchingScore[mNetworkManager.myPlayer.uDailyWatchingScore.Count - 1] += 1;
+		mNetworkManager.myPlayer.networkView.RPC ("AddWatchingScore", RPCMode.All, need);
 	}
 
 	public bool uStationInformationIsVisible;
