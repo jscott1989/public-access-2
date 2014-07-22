@@ -15,50 +15,90 @@ public class GameSetup : UnityEngine.Object {
 	public string[][] uNeeds;
 	public int uPlayers;
 
-	Dictionary<string, string[]> shows = new Dictionary<string, string[]>() {
-		{"A", new string[]{"B","C"}},
-		{"B", new string[]{"B","C"}},
-	};
-	
-	string[] themeTemplates = new string[] {
-		"like (show) but with (thing)",
-		"(activity) with (person)",
-		"when (person) met (person)"
+	Dictionary<string, string[]> mShows = new Dictionary<string, string[]>();
+	Dictionary<string, string[]> mActivities = new Dictionary<string, string[]>();
+	Dictionary<string, string[]> mPeople = new Dictionary<string, string[]>();
+
+	// Map the template to the type of variable needed (show, thing, activity, person)
+	Dictionary<string, string[]> themeTemplates = new Dictionary<string, string[]>() {
+		{"a show like (show) but with (thing)", new string[]{"show", "thing"}},
+		{"(activity) with (person)", new string[]{"activity", "person"}},
+		{"when (person) met (person)", new string[]{"person", "person"}}
 	};
 
 
-	string GenerateTheme() {
+	/**
+	 * Generate a theme which hints at the given needs
+	 */
+	string GenerateTheme(string[] pNeeds) {
+		// God I wrote this code late... it's not great....
 		System.Random rnd = new System.Random();
-		string template = themeTemplates[rnd.Next(themeTemplates.Count())];
 
+		List<string> availableShows = mShows.Where(kvp => kvp.Value.Intersect(pNeeds).Count () > 0).Select (kvp => kvp.Key).OrderBy (x => rnd.Next ()).ToList();
+		List<string> availableActivities = mActivities.Where(kvp => kvp.Value.Intersect(pNeeds).Count () > 0).Select (kvp => kvp.Key).OrderBy (x => rnd.Next ()).ToList();
+		List<string> availablePeople = mPeople.Where(kvp => kvp.Value.Intersect(pNeeds).Count () > 0).Select (kvp => kvp.Key).OrderBy (x => rnd.Next ()).ToList();
+		List<string> availableThings = new List<string>();
+		availableThings.AddRange (availableActivities);
+		availableThings.AddRange (availablePeople);
+		availableThings = availableThings.OrderBy (x => rnd.Next ()).ToList ();
 
-		// TODO: Collect all tags used by all other players
+		Dictionary<string, List<string>> variables = new Dictionary<string, List<string>>() {
+			{"show", availableShows},
+			{"activity", availableActivities},
+			{"person", availablePeople},
+			{"thing", availableThings}
+		};
 
-		// TODO: Then select two shows, two activities, two things, and two people who cover as many of those tags as possible
-		string showToUse1 = "";
-		string showToUse2 = "";
-		string activityToUse1 = "";
-		string activityToUse2 = "";
-		string thingToUse1 = "";
-		string thingToUse2 = "";
-		string personToUse1 = "";
-		string personToUse2 = "";
+		List<string> availableVariables = new List<string>();
+		foreach(KeyValuePair<string, List<string>> kvp in variables) {
+			foreach(string v in kvp.Value) {
+				availableVariables.Add (kvp.Key);
+			}
+		}
 
-		template = template.Replace ("(show)", showToUse1);
-		template = template.Replace ("(show)", showToUse2);
-		template = template.Replace ("(activity)", activityToUse1);
-		template = template.Replace ("(activity)", activityToUse2);
-		template = template.Replace ("(thing)", thingToUse1);
-		template = template.Replace ("(thing)", thingToUse2);
-		template = template.Replace ("(person)", personToUse1);
-		template = template.Replace ("(person)", personToUse2);
+		string[] availableTemplates = themeTemplates.Where(kvp => kvp.Value.Intersect(availableVariables).Count() == kvp.Value.Count()).Select(kvp => kvp.Key).ToArray();
+
+		if (availableTemplates.Count() < 1) {
+			// TODO: This shouldn't happen - but hardcode a few themes just incase
+			return string.Join (" ", pNeeds);
+//			return "I couldn't create a theme";
+		}
+
+		string template = availableTemplates[rnd.Next(availableTemplates.Count())];
+
+		foreach(KeyValuePair<string, List<string>> kvp in variables) {
+			foreach(string v in kvp.Value) {
+				template = template.Replace ("(" + kvp.Key + ")", v);
+			}
+		}
 
 		return template;
 	}
 
 	public GameSetup(int pPlayers) {
-
 		Game mGame = FindObjectOfType<Game>();
+
+		// Load shows, activities, things, and people
+		mShows.Add ("The Lion King", new string[]{"animal"});
+		mShows.Add ("Songs of Praise", new string[]{"religious"});
+		mShows.Add ("Home Improvement", new string[]{"tool"});
+
+		mActivities.Add ("Reading", new string[]{"book"});
+		mActivities.Add ("Praying", new string[]{"religious"});
+		mActivities.Add ("Playing", new string[]{"toy", "cute"});
+		mActivities.Add ("Flying", new string[]{"bird"});
+		mActivities.Add ("Shooting", new string[]{"weapon"});
+
+
+		mPeople.Add ("God", new string[]{"religious"});
+		mPeople.Add ("Muhammad", new string[]{"religious"});
+		mPeople.Add ("Dora The Explorer", new string[]{"religious"});
+		mPeople.Add ("a parrot", new string[]{"bird", "animal"});
+		mPeople.Add ("the Statue of Liberty", new string[]{"statue"});
+		mPeople.Add ("an apple", new string[]{"fruit"});
+		mPeople.Add ("Woody from Toy Story", new string[]{"toy"});
+		mPeople.Add ("an electrician", new string[]{"tool"});
+		mPeople.Add ("a cow", new string[]{"toy", "animal"});
 
 		int numberOfTags = (pPlayers * Game.NUMBER_OF_DAYS) / 2;
 
@@ -111,7 +151,21 @@ public class GameSetup : UnityEngine.Object {
 
 		List<string> themes = new List<string>();
 		for(int i = 0; i < pPlayers; i++) {
-			themes.Add (GenerateTheme());
+
+			List<string> otherNeeds = new List<string>();
+			for (int n = 0; n < pPlayers; n++) {
+				if (n != i) {
+					foreach(string need in needs[n]) {
+						if (!need.StartsWith("-")) {
+							if (!otherNeeds.Contains(need)) {
+								otherNeeds.Add (need);
+							}
+						}
+					}
+				}
+			}
+
+			themes.Add (GenerateTheme(otherNeeds.ToArray ()));
 		}
 
 
