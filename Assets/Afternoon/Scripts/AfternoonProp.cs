@@ -33,7 +33,7 @@ public class AfternoonProp : MonoBehaviour {
 		RecordingProp r = (RecordingProp)g.GetComponent (typeof(RecordingProp));
 		r.uPurchasedProp = uPurchasedProp;
 
-		MovableProp p = (MovableProp)g.GetComponent(typeof(MovableProp));
+		MovingArea p = g.GetComponentInChildren<MovingArea>();
 		p.OnMouseDown();
 
 		mProps.Remove (uPurchasedProp);
