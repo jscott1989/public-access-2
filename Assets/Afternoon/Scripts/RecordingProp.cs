@@ -6,8 +6,19 @@ public class RecordingProp : MonoBehaviour {
 	public PurchasedProp uPurchasedProp;
 	Props mProps;
 
+	public bool uIsSelected = false;
+
 	void Awake() {
-		mProps = (Props)FindObjectOfType(typeof(Props));
+		mProps = FindObjectOfType<Props>();
+	}
+
+	public void Select() {
+		foreach(RecordingProp p in FindObjectsOfType<RecordingProp>()) {
+			if (p != this) {
+				p.uIsSelected = false;
+			}
+		}
+		uIsSelected = true;
 	}
 
 	/**
