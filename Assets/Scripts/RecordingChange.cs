@@ -20,15 +20,19 @@ public class InstantiationChange : RecordingChange {
 	string mID;
 	string mNewX;
 	string mNewY;
+	string mSizeX;
+	string mSizeY;
 
 	GameObject mPlayingPropPrefab;
 
-	public InstantiationChange(String pTime, string pPropID, string pID, string pNewX, string pNewY) {
+	public InstantiationChange(String pTime, string pPropID, string pID, string pNewX, string pNewY, string pSizeX, string pSizeY) {
 		uTime = Convert.ToDouble (pTime);
 		mPropID = pPropID;
 		mID = pID;
 		mNewX = pNewX;
 		mNewY = pNewY;
+		mSizeX = pSizeX;
+		mSizeY = pSizeY;
 		mPlayingPropPrefab = (GameObject)Resources.Load ("Evening/Prefabs/PlayingProp");
 	}
 
@@ -39,6 +43,7 @@ public class InstantiationChange : RecordingChange {
 		dfTextureSprite sprite = (dfTextureSprite)g.GetComponent (typeof(dfTextureSprite));
 		sprite.Texture = (Texture2D)Resources.Load("Props/" + mPropID);
 		sprite.Position = new Vector2(float.Parse(mNewX), float.Parse (mNewY));
+		sprite.Size = new Vector2(float.Parse (mSizeX), float.Parse (mSizeY));
 		PlayingProp r = (PlayingProp)g.GetComponent (typeof(PlayingProp));
 		r.uID = mID;
 		Game mGame = GameObject.FindObjectOfType<Game>();
@@ -105,6 +110,29 @@ public class ZOrderChange : RecordingChange {
 			if (p.uID == mID) {
 				dfTextureSprite sprite = (dfTextureSprite) p.gameObject.GetComponent (typeof(dfTextureSprite));
 				sprite.ZOrder = Convert.ToInt32(mZOrder);
+				return;
+			}
+		}
+	}
+}
+
+public class SizeChange : RecordingChange { 
+	string mID;
+	float mX;
+	float mY;
+	
+	public SizeChange(string pTime, string pID, string pX, string pY) {
+		uTime = Convert.ToDouble (pTime);
+		mID = pID;
+		mX = float.Parse(pX);
+		mY = float.Parse (pY);
+	}
+	
+	public override void run(GameObject pScreen) {
+		foreach (PlayingProp p in pScreen.GetComponentsInChildren (typeof(PlayingProp))) {
+			if (p.uID == mID) {
+				dfTextureSprite sprite = (dfTextureSprite) p.gameObject.GetComponent (typeof(dfTextureSprite));
+				sprite.Size = new Vector2(mX, mY);
 				return;
 			}
 		}

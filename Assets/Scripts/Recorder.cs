@@ -9,6 +9,7 @@ public class Recorder : MonoBehaviour {
 
 	string[] mKnownPropIDs;
 	Dictionary<string, Vector3> mKnownPropPositions = new Dictionary<string, Vector3>();
+	Dictionary<string, Vector2> mKnownSizes = new Dictionary<string, Vector2>();
 	Dictionary<string, int> mKnownZOrders = new Dictionary<string, int>();
 
 	double mTime = 0;
@@ -51,9 +52,10 @@ public class Recorder : MonoBehaviour {
 						if (p.uPurchasedProp.uID == ID) {
 							dfTextureSprite sprite = (dfTextureSprite) p.gameObject.GetComponent (typeof(dfTextureSprite));
 
-							mRecordingPlayer.networkView.RPC ("RecordAction", RPCMode.All, new object[]{"InstantiationChange", RPCEncoder.Encode(new string[]{mTime.ToString (), p.uPurchasedProp.uProp.uID, p.uPurchasedProp.uID,sprite.Position.x.ToString (),sprite.Position.y.ToString()})});
+							mRecordingPlayer.networkView.RPC ("RecordAction", RPCMode.All, new object[]{"InstantiationChange", RPCEncoder.Encode(new string[]{mTime.ToString (), p.uPurchasedProp.uProp.uID, p.uPurchasedProp.uID,sprite.Position.x.ToString (),sprite.Position.y.ToString(), sprite.Size.x.ToString(), sprite.Size.y.ToString()})});
 							mKnownPropPositions[ID] = sprite.Position;
 							mKnownZOrders[ID] = sprite.ZOrder;
+							mKnownSizes[ID] = sprite.Size;
 							break;
 						}
 					}
@@ -83,6 +85,12 @@ public class Recorder : MonoBehaviour {
 					// The prop has moved ZOrder
 					mRecordingPlayer.networkView.RPC ("RecordAction", RPCMode.All, new object[]{"ZOrderChange", RPCEncoder.Encode(new string[]{mTime.ToString (), p.uPurchasedProp.uID, sprite.ZOrder.ToString()})});
 					mKnownZOrders[p.uPurchasedProp.uID] = sprite.ZOrder;
+				}
+
+				if (sprite.Size != mKnownSizes[p.uPurchasedProp.uID]) {
+					// The prop has changed size
+					mRecordingPlayer.networkView.RPC ("RecordAction", RPCMode.All, new object[]{"SizeChange", RPCEncoder.Encode(new string[]{mTime.ToString (), p.uPurchasedProp.uID, sprite.Size.x.ToString(), sprite.Size.y.ToString ()})});
+					mKnownSizes[p.uPurchasedProp.uID] = sprite.Size;
 				}
 			}
 		}
