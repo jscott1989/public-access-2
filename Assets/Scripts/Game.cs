@@ -7,6 +7,7 @@ using System.Text;
 
 public class Game : MonoBehaviour {
 	public Dictionary<string, Prop> uProps = new Dictionary<string, Prop>();
+	public Dictionary<string, Backdrop> uBackdrops = new Dictionary<string, Backdrop>();
 	public List<Station> uStations = new List<Station>();
 	public Dictionary<string, Station> uStationsByID = new Dictionary<string, Station>();
 	public List<string> uTags = new List<string>();
@@ -29,6 +30,10 @@ public class Game : MonoBehaviour {
 
 	void AddProp(Prop pProp) {
 		uProps.Add (pProp.uID, pProp);
+	}
+
+	void AddBackdrop(Backdrop pBackdrop) {
+		uBackdrops.Add (pBackdrop.uID, pBackdrop);
 	}
 
 	void AddStation(Station pStation) {
@@ -57,6 +62,10 @@ public class Game : MonoBehaviour {
 				AddProp (new Prop(row[0], row[1], int.Parse(row[2]), tags));
 			}
 		}
+
+
+		AddBackdrop (new Backdrop("mars", "Mars", 50, new string[]{}));
+		AddBackdrop (new Backdrop("beach", "Beach", 50, new string[]{}));
 
 		// Set up stations
 		AddStation(new Station("random", "Random", ""));

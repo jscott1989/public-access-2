@@ -194,6 +194,18 @@ public class Player : MonoBehaviour {
 		}
 	}
 
+	public Backdrop[] uUnpurchasedBackdrops {
+		get {
+			List<Backdrop> backdrops = new List<Backdrop>();
+			backdrops.AddRange(uAvailableBackdrops);
+//			foreach(KeyValuePair<string, PurchasedBackdrop> p in uPurchasedBackdrops) {
+//				PurchasedBackdrop purchasedBackdrop = p.Value;
+//				backdrops.Remove (purchasedBackdrop.uProp);
+//			}
+			return backdrops.ToArray();
+		}
+	}
+
 	[RPC] public void SetReady(bool pReady) {
 		uReady = pReady;
 		if (Network.isServer) {
@@ -202,16 +214,22 @@ public class Player : MonoBehaviour {
 	}
 
 	public List<Prop> uAvailableProps = new List<Prop>();
+	public List<Backdrop> uAvailableBackdrops = new List<Backdrop>();
 
 	public string uTheme;
 	public string[] uNeeds;
 
-	[RPC] public void SetGameInfo (string pTheme, string pNeeds, string pPropsString) {
+	[RPC] public void SetGameInfo (string pTheme, string pNeeds, string pPropsString, string pBackdropsString) {
 		uAvailableProps.Clear ();
+		uAvailableBackdrops.Clear ();
 		string[] propIDs = RPCEncoder.Decode(pPropsString);
+		string[] backdropIDs = RPCEncoder.Decode(pBackdropsString);
 		string[] needs = RPCEncoder.Decode(pNeeds);
 		foreach(var pID in propIDs) {
 			uAvailableProps.Add (mGame.uProps[pID]);
+		}
+		foreach(var bID in backdropIDs) {
+			uAvailableBackdrops.Add (mGame.uBackdrops[bID]);
 		}
 
 		uTheme = pTheme;

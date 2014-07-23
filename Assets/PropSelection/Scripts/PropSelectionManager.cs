@@ -96,15 +96,40 @@ public class PropSelectionManager : SceneManager {
 
 	void PopulateAvailableProps() {
 		mAvailablePropsList.Items = new string[]{};
+
+		mAvailablePropsList.AddItem ("[color#ff0000]Props[/color]");
+
 		foreach (Prop p in mNetworkManager.myPlayer.uUnpurchasedProps) {
 			mAvailablePropsList.AddItem (p.uName + " ($" + p.uPrice + ")");
+		}
+		mAvailablePropsList.AddItem ("[color#ff0000]Backdrops[/color]");
+		foreach (Backdrop b in mNetworkManager.myPlayer.uUnpurchasedBackdrops) {
+			mAvailablePropsList.AddItem (b.uName + " ($" + b.uPrice + ")");
 		}
 	}
 
 	void PopulatePurchasedProps() {
-		// TODO This is called when first entering the scene - ensure that the MyProps lines up with what we already own
 		foreach (PurchasedProp purchasedProp in mNetworkManager.myPlayer.uPurchasedProps.Values) {
 			mMyProps.Add(purchasedProp);
+		}
+	}
+
+	public Prop uSelectedProp {
+		get {
+			if (mAvailablePropsList.SelectedIndex < 1 || mAvailablePropsList.SelectedIndex > mNetworkManager.myPlayer.uUnpurchasedProps.Length) {
+				return null;
+			}
+			return mNetworkManager.myPlayer.uUnpurchasedProps[mAvailablePropsList.SelectedIndex - 1];
+		}
+	}
+
+	public Backdrop uSelectedBackdrop {
+		get {
+			if (mAvailablePropsList.SelectedIndex < mNetworkManager.myPlayer.uUnpurchasedProps.Length + 2 || mAvailablePropsList.SelectedIndex > mNetworkManager.myPlayer.uUnpurchasedProps.Length + 1 + mNetworkManager.myPlayer.uUnpurchasedBackdrops.Length) {
+				return null;
+			}
+			print(mAvailablePropsList.SelectedIndex - (mNetworkManager.myPlayer.uUnpurchasedProps.Length + 2));
+			return mNetworkManager.myPlayer.uUnpurchasedBackdrops[mAvailablePropsList.SelectedIndex - (mNetworkManager.myPlayer.uUnpurchasedProps.Length + 2)];
 		}
 	}
 
@@ -113,11 +138,16 @@ public class PropSelectionManager : SceneManager {
 	 */
 	public bool uCanBuyCurrentProp {
 		get {
-			if (mAvailablePropsList.SelectedIndex < 0) {
+			if (uSelectedProp == null) {
+				if (uSelectedBackdrop == null) {
+					return false;
+				}
+				if (uSelectedBackdrop.uPrice <= mNetworkManager.myPlayer.uBudget) {
+					return true;
+				}
 				return false;
 			}
-			Prop purchase = mNetworkManager.myPlayer.uUnpurchasedProps[mAvailablePropsList.SelectedIndex];
-			if (purchase.uPrice <= mNetworkManager.myPlayer.uBudget) {
+			if (uSelectedProp.uPrice <= mNetworkManager.myPlayer.uBudget) {
 				return true;
 			}
 			return false;
@@ -126,11 +156,13 @@ public class PropSelectionManager : SceneManager {
 	
 	public string uPurchaseButtonText {
 		get {
-			if (mAvailablePropsList.SelectedIndex < 0) {
-				return "Buy";
+			if (uSelectedProp == null) {
+				if (uSelectedBackdrop == null) {
+					return "Buy";
+				}
+				return "Buy $" + uSelectedBackdrop.uPrice;
 			}
-			Prop purchase = mNetworkManager.myPlayer.uUnpurchasedProps[mAvailablePropsList.SelectedIndex];
-			return "Buy $" + purchase.uPrice;
+			return "Buy $" + uSelectedProp.uPrice;
 		}
 	}
 
@@ -138,8 +170,7 @@ public class PropSelectionManager : SceneManager {
 	 * The "Buy" button has been pressed
 	 */
 	public void BuySelectedProp() {
-		Prop purchase = mNetworkManager.myPlayer.uUnpurchasedProps[mAvailablePropsList.SelectedIndex];
-		mNetworkManager.myPlayer.PurchaseProp(purchase.uID);
+		mNetworkManager.myPlayer.PurchaseProp(uSelectedProp.uID);
 		mAvailablePropsList.SelectedIndex = -1;
 	}
 

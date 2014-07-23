@@ -11,6 +11,7 @@ using System.Linq;
 public class GameSetup : UnityEngine.Object {
 
 	public string[] uAvailableProps;
+	public string[] uAvailableBackdrops;
 	public string[] uThemes;
 	public string[][] uNeeds;
 	public int uPlayers;
@@ -176,6 +177,7 @@ public class GameSetup : UnityEngine.Object {
 
 		uPlayers = pPlayers;
 		uAvailableProps = availableProps.ToArray ();
+		uAvailableBackdrops = new string[]{"mars", "beach"};
 		uThemes = themes.ToArray ();
 		uNeeds = needsAsArray.ToArray (); // TODO: Right now needs is just a list of tags - we need to have a human readable description of the need
 	}
