@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 /**
  * This represents a prop which can exist in the system
  */
@@ -23,5 +24,11 @@ public class PurchasedProp {
 	public PurchasedProp (Prop pProp) {
 		uID = Guid.NewGuid().ToString();
 		uProp = pProp;
+	}
+
+	public virtual Texture2D uIconTexture {
+		get {
+			return (Texture2D)Resources.Load ("Props/" + uProp.uID);
+		}
 	}
 }

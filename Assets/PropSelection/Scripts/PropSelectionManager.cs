@@ -106,6 +106,11 @@ public class PropSelectionManager : SceneManager {
 		foreach (Backdrop b in mNetworkManager.myPlayer.uUnpurchasedBackdrops) {
 			mAvailablePropsList.AddItem (b.uName + " ($" + b.uPrice + ")");
 		}
+
+		mAvailablePropsList.AddItem ("[color#ff0000]Sound Effects[/color]");
+		foreach (Audio b in mNetworkManager.myPlayer.uUnpurchasedAudio) {
+			mAvailablePropsList.AddItem (b.uName + " ($" + b.uPrice + ")");
+		}
 	}
 
 	void PopulatePurchasedProps() {
@@ -128,8 +133,16 @@ public class PropSelectionManager : SceneManager {
 			if (mAvailablePropsList.SelectedIndex < mNetworkManager.myPlayer.uUnpurchasedProps.Length + 2 || mAvailablePropsList.SelectedIndex > mNetworkManager.myPlayer.uUnpurchasedProps.Length + 1 + mNetworkManager.myPlayer.uUnpurchasedBackdrops.Length) {
 				return null;
 			}
-			print(mAvailablePropsList.SelectedIndex - (mNetworkManager.myPlayer.uUnpurchasedProps.Length + 2));
 			return mNetworkManager.myPlayer.uUnpurchasedBackdrops[mAvailablePropsList.SelectedIndex - (mNetworkManager.myPlayer.uUnpurchasedProps.Length + 2)];
+		}
+	}
+
+	public Audio uSelectedAudio {
+		get {
+			if (mAvailablePropsList.SelectedIndex < mNetworkManager.myPlayer.uUnpurchasedProps.Length + mNetworkManager.myPlayer.uUnpurchasedBackdrops.Length + 3) {
+				return null;
+			}
+			return mNetworkManager.myPlayer.uUnpurchasedAudio[mAvailablePropsList.SelectedIndex - (mNetworkManager.myPlayer.uUnpurchasedProps.Length + mNetworkManager.myPlayer.uUnpurchasedBackdrops.Length + 3)];
 		}
 	}
 
@@ -140,6 +153,12 @@ public class PropSelectionManager : SceneManager {
 		get {
 			if (uSelectedProp == null) {
 				if (uSelectedBackdrop == null) {
+					if (uSelectedAudio == null) {
+						return false;
+					}
+					if (uSelectedAudio.uPrice <= mNetworkManager.myPlayer.uBudget) {
+						return true;
+					}
 					return false;
 				}
 				if (uSelectedBackdrop.uPrice <= mNetworkManager.myPlayer.uBudget) {
@@ -158,7 +177,10 @@ public class PropSelectionManager : SceneManager {
 		get {
 			if (uSelectedProp == null) {
 				if (uSelectedBackdrop == null) {
-					return "Buy";
+					if (uSelectedAudio == null) {
+						return "Buy";
+					}
+					return "Buy $" + uSelectedAudio.uPrice;
 				}
 				return "Buy $" + uSelectedBackdrop.uPrice;
 			}
@@ -174,8 +196,10 @@ public class PropSelectionManager : SceneManager {
 			mNetworkManager.myPlayer.PurchaseProp(uSelectedProp.uID);
 		} else if (uSelectedBackdrop != null) {
 			mNetworkManager.myPlayer.PurchaseBackdrop(uSelectedBackdrop.uID);
+		} else if (uSelectedAudio != null) {
+			mNetworkManager.myPlayer.PurchaseAudio(uSelectedAudio.uID);
 		}
-		mAvailablePropsList.SelectedIndex = -1;
+	mAvailablePropsList.SelectedIndex = -1;
 	}
 
 	public override void PropPurchased(Player pPlayer, PurchasedProp pPurchasedProp) {

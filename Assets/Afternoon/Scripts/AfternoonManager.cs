@@ -57,10 +57,45 @@ public class AfternoonManager : SceneManager {
 		}
 	}
 
+	public PurchasedAudio[] uPurchasedAudio {
+		get {
+			List<PurchasedAudio> audios = new List<PurchasedAudio>();
+			foreach(KeyValuePair<string, PurchasedProp> kv in mNetworkManager.myPlayer.uPurchasedProps) {
+				if (kv.Value.GetType() == typeof(PurchasedAudio)) {
+					audios.Add ((PurchasedAudio)kv.Value);
+				}
+			}
+			return audios.ToArray ();
+		}
+	}
+	
+	public string[] uPurchasedAudioStrings {
+		get {
+			int i = uPurchasedBackdrops.Length + 1;
+			List<string> set = new List<string>();
+			foreach(PurchasedAudio p in uPurchasedAudio) {
+				set.Add (i.ToString () + " " + p.uProp.uName);
+				i++;
+			}
+			return set.ToArray ();
+		}
+	}
+	
+	
+	public void AudioClicked( dfControl control, System.Int32 value ) {
+		PurchasedAudio p = uPurchasedAudio[value];
+		ActivateAudio(p);
+	}
+	
+	public void ActivateAudio(PurchasedAudio pAudio) {
+		print ("PLAY " + pAudio.uProp.uName);
+	}
+
 	void KeyPressed(int i) {
 		if (i > uPurchasedBackdrops.Length) {
 			i -= uPurchasedBackdrops.Length;
 			// Now use i against the sounds
+			ActivateAudio(uPurchasedAudio[i - 1]);
 			return;
 		}
 

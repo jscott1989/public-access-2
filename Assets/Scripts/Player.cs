@@ -208,6 +208,20 @@ public class Player : MonoBehaviour {
 		}
 	}
 
+	public Audio[] uUnpurchasedAudio {
+		get {
+			List<Audio> audios = new List<Audio>();
+			audios.AddRange(uAvailableAudio);
+			foreach(KeyValuePair<string, PurchasedProp> p in uPurchasedProps) {
+				Audio a = p.Value.uProp as Audio;
+				if (a != null) {
+					audios.Remove (a);
+				}
+			}
+			return audios.ToArray();
+		}
+	}
+	
 	[RPC] public void SetReady(bool pReady) {
 		uReady = pReady;
 		if (Network.isServer) {
@@ -217,21 +231,26 @@ public class Player : MonoBehaviour {
 
 	public List<Prop> uAvailableProps = new List<Prop>();
 	public List<Backdrop> uAvailableBackdrops = new List<Backdrop>();
+	public List<Audio> uAvailableAudio = new List<Audio>();
 
 	public string uTheme;
 	public string[] uNeeds;
 
-	[RPC] public void SetGameInfo (string pTheme, string pNeeds, string pPropsString, string pBackdropsString) {
+	[RPC] public void SetGameInfo (string pTheme, string pNeeds, string pPropsString, string pBackdropsString, string pAudioString) {
 		uAvailableProps.Clear ();
 		uAvailableBackdrops.Clear ();
 		string[] propIDs = RPCEncoder.Decode(pPropsString);
 		string[] backdropIDs = RPCEncoder.Decode(pBackdropsString);
+		string[] audioIDs = RPCEncoder.Decode(pAudioString);
 		string[] needs = RPCEncoder.Decode(pNeeds);
 		foreach(var pID in propIDs) {
 			uAvailableProps.Add (mGame.uProps[pID]);
 		}
 		foreach(var bID in backdropIDs) {
 			uAvailableBackdrops.Add (mGame.uBackdrops[bID]);
+		}
+		foreach(var aID in audioIDs) {
+			uAvailableAudio.Add (mGame.uAudio[aID]);
 		}
 
 		uTheme = pTheme;
@@ -363,6 +382,39 @@ public class Player : MonoBehaviour {
 		//		}
 	}
 
+	[RPC] public void PurchaseAudio(string pAudioID) {
+		Audio prop = mGame.uAudio[pAudioID];
+		// Check that there is a prop.uID available
+		bool propAvailable = false;
+		foreach(Prop p in uUnpurchasedAudio) {
+			if (p.uID == prop.uID) {
+				propAvailable = true;
+				break;
+			}
+		}
+		
+		if (!propAvailable) {
+			return;
+		}
+		
+		// Check that we have enough money
+		if (uBudget < prop.uPrice) {
+			return;
+		}
+		
+		// Add the prop to our props, and take away the money
+		PurchasedAudio purchasedProp = new PurchasedAudio(prop);
+		uPurchasedProps.Add(purchasedProp.uID, purchasedProp);
+		uBudget -= prop.uPrice;
+		
+		mSceneManager.PropPurchased(this, purchasedProp);
+		
+		// I don't think we need to sync buying and selling
+		//		if (networkView.isMine) {
+		//			networkView.RPC ("PurchaseProp", RPCMode.Others, prop.uID);
+		//		}
+	}
+	
 	[RPC] public void SellProp(string pPurchasedPropID) {
 		if (!uPurchasedProps.ContainsKey(pPurchasedPropID)) {
 			return;

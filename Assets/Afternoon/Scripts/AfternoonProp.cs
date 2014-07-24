@@ -29,6 +29,7 @@ public class AfternoonProp : MonoBehaviour {
 
 		sprite.Position = new Vector2(top_left.x - (sprite.Size.x / 2), top_left.y + (sprite.Size.y / 2));
 		sprite.Texture = (Texture2D)Resources.Load("Props/" + uPurchasedProp.uProp.uID);
+		sprite.Size = new Vector2(sprite.Texture.width, sprite.Texture.height);
 
 		RecordingProp r = (RecordingProp)g.GetComponent (typeof(RecordingProp));
 		r.uPurchasedProp = uPurchasedProp;

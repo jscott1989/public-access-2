@@ -34,7 +34,7 @@ public class Props : MonoBehaviour {
 		GameObject prop = (GameObject) Instantiate(mAfternoonPropPrefab, Vector3.zero, Quaternion.identity);
 		AfternoonProp p = (AfternoonProp)prop.GetComponent (typeof(AfternoonProp));
 		p.uPurchasedProp = pPurchasedProp;
-		p.uImage.Texture = (Texture2D)Resources.Load ("Props/Icons/" + pPurchasedProp.uProp.uID);
+		p.uImage.Texture = pPurchasedProp.uIconTexture;
 		prop.transform.parent = mMyPropsList.transform;
 		mPurchasedPropObjects.Add (pPurchasedProp, p);
 	}

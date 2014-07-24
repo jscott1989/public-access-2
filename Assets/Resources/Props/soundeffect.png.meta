@@ -1,6 +1,8 @@
 fileFormatVersion: 2
-guid: 524788ee66d5c4b0eb24d2c82fe6e6fb
+guid: 5361ab82312344a60be1a46124e6d990
 TextureImporter:
+  fileIDToRecycleName:
+    21300000: soundeffect
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0

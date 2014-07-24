@@ -8,6 +8,7 @@ using System.Text;
 public class Game : MonoBehaviour {
 	public Dictionary<string, Prop> uProps = new Dictionary<string, Prop>();
 	public Dictionary<string, Backdrop> uBackdrops = new Dictionary<string, Backdrop>();
+	public Dictionary<string, Audio> uAudio = new Dictionary<string, Audio>();
 	public List<Station> uStations = new List<Station>();
 	public Dictionary<string, Station> uStationsByID = new Dictionary<string, Station>();
 	public List<string> uTags = new List<string>();
@@ -34,6 +35,10 @@ public class Game : MonoBehaviour {
 
 	void AddBackdrop(Backdrop pBackdrop) {
 		uBackdrops.Add (pBackdrop.uID, pBackdrop);
+	}
+
+	void AddAudio(Audio pAudio) {
+		uAudio.Add (pAudio.uID, pAudio);
 	}
 
 	void AddStation(Station pStation) {
@@ -66,6 +71,9 @@ public class Game : MonoBehaviour {
 
 		AddBackdrop (new Backdrop("mars", "Mars", 50, new string[]{}));
 		AddBackdrop (new Backdrop("beach", "Beach", 50, new string[]{}));
+
+		AddAudio (new Audio("craw", "Craw", 49, new string[]{}));
+		AddAudio (new Audio("laugh", "Bark", 51, new string[]{}));
 
 		// Set up stations
 		AddStation(new Station("random", "Random", ""));
