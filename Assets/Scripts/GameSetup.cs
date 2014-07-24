@@ -76,7 +76,8 @@ public class GameSetup : UnityEngine.Object {
 		int numberOfTags = (pPlayers * Game.NUMBER_OF_DAYS) / 2;
 
 		System.Random rnd = new System.Random();
-		string[] tags = game.uTags.OrderBy(x => rnd.Next()).Take(numberOfTags).ToArray();
+//		string[] tags = game.uTags.OrderBy(x => rnd.Next()).Take(numberOfTags).ToArray();
+		string[] tags = new string[]{"blue", "pet", "toy", "animal", "weapon", "bird", "gadget"};
 
 		// From the tags array we will pull the needs and select appropriate props and themes
 
@@ -97,7 +98,7 @@ public class GameSetup : UnityEngine.Object {
 		List<string> availableAudio = new List<string>();
 		
 		foreach(string tag in tags) {
-			availableAudio.AddRange(game.uBackdrops.Where(p => p.Value.uTags.Contains(tag)).OrderBy (x => rnd.Next ()).Take (2).Select (p => p.Value.uID));
+			availableAudio.AddRange(game.uAudio.Where(p => p.Value.uTags.Contains(tag)).OrderBy (x => rnd.Next ()).Take (2).Select (p => p.Value.uID));
 		}
 
 		List<List<string>> needs = new List<List<string>>();
