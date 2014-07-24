@@ -249,6 +249,7 @@ public class Player : MonoBehaviour {
 		foreach(var bID in backdropIDs) {
 			uAvailableBackdrops.Add (mGame.uBackdrops[bID]);
 		}
+
 		foreach(var aID in audioIDs) {
 			uAvailableAudio.Add (mGame.uAudio[aID]);
 		}
