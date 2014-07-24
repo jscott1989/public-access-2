@@ -8,6 +8,13 @@ using System.Text;
 public class Game : MonoBehaviour {
 	public Dictionary<string, Prop> uProps = new Dictionary<string, Prop>();
 	public Dictionary<string, Backdrop> uBackdrops = new Dictionary<string, Backdrop>();
+
+	// Theme parts
+	public Dictionary<string, string[]> uShows = new Dictionary<string, string[]>();
+	public Dictionary<string, string[]> uActivities = new Dictionary<string, string[]>();
+	public Dictionary<string, string[]> uPeople = new Dictionary<string, string[]>();
+
+
 	public Dictionary<string, Audio> uAudio = new Dictionary<string, Audio>();
 	public List<Station> uStations = new List<Station>();
 	public Dictionary<string, Station> uStationsByID = new Dictionary<string, Station>();
@@ -51,13 +58,8 @@ public class Game : MonoBehaviour {
 		using (PropFileReader reader = new PropFileReader("Assets/PropSelection.csv"))
 		{
 			CsvRow row = new CsvRow();
-			bool hasReadFirst = false;
 			while (reader.ReadRow(row))
 			{
-				if (!hasReadFirst) {
-					hasReadFirst = true;
-					continue;
-				}
 				string[] tags = row[3].Split (',');
 				foreach(string tag in tags) {
 					if (!uTags.Contains (tag)) {
@@ -69,23 +71,70 @@ public class Game : MonoBehaviour {
 		}
 
 
-		AddBackdrop (new Backdrop("mars", "Mars", 50, new string[]{}));
-		AddBackdrop (new Backdrop("beach", "Beach", 50, new string[]{}));
+		using (PropFileReader reader = new PropFileReader("Assets/Shows.csv"))
+		{
+			CsvRow row = new CsvRow();
+			while (reader.ReadRow(row))
+			{
+				uShows.Add (row[0], row[3].Split (','));
+			}
+		}
 
-		AddAudio (new Audio("craw", "Craw", 49, new string[]{}));
-		AddAudio (new Audio("laugh", "Bark", 51, new string[]{}));
+		using (PropFileReader reader = new PropFileReader("Assets/Activities.csv"))
+		{
+			CsvRow row = new CsvRow();
+			while (reader.ReadRow(row))
+			{
+				uActivities.Add (row[0], row[3].Split (','));
+			}
+		}
 
-		// Set up stations
-		AddStation(new Station("random", "Random", ""));
-		AddStation(new Station("channel1", "Channel 1", "Channel 1 Desc"));
-		AddStation(new Station("channel2", "Channel 2", "Channel 2 Desc"));
-		AddStation(new Station("channel3", "Channel 3", "Channel 3 Desc"));
-		AddStation(new Station("channel4", "Channel 4", "Channel 4 Desc"));
-		AddStation(new Station("channel5", "Channel 5", "Channel 5 Desc"));
-		AddStation(new Station("channel6", "Channel 6", "Channel 6 Desc"));
-		AddStation(new Station("channel7", "Channel 7", "Channel 7 Desc"));
-		AddStation(new Station("channel8", "Channel 8", "Channel 8 Desc"));
-		AddStation(new Station("channel9", "Channel 9", "Channel 9 Desc"));
-		AddStation(new Station("channel10", "Channel 10", "Channel 10 Desc"));
+		using (PropFileReader reader = new PropFileReader("Assets/People.csv"))
+		{
+			CsvRow row = new CsvRow();
+			while (reader.ReadRow(row))
+			{
+				uPeople.Add (row[0], row[3].Split (','));
+			}
+		}
+
+		using (PropFileReader reader = new PropFileReader("Assets/AudioSelection.csv"))
+		{
+			CsvRow row = new CsvRow();
+			while (reader.ReadRow(row))
+			{
+				string[] tags = row[3].Split (',');
+				foreach(string tag in tags) {
+					if (!uTags.Contains (tag)) {
+						uTags.Add (tag);
+					}
+				}
+				AddAudio (new Audio(row[0], row[1], int.Parse (row[2]), tags));
+			}
+		}
+
+		using (PropFileReader reader = new PropFileReader("Assets/Backdrops.csv"))
+		{
+			CsvRow row = new CsvRow();
+			while (reader.ReadRow(row))
+			{
+				string[] tags = row[3].Split (',');
+				foreach(string tag in tags) {
+					if (!uTags.Contains (tag)) {
+						uTags.Add (tag);
+					}
+				}
+				AddBackdrop (new Backdrop(row[0], row[1], int.Parse (row[2]), tags));
+			}
+		}
+
+		using (PropFileReader reader = new PropFileReader("Assets/Stations.csv"))
+		{
+			CsvRow row = new CsvRow();
+			while (reader.ReadRow(row))
+			{
+				AddStation (new Station(row[0], row[1], row[2]));
+			}
+		}
 	}
 }

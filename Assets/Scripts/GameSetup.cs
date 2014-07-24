@@ -17,10 +17,6 @@ public class GameSetup : UnityEngine.Object {
 	public string[][] uNeeds;
 	public int uPlayers;
 
-	Dictionary<string, string[]> mShows = new Dictionary<string, string[]>();
-	Dictionary<string, string[]> mActivities = new Dictionary<string, string[]>();
-	Dictionary<string, string[]> mPeople = new Dictionary<string, string[]>();
-
 	// Map the template to the type of variable needed (show, thing, activity, person)
 	Dictionary<string, string[]> themeTemplates = new Dictionary<string, string[]>() {
 		{"a show like (show) but with (thing)", new string[]{"show", "thing"}},
@@ -32,13 +28,13 @@ public class GameSetup : UnityEngine.Object {
 	/**
 	 * Generate a theme which hints at the given needs
 	 */
-	string GenerateTheme(string[] pNeeds) {
+	string GenerateTheme(Game game, string[] pNeeds) {
 		// God I wrote this code late... it's not great....
 		System.Random rnd = new System.Random();
 
-		List<string> availableShows = mShows.Where(kvp => kvp.Value.Intersect(pNeeds).Count () > 0).Select (kvp => kvp.Key).OrderBy (x => rnd.Next ()).ToList();
-		List<string> availableActivities = mActivities.Where(kvp => kvp.Value.Intersect(pNeeds).Count () > 0).Select (kvp => kvp.Key).OrderBy (x => rnd.Next ()).ToList();
-		List<string> availablePeople = mPeople.Where(kvp => kvp.Value.Intersect(pNeeds).Count () > 0).Select (kvp => kvp.Key).OrderBy (x => rnd.Next ()).ToList();
+		List<string> availableShows = game.uShows.Where(kvp => kvp.Value.Intersect(pNeeds).Count () > 0).Select (kvp => kvp.Key).OrderBy (x => rnd.Next ()).ToList();
+		List<string> availableActivities = game.uActivities.Where(kvp => kvp.Value.Intersect(pNeeds).Count () > 0).Select (kvp => kvp.Key).OrderBy (x => rnd.Next ()).ToList();
+		List<string> availablePeople = game.uPeople.Where(kvp => kvp.Value.Intersect(pNeeds).Count () > 0).Select (kvp => kvp.Key).OrderBy (x => rnd.Next ()).ToList();
 		List<string> availableThings = new List<string>();
 		availableThings.AddRange (availableActivities);
 		availableThings.AddRange (availablePeople);
@@ -78,34 +74,12 @@ public class GameSetup : UnityEngine.Object {
 	}
 
 	public GameSetup(int pPlayers) {
-		Game mGame = FindObjectOfType<Game>();
-
-		// Load shows, activities, things, and people
-		mShows.Add ("The Lion King", new string[]{"animal"});
-		mShows.Add ("Songs of Praise", new string[]{"religious"});
-		mShows.Add ("Home Improvement", new string[]{"tool"});
-
-		mActivities.Add ("Reading", new string[]{"book"});
-		mActivities.Add ("Praying", new string[]{"religious"});
-		mActivities.Add ("Playing", new string[]{"toy", "cute"});
-		mActivities.Add ("Flying", new string[]{"bird"});
-		mActivities.Add ("Shooting", new string[]{"weapon"});
-
-
-		mPeople.Add ("God", new string[]{"religious"});
-		mPeople.Add ("Muhammad", new string[]{"religious"});
-		mPeople.Add ("Dora The Explorer", new string[]{"religious"});
-		mPeople.Add ("a parrot", new string[]{"bird", "animal"});
-		mPeople.Add ("the Statue of Liberty", new string[]{"statue"});
-		mPeople.Add ("an apple", new string[]{"fruit"});
-		mPeople.Add ("Woody from Toy Story", new string[]{"toy"});
-		mPeople.Add ("an electrician", new string[]{"tool"});
-		mPeople.Add ("a cow", new string[]{"toy", "animal"});
+		Game game = FindObjectOfType<Game>();
 
 		int numberOfTags = (pPlayers * Game.NUMBER_OF_DAYS) / 2;
 
 		System.Random rnd = new System.Random();
-		string[] tags = mGame.uTags.OrderBy(x => rnd.Next()).Take(numberOfTags).ToArray();
+		string[] tags = game.uTags.OrderBy(x => rnd.Next()).Take(numberOfTags).ToArray();
 
 		// From the tags array we will pull the needs and select appropriate props and themes
 
@@ -114,7 +88,7 @@ public class GameSetup : UnityEngine.Object {
 		List<string> availableProps = new List<string>();
 
 		foreach(string tag in tags) {
-			availableProps.AddRange(mGame.uProps.Where(p => p.Value.uTags.Contains(tag)).OrderBy (x => rnd.Next ()).Take (2).Select (p => p.Value.uID));
+			availableProps.AddRange(game.uProps.Where(p => p.Value.uTags.Contains(tag)).OrderBy (x => rnd.Next ()).Take (2).Select (p => p.Value.uID));
 		}
 
 		List<List<string>> needs = new List<List<string>>();
@@ -167,7 +141,7 @@ public class GameSetup : UnityEngine.Object {
 				}
 			}
 
-			themes.Add (GenerateTheme(otherNeeds.ToArray ()));
+			themes.Add (GenerateTheme(game, otherNeeds.ToArray ()));
 		}
 
 

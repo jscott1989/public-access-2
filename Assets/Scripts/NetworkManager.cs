@@ -10,8 +10,6 @@ using System.Collections.Generic;
 public class NetworkManager : MonoBehaviour {
 	// Unique game name for matchmaking
 	private const string GAME_NAME = "PublicAccessWars1";
-	// Maximum number of players
-	private const int MAX_PLAYERS = 10;
 	// The port to connect to
 	private const int SERVER_PORT = 25000;
 
@@ -131,7 +129,7 @@ public class NetworkManager : MonoBehaviour {
 	public void StartServer(string pRoomName, Action pStartServerCallback) {
 		mStartServerCallback = pStartServerCallback;
 
-		Network.InitializeServer (MAX_PLAYERS, SERVER_PORT, !Network.HavePublicAddress ());
+		Network.InitializeServer (mGame.uStations.Count, SERVER_PORT, !Network.HavePublicAddress ());
 		mRoomName = pRoomName;
 		StopGame (); // This registers everything with hte server - we're accepting new people
 	}
