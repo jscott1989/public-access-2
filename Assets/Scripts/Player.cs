@@ -236,6 +236,10 @@ public class Player : MonoBehaviour {
 	public string uTheme;
 	public string[] uNeeds;
 
+	[RPC] public void ClearRecording() {
+		uRecordingChanges.Clear ();
+	}
+
 	[RPC] public void SetGameInfo (string pTheme, string pNeeds, string pPropsString, string pBackdropsString, string pAudioString) {
 		uAvailableProps.Clear ();
 		uAvailableBackdrops.Clear ();
