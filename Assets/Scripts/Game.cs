@@ -8,14 +8,13 @@ using System.Text;
 public class Game : MonoBehaviour {
 	public Dictionary<string, Prop> uProps = new Dictionary<string, Prop>();
 	public Dictionary<string, Backdrop> uBackdrops = new Dictionary<string, Backdrop>();
+	public Dictionary<string, Audio> uAudio = new Dictionary<string, Audio>();
 
 	// Theme parts
 	public Dictionary<string, string[]> uShows = new Dictionary<string, string[]>();
 	public Dictionary<string, string[]> uActivities = new Dictionary<string, string[]>();
 	public Dictionary<string, string[]> uPeople = new Dictionary<string, string[]>();
 
-
-	public Dictionary<string, Audio> uAudio = new Dictionary<string, Audio>();
 	public List<Station> uStations = new List<Station>();
 	public Dictionary<string, Station> uStationsByID = new Dictionary<string, Station>();
 	public List<string> uTags = new List<string>();
@@ -76,7 +75,7 @@ public class Game : MonoBehaviour {
 			CsvRow row = new CsvRow();
 			while (reader.ReadRow(row))
 			{
-				uShows.Add (row[0], row[3].Split (','));
+				uShows.Add (row[0], row[1].Split (','));
 			}
 		}
 
@@ -85,7 +84,7 @@ public class Game : MonoBehaviour {
 			CsvRow row = new CsvRow();
 			while (reader.ReadRow(row))
 			{
-				uActivities.Add (row[0], row[3].Split (','));
+				uActivities.Add (row[0], row[1].Split (','));
 			}
 		}
 
@@ -94,7 +93,7 @@ public class Game : MonoBehaviour {
 			CsvRow row = new CsvRow();
 			while (reader.ReadRow(row))
 			{
-				uPeople.Add (row[0], row[3].Split (','));
+				uPeople.Add (row[0], row[1].Split (','));
 			}
 		}
 

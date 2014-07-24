@@ -15,6 +15,9 @@ public abstract class RPCEncoder
 	}
 
 	public static string[] Decode(string p) {
+		if (p == "") {
+			return new string[]{};
+		}
 		return p.Split (',');
 	}
 }

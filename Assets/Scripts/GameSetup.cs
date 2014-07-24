@@ -91,6 +91,18 @@ public class GameSetup : UnityEngine.Object {
 			availableProps.AddRange(game.uProps.Where(p => p.Value.uTags.Contains(tag)).OrderBy (x => rnd.Next ()).Take (2).Select (p => p.Value.uID));
 		}
 
+		List<string> availableBackdrops = new List<string>();
+		
+		foreach(string tag in tags) {
+			availableBackdrops.AddRange(game.uBackdrops.Where(p => p.Value.uTags.Contains(tag)).OrderBy (x => rnd.Next ()).Take (2).Select (p => p.Value.uID));
+		}
+
+		List<string> availableAudio = new List<string>();
+		
+		foreach(string tag in tags) {
+			availableAudio.AddRange(game.uBackdrops.Where(p => p.Value.uTags.Contains(tag)).OrderBy (x => rnd.Next ()).Take (2).Select (p => p.Value.uID));
+		}
+
 		List<List<string>> needs = new List<List<string>>();
 
 		List<string> distributingNeeds = new List<string>();
@@ -152,8 +164,8 @@ public class GameSetup : UnityEngine.Object {
 
 		uPlayers = pPlayers;
 		uAvailableProps = availableProps.ToArray ();
-		uAvailableBackdrops = new string[]{"mars", "beach"};
-		uAvailableAudio = new string[]{"craw", "laugh"};
+		uAvailableBackdrops = availableBackdrops.ToArray ();
+		uAvailableAudio = availableAudio.ToArray ();
 		uThemes = themes.ToArray ();
 		uNeeds = needsAsArray.ToArray (); // TODO: Right now needs is just a list of tags - we need to have a human readable description of the need
 	}
