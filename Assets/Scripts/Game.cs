@@ -32,6 +32,8 @@ public class Game : MonoBehaviour {
 	public const int NUMBER_OF_DAYS = 5; // 5
 	public const int CHANNEL_INFORMATION_COUNTDOWN = 2;
 
+	public const int CREATOR_SCORE_MULTIPLIER = 5;
+
 	public const double CHECKSCORE_TIMEOUT = 0.1;
 
 	public const string RANDOM_STATION_ID = "random";
