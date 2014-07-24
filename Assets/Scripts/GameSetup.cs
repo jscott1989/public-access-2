@@ -76,8 +76,7 @@ public class GameSetup : UnityEngine.Object {
 		int numberOfTags = (pPlayers * Game.NUMBER_OF_DAYS) / 2;
 
 		System.Random rnd = new System.Random();
-//		string[] tags = game.uTags.OrderBy(x => rnd.Next()).Take(numberOfTags).ToArray();
-		string[] tags = new string[]{"blue", "pet", "toy", "animal", "weapon", "bird", "gadget"};
+		string[] tags = game.uTags.OrderBy(x => rnd.Next()).Take(numberOfTags).ToArray();
 
 		// From the tags array we will pull the needs and select appropriate props and themes
 
