@@ -14,6 +14,7 @@ public class Game : MonoBehaviour {
 	public Dictionary<string, string[]> uShows = new Dictionary<string, string[]>();
 	public Dictionary<string, string[]> uActivities = new Dictionary<string, string[]>();
 	public Dictionary<string, string[]> uPeople = new Dictionary<string, string[]>();
+	public Dictionary<string, string[]> uThings = new Dictionary<string, string[]>();
 
 	public List<Station> uStations = new List<Station>();
 	public Dictionary<string, Station> uStationsByID = new Dictionary<string, Station>();
@@ -94,6 +95,15 @@ public class Game : MonoBehaviour {
 			while (reader.ReadRow(row))
 			{
 				uPeople.Add (row[0], row[1].Split (','));
+			}
+		}
+
+		using (PropFileReader reader = new PropFileReader("Assets/Things.csv"))
+		{
+			CsvRow row = new CsvRow();
+			while (reader.ReadRow(row))
+			{
+				uThings.Add (row[0], row[1].Split (','));
 			}
 		}
 

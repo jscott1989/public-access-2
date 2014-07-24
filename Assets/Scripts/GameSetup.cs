@@ -35,10 +35,7 @@ public class GameSetup : UnityEngine.Object {
 		List<string> availableShows = game.uShows.Where(kvp => kvp.Value.Intersect(pNeeds).Count () > 0).Select (kvp => kvp.Key).OrderBy (x => rnd.Next ()).ToList();
 		List<string> availableActivities = game.uActivities.Where(kvp => kvp.Value.Intersect(pNeeds).Count () > 0).Select (kvp => kvp.Key).OrderBy (x => rnd.Next ()).ToList();
 		List<string> availablePeople = game.uPeople.Where(kvp => kvp.Value.Intersect(pNeeds).Count () > 0).Select (kvp => kvp.Key).OrderBy (x => rnd.Next ()).ToList();
-		List<string> availableThings = new List<string>();
-		availableThings.AddRange (availableActivities);
-		availableThings.AddRange (availablePeople);
-		availableThings = availableThings.OrderBy (x => rnd.Next ()).ToList ();
+		List<string> availableThings = game.uThings.Where(kvp => kvp.Value.Intersect(pNeeds).Count () > 0).Select (kvp => kvp.Key).OrderBy (x => rnd.Next ()).ToList();
 
 		Dictionary<string, List<string>> variables = new Dictionary<string, List<string>>() {
 			{"show", availableShows},
