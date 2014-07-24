@@ -1,6 +1,8 @@
 fileFormatVersion: 2
 guid: c82ea0fdf52354ec0a0fc6e1bcac0283
 TextureImporter:
+  fileIDToRecycleName:
+    21300000: angrybird
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0

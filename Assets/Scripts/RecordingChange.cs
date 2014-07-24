@@ -142,3 +142,15 @@ public class SizeChange : RecordingChange {
 		}
 	}
 }
+
+public class AudioChange : RecordingChange {
+	string mID;
+
+	public AudioChange(string pTime, string pID) {
+		mID = pID;
+	}
+
+	public override void run(GameObject pScreen) {
+		// TODO: Play the audio - also change the score as needed (because the scorer won't be able to pick this up)
+	}
+}

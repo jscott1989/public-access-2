@@ -1,6 +1,8 @@
 fileFormatVersion: 2
 guid: a6ba1b30ebb274f878f6540e5e84802c
 TextureImporter:
+  fileIDToRecycleName:
+    21300000: liberty
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0

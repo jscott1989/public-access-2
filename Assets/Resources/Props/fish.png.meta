@@ -1,6 +1,8 @@
 fileFormatVersion: 2
 guid: ffb7b7b6935d54750a31164cc65a604e
 TextureImporter:
+  fileIDToRecycleName:
+    21300000: fish
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0

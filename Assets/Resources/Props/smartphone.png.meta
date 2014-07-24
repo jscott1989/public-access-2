@@ -1,6 +1,8 @@
 fileFormatVersion: 2
 guid: d1a0f3f7957594cab8a535d6bf76d77b
 TextureImporter:
+  fileIDToRecycleName:
+    21300000: smartphone
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0

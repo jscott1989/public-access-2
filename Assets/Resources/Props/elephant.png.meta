@@ -1,6 +1,8 @@
 fileFormatVersion: 2
 guid: ac029c98f09684fcfa69db649c747140
 TextureImporter:
+  fileIDToRecycleName:
+    21300000: elephant
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
