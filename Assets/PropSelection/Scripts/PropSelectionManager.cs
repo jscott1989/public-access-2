@@ -170,7 +170,11 @@ public class PropSelectionManager : SceneManager {
 	 * The "Buy" button has been pressed
 	 */
 	public void BuySelectedProp() {
-		mNetworkManager.myPlayer.PurchaseProp(uSelectedProp.uID);
+		if (uSelectedProp != null) {
+			mNetworkManager.myPlayer.PurchaseProp(uSelectedProp.uID);
+		} else if (uSelectedBackdrop != null) {
+			mNetworkManager.myPlayer.PurchaseBackdrop(uSelectedBackdrop.uID);
+		}
 		mAvailablePropsList.SelectedIndex = -1;
 	}
 

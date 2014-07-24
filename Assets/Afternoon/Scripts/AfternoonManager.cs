@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 public class AfternoonManager : SceneManager {
 	NetworkManager mNetworkManager;
@@ -10,7 +11,70 @@ public class AfternoonManager : SceneManager {
 	Recorder mRecorder;
 	GameObject mScreen;
 
+	GameObject mBackdropPrefab;
+
+	Dictionary<PurchasedBackdrop, AfternoonBackdrop> mBackdropMap = new Dictionary<PurchasedBackdrop, AfternoonBackdrop>();
+
 	public bool uRecording = false;
+
+	public PurchasedBackdrop[] uPurchasedBackdrops {
+		get {
+			List<PurchasedBackdrop> backdrops = new List<PurchasedBackdrop>();
+			foreach(KeyValuePair<string, PurchasedProp> kv in mNetworkManager.myPlayer.uPurchasedProps) {
+				if (kv.Value.GetType() == typeof(PurchasedBackdrop)) {
+					backdrops.Add ((PurchasedBackdrop)kv.Value);
+				}
+			}
+			return backdrops.ToArray ();
+		}
+	}
+
+	public string[] uPurchasedBackdropStrings {
+		get {
+			int i = 1;
+			List<string> set = new List<string>();
+			foreach(PurchasedBackdrop p in uPurchasedBackdrops) {
+				set.Add (i.ToString () + " " + p.uProp.uName);
+				i++;
+			}
+			return set.ToArray ();
+		}
+	}
+
+
+	public void BackdropClicked( dfControl control, System.Int32 value ) {
+		PurchasedBackdrop p = uPurchasedBackdrops[value];
+		ActivateBackdrop(p);
+	}
+
+	public void ActivateBackdrop(PurchasedBackdrop pBackdrop) {
+		foreach(KeyValuePair<PurchasedBackdrop, AfternoonBackdrop> kvp in mBackdropMap) {
+			if (!(kvp.Key == pBackdrop)) {
+				kvp.Value.Hide ();
+			} else {
+				kvp.Value.Show ();
+			}
+		}
+	}
+
+	void KeyPressed(int i) {
+		if (i > uPurchasedBackdrops.Length) {
+			i -= uPurchasedBackdrops.Length;
+			// Now use i against the sounds
+			return;
+		}
+
+		ActivateBackdrop (uPurchasedBackdrops[i - 1]);
+	}
+
+	void Update() {
+		for(int i = 0; i < 10; i++) {
+			if (Input.GetKeyDown (i.ToString ())) {
+				// Activate this backdrop/sound
+				KeyPressed(i);
+			}
+		}
+	}
 
 	public string uStateText {
 		get {
@@ -47,6 +111,7 @@ public class AfternoonManager : SceneManager {
 		mGame = (Game) FindObjectOfType (typeof(Game));
 		mRecorder = (Recorder)FindObjectOfType(typeof(Recorder));
 		mScreen = GameObject.FindGameObjectWithTag("Screen");
+		mBackdropPrefab = (GameObject)Resources.Load ("Afternoon/Prefabs/Backdrop");
 	}
 
 	void Start () {
@@ -117,6 +182,23 @@ public class AfternoonManager : SceneManager {
 		}
 
 		mDialogueManager.EndDialogue();
+
+
+		// First, instatiate all of the backdrops
+		foreach (PurchasedBackdrop purchasedBackdrop in uPurchasedBackdrops) {
+			GameObject g = (GameObject) Instantiate(mBackdropPrefab, Vector3.zero, Quaternion.identity);
+			g.transform.parent = mScreen.transform;
+
+			dfTextureSprite sprite = (dfTextureSprite)g.GetComponent (typeof(dfTextureSprite));
+			sprite.Position = new Vector2(0, 550);
+			sprite.Texture = (Texture2D)Resources.Load("Props/" + purchasedBackdrop.uProp.uID);
+
+			RecordingProp r = (RecordingProp)g.GetComponent (typeof(RecordingProp));
+			r.uPurchasedProp = purchasedBackdrop;
+
+			mBackdropMap.Add (purchasedBackdrop, g.GetComponent<AfternoonBackdrop>());
+		}
+
 
 		uRecording = false;
 		Action finishedPreparing =

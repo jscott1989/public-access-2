@@ -47,7 +47,11 @@ public class InstantiationChange : RecordingChange {
 		PlayingProp r = (PlayingProp)g.GetComponent (typeof(PlayingProp));
 		r.uID = mID;
 		Game mGame = GameObject.FindObjectOfType<Game>();
-		r.uProp = mGame.uProps[mPropID];
+		if (mGame.uProps.ContainsKey(mPropID)) {
+			r.uProp = mGame.uProps[mPropID];
+		} else if (mGame.uBackdrops.ContainsKey(mPropID)) {
+			r.uProp = mGame.uBackdrops[mPropID];
+		}
 		sprite.enabled = true;
 	}
 }

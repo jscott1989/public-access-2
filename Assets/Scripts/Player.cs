@@ -198,10 +198,12 @@ public class Player : MonoBehaviour {
 		get {
 			List<Backdrop> backdrops = new List<Backdrop>();
 			backdrops.AddRange(uAvailableBackdrops);
-//			foreach(KeyValuePair<string, PurchasedBackdrop> p in uPurchasedBackdrops) {
-//				PurchasedBackdrop purchasedBackdrop = p.Value;
-//				backdrops.Remove (purchasedBackdrop.uProp);
-//			}
+			foreach(KeyValuePair<string, PurchasedProp> p in uPurchasedProps) {
+				Backdrop backdrop = p.Value.uProp as Backdrop;
+				if (backdrop != null) {
+					backdrops.Remove (backdrop);
+				}
+			}
 			return backdrops.ToArray();
 		}
 	}
@@ -326,6 +328,39 @@ public class Player : MonoBehaviour {
 //		if (networkView.isMine) {
 //			networkView.RPC ("PurchaseProp", RPCMode.Others, prop.uID);
 //		}
+	}
+
+	[RPC] public void PurchaseBackdrop(string pBackdropID) {
+		Backdrop prop = mGame.uBackdrops[pBackdropID];
+		// Check that there is a prop.uID available
+		bool propAvailable = false;
+		foreach(Prop p in uUnpurchasedBackdrops) {
+			if (p.uID == prop.uID) {
+				propAvailable = true;
+				break;
+			}
+		}
+		
+		if (!propAvailable) {
+			return;
+		}
+		
+		// Check that we have enough money
+		if (uBudget < prop.uPrice) {
+			return;
+		}
+		
+		// Add the prop to our props, and take away the money
+		PurchasedBackdrop purchasedProp = new PurchasedBackdrop(prop);
+		uPurchasedProps.Add(purchasedProp.uID, purchasedProp);
+		uBudget -= prop.uPrice;
+		
+		mSceneManager.PropPurchased(this, purchasedProp);
+		
+		// I don't think we need to sync buying and selling
+		//		if (networkView.isMine) {
+		//			networkView.RPC ("PurchaseProp", RPCMode.Others, prop.uID);
+		//		}
 	}
 
 	[RPC] public void SellProp(string pPurchasedPropID) {

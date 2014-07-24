@@ -16,7 +16,7 @@ public class Game : MonoBehaviour {
 	public const bool DEBUG_MODE = false;
 
 	public const int LOBBY_COUNTDOWN = 6;
-	public const int PROP_SELECTION_COUNTDOWN = 10; // 60
+	public const int PROP_SELECTION_COUNTDOWN = 60; // 60
 	public const int PREPARING_COUNTDOWN = 5; // 30
 	public const int RECORDING_COUNTDOWN = 30; // 30
 	public const int EVENING_PREPARING_COUNTDOWN = 5;

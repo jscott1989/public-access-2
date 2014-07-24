@@ -24,7 +24,9 @@ public class Props : MonoBehaviour {
 	void Start() {
 		// Here we just need to look at the props available to the current player and populate it automatically
 		foreach(KeyValuePair<string, PurchasedProp> kv in mNetworkManager.myPlayer.uPurchasedProps) {
-			Add (kv.Value);
+			if (kv.Value.GetType() == typeof(PurchasedProp)) {
+				Add (kv.Value);
+			}
 		}
 	}
 	
