@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using System.Linq;
 
 /**
  * This encapsulates a change to the state of the recording
@@ -10,6 +11,7 @@ using UnityEngine;
  */
 public abstract class RecordingChange {
 	public double uTime;
+	public string uID;
 
 	public abstract void run(GameObject pScreen);
 }
@@ -17,7 +19,6 @@ public abstract class RecordingChange {
 public class InstantiationChange : RecordingChange {
 
 	string mPropID;
-	string mID;
 	string mNewX;
 	string mNewY;
 	string mSizeX;
@@ -28,7 +29,7 @@ public class InstantiationChange : RecordingChange {
 	public InstantiationChange(String pTime, string pPropID, string pID, string pNewX, string pNewY, string pSizeX, string pSizeY) {
 		uTime = Convert.ToDouble (pTime);
 		mPropID = pPropID;
-		mID = pID;
+		uID = pID;
 		mNewX = pNewX;
 		mNewY = pNewY;
 		mSizeX = pSizeX;
@@ -37,6 +38,12 @@ public class InstantiationChange : RecordingChange {
 	}
 
 	public override void run(GameObject pScreen) {
+
+		// First we destroy the object if it already exists
+		foreach (PlayingProp p in pScreen.GetComponentsInChildren<PlayingProp>().Where(p => p.uID == uID)) {
+			GameObject.Destroy(p.gameObject);
+		}
+
 		GameObject g = (GameObject) GameObject.Instantiate(mPlayingPropPrefab, Vector3.zero, Quaternion.identity);
 		g.transform.parent = pScreen.transform;
 
@@ -45,7 +52,7 @@ public class InstantiationChange : RecordingChange {
 		sprite.Position = new Vector2(float.Parse(mNewX), float.Parse (mNewY));
 		sprite.Size = new Vector2(float.Parse (mSizeX), float.Parse (mSizeY));
 		PlayingProp r = (PlayingProp)g.GetComponent (typeof(PlayingProp));
-		r.uID = mID;
+		r.uID = uID;
 		Game mGame = GameObject.FindObjectOfType<Game>();
 		if (mGame.uProps.ContainsKey(mPropID)) {
 			r.uProp = mGame.uProps[mPropID];
@@ -58,99 +65,82 @@ public class InstantiationChange : RecordingChange {
 
 public class DestroyChange : RecordingChange {
 
-	string mID;
-
 	public DestroyChange(string pTime, string pID) {
 		uTime = Convert.ToDouble (pTime);
-		mID = pID;
+		uID = pID;
 	}
 	
 	public override void run(GameObject pScreen) {
-		foreach (PlayingProp p in pScreen.GetComponentsInChildren (typeof(PlayingProp))) {
-			if (p.uID == mID) {
-				GameObject.Destroy(p.gameObject);
-				return;
-			}
+		foreach (PlayingProp p in pScreen.GetComponentsInChildren<PlayingProp>().Where(p => p.uID == uID)) {
+			GameObject.Destroy(p.gameObject);
 		}
 	}
 }
 
 public class PositionChange : RecordingChange {
-
-	string mID;
 	string mNewX;
 	string mNewY;
 
 	public PositionChange(string pTime, string pID, string pNewX, string pNewY) {
 		uTime = Convert.ToDouble (pTime);
-		mID = pID;
+		uID = pID;
 		mNewX = pNewX;
 		mNewY = pNewY;
 	}
 	
 	public override void run(GameObject pScreen) {
-		foreach (PlayingProp p in pScreen.GetComponentsInChildren (typeof(PlayingProp))) {
-			if (p.uID == mID) {
-				dfTextureSprite sprite = (dfTextureSprite) p.gameObject.GetComponent (typeof(dfTextureSprite));
-				sprite.Position = new Vector2(float.Parse(mNewX), float.Parse (mNewY));
-				return;
-			}
+		foreach (PlayingProp p in pScreen.GetComponentsInChildren<PlayingProp>().Where(p => p.uID == uID)) {
+			dfTextureSprite sprite = (dfTextureSprite) p.gameObject.GetComponent (typeof(dfTextureSprite));
+			sprite.Position = new Vector2(float.Parse(mNewX), float.Parse (mNewY));
 		}
 	}
 }
 
 public class ZOrderChange : RecordingChange { 
-	string mID;
 	string mZOrder;
 
 	public ZOrderChange(string pTime, string pID, string pZOrder) {
 		uTime = Convert.ToDouble (pTime);
-		mID = pID;
+		uID = pID;
 		mZOrder = pZOrder;
 	}
 
 	public override void run(GameObject pScreen) {
-		foreach (PlayingProp p in pScreen.GetComponentsInChildren (typeof(PlayingProp))) {
-			if (p.uID == mID) {
-				dfTextureSprite sprite = (dfTextureSprite) p.gameObject.GetComponent (typeof(dfTextureSprite));
-				sprite.ZOrder = Convert.ToInt32(mZOrder);
-				return;
-			}
+		foreach (PlayingProp p in pScreen.GetComponentsInChildren<PlayingProp>().Where(p => p.uID == uID)) {
+			dfTextureSprite sprite = (dfTextureSprite) p.gameObject.GetComponent (typeof(dfTextureSprite));
+			sprite.ZOrder = Convert.ToInt32(mZOrder);
 		}
 	}
 }
 
 public class SizeChange : RecordingChange { 
-	string mID;
 	float mX;
 	float mY;
 	
 	public SizeChange(string pTime, string pID, string pX, string pY) {
 		uTime = Convert.ToDouble (pTime);
-		mID = pID;
+		uID = pID;
 		mX = float.Parse(pX);
 		mY = float.Parse (pY);
 	}
 	
 	public override void run(GameObject pScreen) {
-		foreach (PlayingProp p in pScreen.GetComponentsInChildren (typeof(PlayingProp))) {
-			if (p.uID == mID) {
-				dfTextureSprite sprite = (dfTextureSprite) p.gameObject.GetComponent (typeof(dfTextureSprite));
-				sprite.Size = new Vector2(mX, mY);
-				return;
-			}
+		foreach (PlayingProp p in pScreen.GetComponentsInChildren<PlayingProp>().Where(p => p.uID == uID)) {
+			dfTextureSprite sprite = (dfTextureSprite) p.gameObject.GetComponent (typeof(dfTextureSprite));
+			sprite.Size = new Vector2(mX, mY);
 		}
 	}
 }
 
 public class AudioChange : RecordingChange {
-	string mID;
 
 	public AudioChange(string pTime, string pID) {
-		mID = pID;
+		uID = pID;
 	}
 
 	public override void run(GameObject pScreen) {
 		// TODO: Play the audio - also change the score as needed (because the scorer won't be able to pick this up)
+		RecordingPlayer recordingPlayer = GameObject.FindObjectOfType<RecordingPlayer>();
+		recordingPlayer.PlayAudio(uID);
 	}
 }

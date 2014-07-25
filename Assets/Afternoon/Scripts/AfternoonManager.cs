@@ -10,6 +10,7 @@ public class AfternoonManager : SceneManager {
 	Game mGame;
 	Recorder mRecorder;
 	GameObject mScreen;
+	AudioSource mAudioSource;
 
 	GameObject mBackdropPrefab;
 
@@ -88,7 +89,9 @@ public class AfternoonManager : SceneManager {
 	}
 	
 	public void ActivateAudio(PurchasedAudio pAudio) {
-		print ("PLAY " + pAudio.uProp.uName);
+		mRecorder.RecordAudio(pAudio);
+		mAudioSource.clip = pAudio.uAudio.uClip;
+		mAudioSource.Play();
 	}
 
 	void KeyPressed(int i) {
@@ -140,13 +143,14 @@ public class AfternoonManager : SceneManager {
 	}
 
 	void Awake() {
-		mNetworkManager = (NetworkManager) FindObjectOfType(typeof(NetworkManager));
-		mDialogueManager = (DialogueManager) FindObjectOfType(typeof(DialogueManager));
-		mCountdown = (Countdown) FindObjectOfType(typeof(Countdown));
-		mGame = (Game) FindObjectOfType (typeof(Game));
-		mRecorder = (Recorder)FindObjectOfType(typeof(Recorder));
+		mNetworkManager = FindObjectOfType<NetworkManager>();
+		mDialogueManager = FindObjectOfType<DialogueManager>();
+		mCountdown = FindObjectOfType<Countdown>();
+		mGame = FindObjectOfType<Game>();
+		mRecorder = FindObjectOfType<Recorder>();
 		mScreen = GameObject.FindGameObjectWithTag("Screen");
 		mBackdropPrefab = (GameObject)Resources.Load ("Afternoon/Prefabs/Backdrop");
+		mAudioSource = GetComponent<AudioSource>();
 	}
 
 	void Start () {

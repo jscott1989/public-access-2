@@ -29,6 +29,10 @@ public class Recorder : MonoBehaviour {
 		mRecordingPlayer = null;
 	}
 
+	public void RecordAudio(PurchasedAudio pAudio) {
+		mRecordingPlayer.networkView.RPC ("RecordAction", RPCMode.All, new object[]{"AudioChange", RPCEncoder.Encode(new string[]{mTime.ToString (), pAudio.uAudio.uID})});
+	}
+
 	void Update() {
 		if (mRecordingPlayer) {
 			// We are recording
