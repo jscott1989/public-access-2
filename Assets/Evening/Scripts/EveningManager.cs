@@ -196,7 +196,10 @@ public class EveningManager : SceneManager {
 
 				// Check what we can give score for
 				foreach(PlayingProp p in mScreen.GetComponentsInChildren<PlayingProp>()) {
-					dfTextureSprite sprite = p.GetComponent<dfTextureSprite>();
+					dfControl sprite = p.gameObject.GetComponent<dfTextureSprite>();
+					if (sprite == null) {
+						sprite = p.gameObject.GetComponent<dfSlicedSprite>();
+					}
 
 					Vector2 topLeftPosition = sprite.Position;
 					Vector2 bottomRightPosition = new Vector2(topLeftPosition.x + sprite.Width, topLeftPosition.y + sprite.Height);
@@ -205,13 +208,13 @@ public class EveningManager : SceneManager {
 					// this checks is it visible on screen at all
 					if (bottomRightPosition.x > 0 && bottomRightPosition.y > 0 && topLeftPosition.x < SCREEN_WIDTH && topLeftPosition.y < SCREEN_HEIGHT) {
 						foreach(string need in uTodaysLikes) {
-							if (p.uProp.uTags.Contains(need)) {
+							if (p.uTags.Contains(need)) {
 								AddScore(need);
 							}
 						}
 
 						foreach(string need in uTodaysDislikes) {
-							if (p.uProp.uTags.Contains(need)) {
+							if (p.uTags.Contains(need)) {
 								LoseScore(need);
 							}
 						}

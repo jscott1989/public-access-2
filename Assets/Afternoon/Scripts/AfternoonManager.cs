@@ -21,12 +21,15 @@ public class AfternoonManager : SceneManager {
 	public PurchasedBackdrop[] uPurchasedBackdrops {
 		get {
 			List<PurchasedBackdrop> backdrops = new List<PurchasedBackdrop>();
-			foreach(KeyValuePair<string, PurchasedProp> kv in mNetworkManager.myPlayer.uPurchasedProps) {
-				if (kv.Value.GetType() == typeof(PurchasedBackdrop)) {
-					backdrops.Add ((PurchasedBackdrop)kv.Value);
+			if (mNetworkManager != null & mNetworkManager.myPlayer != null && mNetworkManager.myPlayer.uPurchasedProps != null) {
+				foreach(KeyValuePair<string, PurchasedProp> kv in mNetworkManager.myPlayer.uPurchasedProps) {
+					if (kv.Value.GetType() == typeof(PurchasedBackdrop)) {
+						backdrops.Add ((PurchasedBackdrop)kv.Value);
+					}
 				}
+				return backdrops.ToArray ();
 			}
-			return backdrops.ToArray ();
+			return new PurchasedBackdrop[0];
 		}
 	}
 
@@ -98,11 +101,15 @@ public class AfternoonManager : SceneManager {
 		if (i > uPurchasedBackdrops.Length) {
 			i -= uPurchasedBackdrops.Length;
 			// Now use i against the sounds
-			ActivateAudio(uPurchasedAudio[i - 1]);
+			if (uPurchasedAudio.Length > i-1) {
+				ActivateAudio(uPurchasedAudio[i - 1]);
+			}
 			return;
 		}
 
-		ActivateBackdrop (uPurchasedBackdrops[i - 1]);
+		if (uPurchasedBackdrops.Length > i-1) {
+			ActivateBackdrop (uPurchasedBackdrops[i - 1]);
+		}
 	}
 
 	void Update() {

@@ -125,9 +125,11 @@ public class RecordingPlayer : MonoBehaviour {
 	}
 
 	void PlayToCurrentTime() {
-		foreach(RecordingChange rc in mPlayingPlayer.uRecordingChanges.Where (rc => rc.uTime < mTime && !mPlayedChanges.Contains (rc)).OrderBy(rc => rc.uTime)) {
-			mPlayedChanges.Add (rc);
-			rc.run (mPlayingScreen);
+		if (mPlayingPlayer != null && mPlayingPlayer.uRecordingChanges != null && mPlayedChanges != null) {
+			foreach(RecordingChange rc in mPlayingPlayer.uRecordingChanges.Where (rc => rc.uTime < mTime && !mPlayedChanges.Contains (rc)).OrderBy(rc => rc.uTime)) {
+				mPlayedChanges.Add (rc);
+				rc.run (mPlayingScreen);
+			}
 		}
 	}
 

@@ -23,10 +23,11 @@ public class InstantiationChange : RecordingChange {
 	string mNewY;
 	string mSizeX;
 	string mSizeY;
+	string mZOrder;
 
 	GameObject mPlayingPropPrefab;
 
-	public InstantiationChange(String pTime, string pPropID, string pID, string pNewX, string pNewY, string pSizeX, string pSizeY) {
+	public InstantiationChange(String pTime, string pPropID, string pID, string pNewX, string pNewY, string pSizeX, string pSizeY, string pZOrder) {
 		uTime = Convert.ToDouble (pTime);
 		mPropID = pPropID;
 		uID = pID;
@@ -34,6 +35,7 @@ public class InstantiationChange : RecordingChange {
 		mNewY = pNewY;
 		mSizeX = pSizeX;
 		mSizeY = pSizeY;
+		mZOrder = pZOrder;
 		mPlayingPropPrefab = (GameObject)Resources.Load ("Evening/Prefabs/PlayingProp");
 	}
 
@@ -51,6 +53,7 @@ public class InstantiationChange : RecordingChange {
 		sprite.Texture = (Texture2D)Resources.Load("Props/" + mPropID);
 		sprite.Position = new Vector2(float.Parse(mNewX), float.Parse (mNewY));
 		sprite.Size = new Vector2(float.Parse (mSizeX), float.Parse (mSizeY));
+		sprite.ZOrder = int.Parse (mZOrder);
 		PlayingProp r = (PlayingProp)g.GetComponent (typeof(PlayingProp));
 		r.uID = uID;
 		Game mGame = GameObject.FindObjectOfType<Game>();
@@ -59,6 +62,60 @@ public class InstantiationChange : RecordingChange {
 		} else if (mGame.uBackdrops.ContainsKey(mPropID)) {
 			r.uProp = mGame.uBackdrops[mPropID];
 		}
+		sprite.enabled = true;
+	}
+}
+
+public class DialogueInstantiationChange : RecordingChange {
+	
+	string mText;
+	string mSpriteName;
+	string mTextScale;
+	string mNewX;
+	string mNewY;
+	string mSizeX;
+	string mSizeY;
+	string mZOrder;
+	
+	GameObject mPlayingDialoguePrefab;
+	
+	public DialogueInstantiationChange(String pTime, string pID, String pSpriteName, String pText, string pTextScale, string pNewX, string pNewY, string pSizeX, string pSizeY, string pZOrder) {
+		uTime = Convert.ToDouble (pTime);
+		uID = pID;
+		mText = pText;
+		mSpriteName = pSpriteName;
+		mTextScale = pTextScale;
+		mNewX = pNewX;
+		mNewY = pNewY;
+		mSizeX = pSizeX;
+		mSizeY = pSizeY;
+		mZOrder = pZOrder;
+		mPlayingDialoguePrefab = (GameObject)Resources.Load ("Evening/Prefabs/PlayingDialogue");
+	}
+	
+	public override void run(GameObject pScreen) {
+		
+		// First we destroy the object if it already exists
+		foreach (PlayingProp p in pScreen.GetComponentsInChildren<PlayingProp>().Where(p => p.uID == uID)) {
+			GameObject.Destroy(p.gameObject);
+		}
+		
+		GameObject g = (GameObject) GameObject.Instantiate(mPlayingDialoguePrefab, Vector3.zero, Quaternion.identity);
+		g.transform.parent = pScreen.transform;
+		
+		dfSlicedSprite sprite = g.GetComponent<dfSlicedSprite>();
+		sprite.SpriteName = mSpriteName;
+		sprite.Position = new Vector2(float.Parse(mNewX), float.Parse (mNewY));
+		sprite.Size = new Vector2(float.Parse (mSizeX), float.Parse (mSizeY));
+		sprite.ZOrder = int.Parse (mZOrder);
+
+		PlayingProp r = g.GetComponent<PlayingProp>();
+		r.uID = uID;
+
+		dfLabel l = g.GetComponentInChildren<dfLabel>();
+		l.Text = mText;
+		l.TextScale = float.Parse (mTextScale);
+
 		sprite.enabled = true;
 	}
 }
@@ -90,7 +147,10 @@ public class PositionChange : RecordingChange {
 	
 	public override void run(GameObject pScreen) {
 		foreach (PlayingProp p in pScreen.GetComponentsInChildren<PlayingProp>().Where(p => p.uID == uID)) {
-			dfTextureSprite sprite = (dfTextureSprite) p.gameObject.GetComponent (typeof(dfTextureSprite));
+			dfControl sprite = p.gameObject.GetComponent<dfTextureSprite>();
+			if (sprite == null) {
+				sprite = p.gameObject.GetComponent<dfSlicedSprite>();
+			}
 			sprite.Position = new Vector2(float.Parse(mNewX), float.Parse (mNewY));
 		}
 	}
@@ -107,7 +167,10 @@ public class ZOrderChange : RecordingChange {
 
 	public override void run(GameObject pScreen) {
 		foreach (PlayingProp p in pScreen.GetComponentsInChildren<PlayingProp>().Where(p => p.uID == uID)) {
-			dfTextureSprite sprite = (dfTextureSprite) p.gameObject.GetComponent (typeof(dfTextureSprite));
+			dfControl sprite = p.gameObject.GetComponent<dfTextureSprite>();
+			if (sprite == null) {
+				sprite = p.gameObject.GetComponent<dfSlicedSprite>();
+			}
 			sprite.ZOrder = Convert.ToInt32(mZOrder);
 		}
 	}
@@ -126,8 +189,45 @@ public class SizeChange : RecordingChange {
 	
 	public override void run(GameObject pScreen) {
 		foreach (PlayingProp p in pScreen.GetComponentsInChildren<PlayingProp>().Where(p => p.uID == uID)) {
-			dfTextureSprite sprite = (dfTextureSprite) p.gameObject.GetComponent (typeof(dfTextureSprite));
+			dfControl sprite = p.gameObject.GetComponent<dfTextureSprite>();
+			if (sprite == null) {
+				sprite = p.gameObject.GetComponent<dfSlicedSprite>();
+			}
 			sprite.Size = new Vector2(mX, mY);
+		}
+	}
+}
+
+public class DialogueTextChange : RecordingChange { 
+	string mText;
+	
+	public DialogueTextChange(string pTime, string pID, string pText) {
+		uTime = Convert.ToDouble (pTime);
+		uID = pID;
+		mText = pText;
+	}
+	
+	public override void run(GameObject pScreen) {
+		foreach (PlayingProp p in pScreen.GetComponentsInChildren<PlayingProp>().Where(p => p.uID == uID)) {
+			dfLabel l = p.GetComponentInChildren<dfLabel>();
+			l.Text = mText;
+		}
+	}
+}
+
+public class DialogueTextScaleChange : RecordingChange { 
+	string mTextScale;
+	
+	public DialogueTextScaleChange(string pTime, string pID, string pTextScale) {
+		uTime = Convert.ToDouble (pTime);
+		uID = pID;
+		mTextScale = pTextScale;
+	}
+	
+	public override void run(GameObject pScreen) {
+		foreach (PlayingProp p in pScreen.GetComponentsInChildren<PlayingProp>().Where(p => p.uID == uID)) {
+			dfLabel l = p.GetComponentInChildren<dfLabel>();
+			l.TextScale = float.Parse (mTextScale);
 		}
 	}
 }
