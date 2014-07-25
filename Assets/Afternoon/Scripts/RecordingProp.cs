@@ -24,7 +24,7 @@ public class RecordingProp : MonoBehaviour {
 	/**
 	 * Put the prop back in the prop box
 	 */
-	public void PutBackInBox() {
+	public virtual void PutBackInBox() {
 		mProps.Add (uPurchasedProp);
 		Destroy (gameObject);
 	}

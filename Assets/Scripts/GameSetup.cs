@@ -161,9 +161,10 @@ public class GameSetup : UnityEngine.Object {
 
 		uPlayers = pPlayers;
 		uAvailableProps = availableProps.ToArray ();
-		uAvailableBackdrops = availableBackdrops.ToArray ();
+//		uAvailableBackdrops = availableBackdrops.ToArray ();
+		uAvailableBackdrops = new string[]{"mars", "beach","mars", "beach","mars", "beach","mars", "beach"};
 //		uAvailableAudio = availableAudio.ToArray ();
-		uAvailableAudio = new string[]{"baby","bird","boink"};
+		uAvailableAudio = new string[]{"baby","bird","boink","boink","boink","boink","boink"};
 		uThemes = themes.ToArray ();
 		uNeeds = needsAsArray.ToArray (); // TODO: Right now needs is just a list of tags - we need to have a human readable description of the need
 	}

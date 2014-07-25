@@ -9,7 +9,7 @@ public class MovableProp : MonoBehaviour {
 	bool mIsDragging = false;
 
 	dfPanel mScreenPanel;
-	dfTextureSprite mSprite;
+	dfControl mSprite;
 	dfScrollPanel mProps;
 	RecordingProp mRecordingProp;
 
@@ -19,7 +19,10 @@ public class MovableProp : MonoBehaviour {
 
 	void Awake() {
 		mScreenPanel = (dfPanel)GameObject.FindGameObjectWithTag("Screen").GetComponent(typeof(dfPanel));
-		mSprite = (dfTextureSprite)GetComponent(typeof(dfTextureSprite));
+		mSprite = GetComponent<dfTextureSprite>();
+		if (mSprite == null) {
+			mSprite = GetComponent<dfSlicedSprite>();
+		}
 		mProps = (dfScrollPanel)FindObjectOfType(typeof(dfScrollPanel));
 		mRecordingProp = (RecordingProp)GetComponent (typeof(RecordingProp));
 	}

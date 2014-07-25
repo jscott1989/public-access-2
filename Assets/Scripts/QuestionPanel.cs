@@ -18,12 +18,13 @@ public class QuestionPanel : MonoBehaviour {
 		DontDestroyOnLoad (gameObject);
 	}
 
-	public void AskQuestion(string question, Action<string> callback) {
+	public void AskQuestion(string question, Action<string> callback, string defaultText = "") {
 		mLabel.Text = question;
-		mTextBox.Text = "";
+		mTextBox.Text = defaultText;
 		mCallback = callback;
 
 		mPanel.enabled = true;
+		mTextBox.Focus();
 	}
 
 	public void Submit() {

@@ -6,12 +6,15 @@ public class ResizableProp : MonoBehaviour {
 	ResizableCorner mFixedCorner;
 	dfButton mFixedCornerButton;
 
-	dfTextureSprite mSprite;
+	dfControl mSprite;
 
 	dfPanel mScreenPanel;
 
 	void Awake() {
 		mSprite = GetComponent<dfTextureSprite>();
+		if (mSprite == null) {
+			mSprite = GetComponent<dfSlicedSprite>();
+		}
 		mScreenPanel = GameObject.FindGameObjectWithTag("Screen").GetComponent<dfPanel>();
 	}
 
@@ -49,14 +52,10 @@ public class ResizableProp : MonoBehaviour {
 			float fixedCornerX = mFixedCornerButton.GetAbsolutePosition().x;
 			float fixedCornerY = mFixedCornerButton.GetAbsolutePosition().y;
 
-			print(fixedCornerX);
-			print (fixedCornerY);
-
 			float width = Mathf.Abs(position.x - fixedCornerX);
 			float height = Mathf.Abs(position.y - fixedCornerY);
 
 			mSprite.Size = new Vector2(width, height);
-
 
 			if (!Input.GetMouseButton(0)) {
 				StopDragging();

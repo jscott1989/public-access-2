@@ -39,8 +39,7 @@ public class Recorder : MonoBehaviour {
 			mTime += Time.deltaTime;
 
 			// First loop through all of the recordable objects in screen to check if any have been added/removed
-			// TODO: This should be fine - but it might be better to specify mRecordingScreen as the parent
-			RecordingProp[] currentRecordingProps = FindObjectsOfType<RecordingProp>();
+			RecordingProp[] currentRecordingProps = FindObjectsOfType<RecordingProp>().Where (rp => rp.GetType () != typeof(RecordingDialogue)).ToArray();
 
 			// Get the IDs from all current props
 			string[] currentIDs = (from prop in currentRecordingProps select prop.uPurchasedProp.uID).ToArray ();
