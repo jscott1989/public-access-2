@@ -16,4 +16,9 @@ public class RecordingDialogue : RecordingProp {
 	public override void PutBackInBox() {
 		Destroy (gameObject);
 	}
+
+	public override void FirstDrop() {
+		Dialogue d = GetComponent<Dialogue>();
+		d.SetText ();
+	}
 }

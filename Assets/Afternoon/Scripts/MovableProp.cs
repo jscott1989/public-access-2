@@ -17,6 +17,8 @@ public class MovableProp : MonoBehaviour {
 	float mXOffset;
 	float mYOffset;
 
+	bool hasDroppedFirst = false; // This tracks if this is our first drag - if so we can do something special on first drop
+
 	void Awake() {
 		mScreenPanel = (dfPanel)GameObject.FindGameObjectWithTag("Screen").GetComponent(typeof(dfPanel));
 		mSprite = GetComponent<dfTextureSprite>();
@@ -61,5 +63,10 @@ public class MovableProp : MonoBehaviour {
 		}
 
 		mIsDragging = false;
+
+		if (!hasDroppedFirst) {
+			hasDroppedFirst = true;
+			mRecordingProp.FirstDrop();
+		}
 	}
 }

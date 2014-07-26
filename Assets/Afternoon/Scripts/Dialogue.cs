@@ -3,7 +3,6 @@ using System.Collections;
 using System;
 
 public class Dialogue : MonoBehaviour {
-	const string DEFAULT_TEXT = "Click here to set text";
 	QuestionPanel mQuestionPanel;
 	dfSlicedSprite mSprite;
 	dfLabel mLabel;
@@ -15,7 +14,7 @@ public class Dialogue : MonoBehaviour {
 		mLabel = GetComponentInChildren<dfLabel>();
 		mDialogueSizeTester = FindObjectOfType<DialogueSizeTester>();
 
-		mLabel.Text = DEFAULT_TEXT;
+		mLabel.Text = "";
 		ScaleText ();
 	}
 
@@ -26,11 +25,7 @@ public class Dialogue : MonoBehaviour {
 			ScaleText();
 		};
 
-		if (mLabel.Text != DEFAULT_TEXT) {
-			mQuestionPanel.AskQuestion ("Enter text", textSelected, mLabel.Text);
-		} else {
-			mQuestionPanel.AskQuestion ("Enter text", textSelected);
-		}
+		mQuestionPanel.AskQuestion ("Enter text", textSelected, mLabel.Text);
 	}
 
 	public void SizeChanged() {

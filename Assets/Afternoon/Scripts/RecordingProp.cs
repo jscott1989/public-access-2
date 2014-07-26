@@ -28,4 +28,7 @@ public class RecordingProp : MonoBehaviour {
 		mProps.Add (uPurchasedProp);
 		Destroy (gameObject);
 	}
+
+	public virtual void FirstDrop() {
+	}
 }
