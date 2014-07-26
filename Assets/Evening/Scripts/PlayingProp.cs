@@ -9,7 +9,8 @@ public class PlayingProp : MonoBehaviour {
 	public string[] uTags {
 		get {
 			if (uProp == null) {
-				return new string[0];
+				// Let's just assume we're a dialogue TODO: This is a stupid place to put this code - sort it out
+				return new string[]{"text", "white"};
 			}
 			return uProp.uTags;
 		}
