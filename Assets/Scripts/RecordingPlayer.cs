@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -87,41 +88,66 @@ public class RecordingPlayer : MonoBehaviour {
 
 		foreach(KeyValuePair<string, List<RecordingChange>> kvp in partitionedChanges) {
 			List<RecordingChange> changes = kvp.Value;
-			// Now loop through each one, and find the latest "Create" action, and latest "destroy" action
-			RecordingChange lastCreate = changes.Where (rc => rc.GetType() == typeof(InstantiationChange)).OrderByDescending(rc => rc.uTime).FirstOrDefault();
-			RecordingChange lastDestroy = changes.Where (rc => rc.GetType() == typeof(DestroyChange)).OrderByDescending(rc => rc.uTime).FirstOrDefault();
 
-			// if there is no create - or the destroy is after the create, then we don't do anything
-			if (lastCreate == null) {
-				continue;
+			IEnumerable<RecordingChange> runnableChanges = PerformPropJumpActions(changes);
+			if (runnableChanges == null) {
+				runnableChanges = PerformDialogueJumpActions(changes);
 			}
-
-			if (lastDestroy != null && lastDestroy.uTime >= lastCreate.uTime) {
-				continue;
-			}
-
-			// Run the last create
-			lastCreate.run (mPlayingScreen);
-
-			// re-filter the changes to remove any which occured before the creation
-			IEnumerable<RecordingChange> runnableChanges = changes.Where (rc => rc.uTime >= lastCreate.uTime);
 
 			// now get the last size/zorder/position change and apply it
-			RecordingChange lastSize = runnableChanges.Where (rc => rc.GetType() == typeof(SizeChange)).OrderByDescending(rc => rc.uTime).FirstOrDefault();
-			RecordingChange lastZOrder = runnableChanges.Where (rc => rc.GetType() == typeof(ZOrderChange)).OrderByDescending(rc => rc.uTime).FirstOrDefault();
-			RecordingChange lastPosition = runnableChanges.Where (rc => rc.GetType() == typeof(PositionChange)).OrderByDescending(rc => rc.uTime).FirstOrDefault();
-			if (lastSize != null) {
-				lastSize.run (mPlayingScreen);
-			}
-			if (lastZOrder != null) {
-				lastZOrder.run (mPlayingScreen);
-			}
-			if (lastPosition != null) {
-				lastPosition.run (mPlayingScreen);
+			Type[] changesToApply = new Type[]{typeof(SizeChange), typeof(ZOrderChange), typeof(PositionChange), typeof(DialogueTextChange), typeof(DialogueTextScaleChange)};
+
+			foreach(Type t in changesToApply) {
+				RecordingChange lastChange = runnableChanges.Where (rc => rc.GetType() == t).OrderByDescending(rc => rc.uTime).FirstOrDefault();
+				if (lastChange != null) {
+					lastChange.run (mPlayingScreen);
+				}
 			}
 		}
 
 		mTime = pTime;
+	}
+
+	IEnumerable<RecordingChange> PerformPropJumpActions(List<RecordingChange> changes) {
+		// Now loop through each one, and find the latest "Create" action, and latest "destroy" action
+		RecordingChange lastCreate = changes.Where (rc => rc.GetType() == typeof(InstantiationChange)).OrderByDescending(rc => rc.uTime).FirstOrDefault();
+		RecordingChange lastDestroy = changes.Where (rc => rc.GetType() == typeof(DestroyChange)).OrderByDescending(rc => rc.uTime).FirstOrDefault();
+		
+		// if there is no create - or the destroy is after the create, then we don't do anything
+		if (lastCreate == null) {
+			return null;
+		}
+		
+		if (lastDestroy != null && lastDestroy.uTime >= lastCreate.uTime) {
+			return null;
+		}
+		
+		// Run the last create
+		lastCreate.run (mPlayingScreen);
+		
+		// re-filter the changes to remove any which occured before the creation
+		return changes.Where (rc => rc.uTime >= lastCreate.uTime);
+	}
+
+	IEnumerable<RecordingChange> PerformDialogueJumpActions(List<RecordingChange> changes) {
+		// Now loop through each one, and find the latest "Create" action, and latest "destroy" action
+		RecordingChange lastCreate = changes.Where (rc => rc.GetType() == typeof(DialogueInstantiationChange)).OrderByDescending(rc => rc.uTime).FirstOrDefault();
+		RecordingChange lastDestroy = changes.Where (rc => rc.GetType() == typeof(DestroyChange)).OrderByDescending(rc => rc.uTime).FirstOrDefault();
+		
+		// if there is no create - or the destroy is after the create, then we don't do anything
+		if (lastCreate == null) {
+			return null;
+		}
+		
+		if (lastDestroy != null && lastDestroy.uTime >= lastCreate.uTime) {
+			return null;
+		}
+		
+		// Run the last create
+		lastCreate.run (mPlayingScreen);
+		
+		// re-filter the changes to remove any which occured before the creation
+		return changes.Where (rc => rc.uTime >= lastCreate.uTime);
 	}
 
 	void PlayToCurrentTime() {

@@ -450,6 +450,7 @@ public class Player : MonoBehaviour {
 	}
 
 	public void NextDay() {
+		uBudget += mGame.uCashPerDay[uDay];
 		uDay += 1;
 	}
 

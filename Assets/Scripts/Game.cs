@@ -16,6 +16,8 @@ public class Game : MonoBehaviour {
 	public Dictionary<string, string[]> uPeople = new Dictionary<string, string[]>();
 	public Dictionary<string, string[]> uThings = new Dictionary<string, string[]>();
 
+	public int[] uCashPerDay = new int[]{ 300, 100, 200, 100, 100, 100};
+
 	public List<Station> uStations = new List<Station>();
 	public Dictionary<string, Station> uStationsByID = new Dictionary<string, Station>();
 	public List<string> uTags = new List<string>();
