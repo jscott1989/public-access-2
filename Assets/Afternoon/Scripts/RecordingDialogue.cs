@@ -4,7 +4,11 @@ using System.Collections;
 
 public class RecordingDialogue : RecordingProp {
 
-	public string uID = Guid.NewGuid().ToString();
+	public string uID;
+
+	void Awake() {
+		uID = Guid.NewGuid().ToString();
+	}
 
 	/**
 	 * Put the prop back in the prop box
