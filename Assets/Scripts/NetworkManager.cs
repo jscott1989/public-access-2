@@ -13,7 +13,7 @@ public class NetworkManager : MonoBehaviour {
 	// The port to connect to
 	private const int SERVER_PORT = 25000;
 
-	private string mRoomName = "";
+	public string uRoomName = "";
 
 	// A list of known servers we can connect to
 	public HostData[] uHostList;
@@ -130,7 +130,7 @@ public class NetworkManager : MonoBehaviour {
 		mStartServerCallback = pStartServerCallback;
 
 		Network.InitializeServer (mGame.uStations.Count, SERVER_PORT, !Network.HavePublicAddress ());
-		mRoomName = pRoomName;
+		uRoomName = pRoomName;
 		StopGame (); // This registers everything with hte server - we're accepting new people
 	}
 
@@ -146,7 +146,7 @@ public class NetworkManager : MonoBehaviour {
 	 * Add the server to the room list and start accepting connections
 	 */
 	public void StopGame() {
-		MasterServer.RegisterHost(GAME_NAME, mRoomName);
+		MasterServer.RegisterHost(GAME_NAME, uRoomName);
 		uGameHasStarted = false;
 	}
 
@@ -184,6 +184,7 @@ public class NetworkManager : MonoBehaviour {
 	 */
 	public void JoinServer(HostData pHostData, Action pJoinGameCallback) {
 		mJoinGameCallback = pJoinGameCallback;
+		uRoomName = pHostData.gameName;
 		Network.Connect(pHostData);
 	}
 

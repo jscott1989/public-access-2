@@ -23,6 +23,12 @@ public class MorningManager : SceneManager {
 		// TODO: Middle dialogues
 	};
 
+	public Texture uStationLogo {
+		get {
+			return mNetworkManager.myPlayer.uStationLogo;
+		}
+	}
+
 	void Awake() {
 		mNetworkManager = FindObjectOfType<NetworkManager>();
 		mDialogueManager = FindObjectOfType<DialogueManager>();

@@ -23,6 +23,12 @@ public class LobbyManager : SceneManager {
 	// This is used to announce each second as it passes
 	int mLastCountdownAnnouncement = 0;
 
+
+	public string uLobbyName {
+		get {
+			return mNetworkManager.uRoomName + " Lobby";
+		}
+	}
 	void Awake() {
 		mMyPlayerInfoPrefab = (GameObject)Resources.Load ("Lobby/Prefabs/MyPlayerInfoBox");
 		mPlayerInfoPrefab = (GameObject)Resources.Load ("Lobby/Prefabs/PlayerInfoBox");
