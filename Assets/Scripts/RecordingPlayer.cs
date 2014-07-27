@@ -23,6 +23,7 @@ public class RecordingPlayer : MonoBehaviour {
 	}
 
 	public void PlayAudio(string pID) {
+		// TODO: Add score if possible
 		mAudioSource.clip = mGame.uAudio[pID].uClip;
 		mAudioSource.Play ();
 	}

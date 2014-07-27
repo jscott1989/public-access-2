@@ -240,7 +240,6 @@ public class AudioChange : RecordingChange {
 	}
 
 	public override void run(GameObject pScreen) {
-		// TODO: Play the audio - also change the score as needed (because the scorer won't be able to pick this up)
 		Debug.Log("playing audio " + uID + " at " + uTime.ToString ());
 		RecordingPlayer recordingPlayer = GameObject.FindObjectOfType<RecordingPlayer>();
 		recordingPlayer.PlayAudio(uID);
