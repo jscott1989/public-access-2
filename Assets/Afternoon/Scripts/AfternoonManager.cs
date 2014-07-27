@@ -92,9 +92,11 @@ public class AfternoonManager : SceneManager {
 	}
 	
 	public void ActivateAudio(PurchasedAudio pAudio) {
-		mRecorder.RecordAudio(pAudio);
-		mAudioSource.clip = pAudio.uAudio.uClip;
-		mAudioSource.Play();
+		if (!mAudioSource.isPlaying) {
+			mRecorder.RecordAudio(pAudio);
+			mAudioSource.clip = pAudio.uAudio.uClip;
+			mAudioSource.Play();
+		};
 	}
 
 	void KeyPressed(int i) {

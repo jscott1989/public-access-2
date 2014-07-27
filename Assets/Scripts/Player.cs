@@ -37,34 +37,34 @@ public class Player : MonoBehaviour {
 	/**
 	 * Record that a point has been gained from watching TV
 	 */
-	[RPC] public void AddWatchingScore(string pNeed) {
+	[RPC] public void AddWatchingScore(string pNeed, int pNumber) {
 		while (uDailyWatchingScore.Count < uDay) {
 			uDailyWatchingScore.Add (0);
 		}
 
-		uDailyWatchingScore[uDailyWatchingScore.Count - 1] += 1;
+		uDailyWatchingScore[uDailyWatchingScore.Count - 1] += pNumber;
 
 		if (!uScoreFromWatching.ContainsKey(pNeed)) {
-			uScoreFromWatching[pNeed] = 1;
+			uScoreFromWatching[pNeed] = pNumber;
 		} else {
-			uScoreFromWatching[pNeed] += 1;
+			uScoreFromWatching[pNeed] += pNumber;
 		}
 	}
 
 	/**
 	 * Record that a point has been gained from watching TV
 	 */
-	[RPC] public void LoseWatchingScore(string pNeed) {
+	[RPC] public void LoseWatchingScore(string pNeed, int pNumber) {
 		while (uDailyWatchingScore.Count < uDay) {
 			uDailyWatchingScore.Add (0);
 		}
 		
-		uDailyWatchingScore[uDailyWatchingScore.Count - 1] -= 1;
+		uDailyWatchingScore[uDailyWatchingScore.Count - 1] -= pNumber;
 		
 		if (!uScoreLostFromWatching.ContainsKey(pNeed)) {
-			uScoreLostFromWatching[pNeed] = 1;
+			uScoreLostFromWatching[pNeed] = pNumber;
 		} else {
-			uScoreLostFromWatching[pNeed] += 1;
+			uScoreLostFromWatching[pNeed] += pNumber;
 		}
 	}
 

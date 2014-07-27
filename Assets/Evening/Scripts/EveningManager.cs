@@ -227,17 +227,17 @@ public class EveningManager : SceneManager {
 	/**
 	 * Add to our viewer score for the given need
 	 */
-	void AddScore(string need) {
+	void AddScore(string pNeed, int pNumber = 1) {
 		// TODO: Show some output that the need has been met
-		mNetworkManager.myPlayer.networkView.RPC ("AddWatchingScore", RPCMode.All, need);
+		mNetworkManager.myPlayer.networkView.RPC ("AddWatchingScore", RPCMode.All, pNeed, pNumber);
 	}
 
 	/**
 	 * Subtract to our viewer score for the given need
 	 */
-	void LoseScore(string need) {
+	void LoseScore(string pNeed, int pNumber = 1) {
 		// TODO: Show some output that the need has been lost
-		mNetworkManager.myPlayer.networkView.RPC ("LoseWatchingScore", RPCMode.All, need);
+		mNetworkManager.myPlayer.networkView.RPC ("LoseWatchingScore", RPCMode.All, pNeed, pNumber);
 	}
 
 	public bool uStationInformationIsVisible;
@@ -274,6 +274,17 @@ public class EveningManager : SceneManager {
 				return "";
 			}
 			return mNetworkManager.playersOrderedByStation[mWatchingPlayer].uTheme;
+		}
+	}
+
+	public override void AudioPlayed(Audio pAudio) {
+		foreach (string tag in pAudio.uTags) {
+			if (uTodaysLikes.Contains(tag)) {
+				AddScore (tag, 10);
+			}
+			if (uTodaysDislikes.Contains(tag)) {
+				LoseScore (tag, 10);
+			}
 		}
 	}
 }

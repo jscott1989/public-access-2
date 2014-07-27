@@ -7,6 +7,7 @@ using System.Linq;
 public class RecordingPlayer : MonoBehaviour {
 	Player mPlayingPlayer;
 	GameObject mPlayingScreen;
+	SceneManager mSceneManager;
 
 	double mTime;
 
@@ -24,6 +25,7 @@ public class RecordingPlayer : MonoBehaviour {
 
 	public void PlayAudio(string pID) {
 		// TODO: Add score if possible
+		mSceneManager.AudioPlayed(mGame.uAudio[pID]);
 		mAudioSource.clip = mGame.uAudio[pID].uClip;
 		mAudioSource.Play ();
 	}
