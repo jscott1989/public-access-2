@@ -114,7 +114,7 @@ public class EveningManager : SceneManager {
 			if (mNetworkManager == null) {
 				return "";
 			}
-			return mNetworkManager.myPlayer.uNeeds.Where (s => !s.StartsWith("-")).First();
+			return mGame.uTagHumanReadable[mNetworkManager.myPlayer.uNeeds.Where (s => !s.StartsWith("-")).First()];
 		}
 	}
 
@@ -123,7 +123,7 @@ public class EveningManager : SceneManager {
 			if (mNetworkManager == null) {
 				return "";
 			}
-			return mNetworkManager.myPlayer.uNeeds.Where (s => s.StartsWith("-")).Select (s => s.Substring(1)).First();
+			return mGame.uTagHumanReadable[mNetworkManager.myPlayer.uNeeds.Where (s => s.StartsWith("-")).Select (s => s.Substring(1)).First()];
 		}
 	}
 
@@ -132,7 +132,7 @@ public class EveningManager : SceneManager {
 			if (mNetworkManager == null) {
 				return "";
 			}
-			return mNetworkManager.myPlayer.uNeeds.Where (s => !s.StartsWith("-")).ToArray()[1];
+			return mGame.uTagHumanReadable[mNetworkManager.myPlayer.uNeeds.Where (s => !s.StartsWith("-")).ToArray()[1]];
 		}
 	}
 
@@ -141,7 +141,7 @@ public class EveningManager : SceneManager {
 			if (mNetworkManager == null) {
 				return "";
 			}
-			return mNetworkManager.myPlayer.uNeeds.Where (s => s.StartsWith("-")).Select (s => s.Substring(1)).ToArray()[1];
+			return mGame.uTagHumanReadable[mNetworkManager.myPlayer.uNeeds.Where (s => s.StartsWith("-")).Select (s => s.Substring(1)).ToArray()[1]];
 		}
 	}
 
@@ -150,19 +150,7 @@ public class EveningManager : SceneManager {
 			if (mNetworkManager == null) {
 				return "";
 			}
-			return mNetworkManager.myPlayer.uNeeds.Where (s => !s.StartsWith("-")).ToArray()[2];
-		}
-	}
-
-	public string uTodaysLikesString {
-		get {
-			return string.Join("\n", uTodaysLikes);
-		}
-	}
-
-	public string uTodaysDislikesString {
-		get {
-			return string.Join("\n", uTodaysDislikes);
+			return mGame.uTagHumanReadable[mNetworkManager.myPlayer.uNeeds.Where (s => !s.StartsWith("-")).ToArray()[2]];
 		}
 	}
 

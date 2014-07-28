@@ -21,7 +21,7 @@ public class AfternoonManager : SceneManager {
 	public PurchasedBackdrop[] uPurchasedBackdrops {
 		get {
 			List<PurchasedBackdrop> backdrops = new List<PurchasedBackdrop>();
-			if (mNetworkManager != null & mNetworkManager.myPlayer != null && mNetworkManager.myPlayer.uPurchasedProps != null) {
+			if (mNetworkManager != null && mNetworkManager.myPlayer != null && mNetworkManager.myPlayer.uPurchasedProps != null) {
 				foreach(KeyValuePair<string, PurchasedProp> kv in mNetworkManager.myPlayer.uPurchasedProps) {
 					if (kv.Value.GetType() == typeof(PurchasedBackdrop)) {
 						backdrops.Add ((PurchasedBackdrop)kv.Value);

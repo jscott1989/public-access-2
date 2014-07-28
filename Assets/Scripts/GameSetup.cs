@@ -2823,7 +2823,6 @@ public class GameSetup : UnityEngine.Object {
 
 		System.Random rnd = new System.Random();
 		List<string> tags = game.uTags.OrderBy(x => rnd.Next()).Take(numberOfTags - 1).ToList();
-		tags.Add ("text");
 
 		// From the tags array we will pull the needs and select appropriate props and themes
 

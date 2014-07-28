@@ -21,6 +21,8 @@ public class Game : MonoBehaviour {
 	public List<Station> uStations = new List<Station>();
 	public Dictionary<string, Station> uStationsByID = new Dictionary<string, Station>();
 	public List<string> uTags = new List<string>();
+	public Dictionary<string, List<string>> uTagCategories = new Dictionary<string, List<string>>();
+	public Dictionary<string, string> uTagHumanReadable = new Dictionary<string, string>();
 
 	// This means that a single "ready" is enough to move everyone on - just to hurry during testing
 	public const bool DEBUG_MODE = false;
@@ -66,15 +68,23 @@ public class Game : MonoBehaviour {
 			while (reader.ReadRow(row))
 			{
 				string[] tags = row[3].Split (',');
-				foreach(string tag in tags) {
-					if (!uTags.Contains (tag)) {
-						uTags.Add (tag);
-					}
-				}
 				AddProp (new Prop(row[0], row[1], int.Parse(row[2]), tags));
 			}
 		}
 
+		using (PropFileReader reader = new PropFileReader("Assets/Tags.csv"))
+		{
+			CsvRow row = new CsvRow();
+			while (reader.ReadRow(row))
+			{
+				uTags.Add (row[0]);
+				if (!uTagCategories.ContainsKey(row[1])) {
+					uTagCategories[row[1]] = new List<string>();
+				}
+				uTagCategories[row[1]].Add (row[0]);
+				uTagHumanReadable[row[0]] = row[2];
+			}
+		}
 
 		using (PropFileReader reader = new PropFileReader("Assets/Shows.csv"))
 		{
@@ -118,11 +128,6 @@ public class Game : MonoBehaviour {
 			while (reader.ReadRow(row))
 			{
 				string[] tags = row[3].Split (',');
-				foreach(string tag in tags) {
-					if (!uTags.Contains (tag)) {
-						uTags.Add (tag);
-					}
-				}
 				AddAudio (new Audio(row[0], row[1], int.Parse (row[2]), tags));
 			}
 		}
@@ -133,11 +138,6 @@ public class Game : MonoBehaviour {
 			while (reader.ReadRow(row))
 			{
 				string[] tags = row[3].Split (',');
-				foreach(string tag in tags) {
-					if (!uTags.Contains (tag)) {
-						uTags.Add (tag);
-					}
-				}
 				AddBackdrop (new Backdrop(row[0], row[1], int.Parse (row[2]), tags));
 			}
 		}
