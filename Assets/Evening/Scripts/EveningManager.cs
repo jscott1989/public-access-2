@@ -334,10 +334,11 @@ public class EveningManager : SceneManager {
 		} else {
 			nextChannel = mWatchingPlayer + 1;
 		}
-//		if (nextChannel == mMyChannel) {
-//			nextChannel += 1;
-//		}
-		ShowChannel(nextChannel);
+		if (nextChannel == mMyChannel && mNetworkManager.players.Length > 1) {
+			ChannelUp ();
+		} else {
+			ShowChannel(nextChannel);
+		}
 	}
 
 	public void ChannelDown() {
@@ -348,10 +349,11 @@ public class EveningManager : SceneManager {
 		} else {
 			nextChannel = mWatchingPlayer - 1;
 		}
-//		if (nextChannel == mMyChannel) {
-//			nextChannel -= 1;
-//		}
-		ShowChannel(nextChannel);
+		if (nextChannel == mMyChannel && mNetworkManager.players.Length > 1) {
+			ChannelDown ();
+		} else {
+			ShowChannel(nextChannel);
+		}
 	}
 
 	void Update() {

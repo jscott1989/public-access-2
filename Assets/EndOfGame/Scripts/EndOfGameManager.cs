@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Linq;
 using System.Collections;
+using System.Collections.Generic;
 
 public class EndOfGameManager : SceneManager {
 
@@ -28,13 +29,32 @@ public class EndOfGameManager : SceneManager {
 		mWatcherScores = mNetworkManager.players.OrderBy (p => p.uWatcherScore).Reverse().ToArray();
 		// Then try to ensure that everyone wins /something/
 
+		// Get a list of users ordered by least wins (so that we can try to give the special awards to those who haven't got other awards)
+		Dictionary<Player, int> playerByWins = new Dictionary<Player, int>();
+		foreach(Player p in mOverallScores) {
+			int score = 0;
+			if (p == mOverallScores[0]) score += 3;
+			if (p == mOverallScores[1]) score += 2;
+			if (p == mOverallScores[2]) score += 1;
+			if (p == mCreatorScores[0]) score += 2;
+			if (p == mWatcherScores[0]) score += 2;
+			playerByWins[p] = score;
+		}
+
+		Player[] specialWinners = playerByWins.OrderBy (kvp => kvp.Value).Select (kvp => kvp.Key).ToArray ();
+
+
 		// TODO: Make this work - for now we just hardcode some stuff
 		uSpecial1Category = "Most Romantic Show";
 		uSpecial2Category = "Most Scary Show";
-		mSpecial1Winner = mOverallScores[0];
-		mSpecial2Winner = mOverallScores[0];
+		mSpecial1Winner = specialWinners[0];
+		mSpecial2Winner = specialWinners[1];
 		mSpecial1Tag = "romantic";
 		mSpecial2Tag = "scary";
+
+		// Choose a tag which specialWinners[0] is best at
+
+		// Choose a tag which specialWinners[1] is best at
 
 	}
 
@@ -52,7 +72,7 @@ public class EndOfGameManager : SceneManager {
 			if (mOverallScores == null) {
 				return "";
 			}
-			return mOverallScores[0].uOverallScore.ToString() + " Points";
+			return mOverallScores[0].uOverallScore.ToString() + " points";
 		}
 	}
 

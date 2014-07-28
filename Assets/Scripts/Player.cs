@@ -233,6 +233,8 @@ public class Player : MonoBehaviour {
 	public List<Backdrop> uAvailableBackdrops = new List<Backdrop>();
 	public List<Audio> uAvailableAudio = new List<Audio>();
 
+	public string uBossName;
+	public string uOldTheme;
 	public string uTheme;
 	public string[] uNeeds;
 
@@ -240,7 +242,7 @@ public class Player : MonoBehaviour {
 		uRecordingChanges.Clear ();
 	}
 
-	[RPC] public void SetGameInfo (string pTheme, string pNeeds, string pPropsString, string pBackdropsString, string pAudioString) {
+	[RPC] public void SetGameInfo (string pOldTheme, string pBossName, string pTheme, string pNeeds, string pPropsString, string pBackdropsString, string pAudioString) {
 		uAvailableProps.Clear ();
 		uAvailableBackdrops.Clear ();
 		string[] propIDs = RPCEncoder.Decode(pPropsString);
@@ -257,7 +259,8 @@ public class Player : MonoBehaviour {
 		foreach(var aID in audioIDs) {
 			uAvailableAudio.Add (mGame.uAudio[aID]);
 		}
-
+		uOldTheme = pOldTheme;
+		uBossName = pBossName;
 		uTheme = pTheme;
 		uNeeds = needs;
 	}

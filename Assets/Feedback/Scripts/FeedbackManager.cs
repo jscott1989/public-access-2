@@ -25,25 +25,22 @@ public class FeedbackManager : SceneManager {
 
 	int[] GenerateViewerData() {
 		int[] viewerData = new int[]{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-		foreach(Player p in mNetworkManager.players) {
-			// TODO: We can ignore our own player
-			foreach(WatchedStationAction a in p.uWatchedStationActions) {
-				if (a.uPlayer == mNetworkManager.myPlayer) {
-					float endTime = a.uEndTime;
-					if (endTime == -1) {
-						endTime = 31;
-					}
-					// Check each second if it falls inside the watched time
-					for(int i = 0; i < 30; i++) {
-						if ((i >= a.uStartTime && i <= endTime) && (i + 1 >= a.uStartTime && i <= endTime)) {
-							// This will show everyone who watched for at least one second
-							viewerData[i] += 1;
-						}
+		foreach(Player p in mNetworkManager.players.Where (p => p != mNetworkManager.myPlayer)) {
+			foreach(WatchedStationAction a in p.uWatchedStationActions.Where(wsa => wsa.uPlayer == mNetworkManager.myPlayer)) {
+				float endTime = a.uEndTime;
+				if (endTime == -1) {
+					endTime = 31;
+				}
+				// Check each second if it falls inside the watched time
+				for(int i = 0; i < 30; i++) {
+					if ((i >= a.uStartTime && i <= endTime) && (i + 1 >= a.uStartTime && i <= endTime)) {
+						// This will show everyone who watched for at least one second
+						viewerData[i] += 1;
 					}
 				}
 			}
 		}
-
+		
 		return viewerData;
 	}
 
@@ -62,23 +59,57 @@ public class FeedbackManager : SceneManager {
 		mNetworkManager.myPlayer.networkView.RPC ("AddDailyCreatorScore", RPCMode.All, (data.Sum () * Game.CREATOR_SCORE_MULTIPLIER) .ToString ());
 
 		// First push the calculated viewers onto the chart
-		mViewerChart.UpdateChart (mNetworkManager.players.Length, data); // TODO: put Length - 1 when we ban people watching their own show
+		mViewerChart.UpdateChart (mNetworkManager.players.Length - 1, data);
 
 		// If it's day 1 show an introduction
-		if (mNetworkManager.myPlayer.uDay == 1) {
-			string[] dialogue = new string[] {
-				"Introduction to how feedback works...",
-				"and what the user is looking for"
-			};
-
-			Action dialogueFinished =
-				() => {
-				StartFeedback();
-			};
-			mDialogueManager.StartDialogue(dialogue, dialogueFinished);
+		if (mNetworkManager.myPlayer.uDay == 2) {
+			StartFirstDay();
+		} else  if (mNetworkManager.myPlayer.uDay == Game.NUMBER_OF_DAYS){
+			StartLastDay();
 		} else {
-			StartFeedback();
+			StartMiddleDay();
 		}
+	}
+
+	void StartFirstDay() {
+		string[] dialogue = new string[] {
+			"Here are last night's viewing figures",
+			"Use them to try to figure out what the audience are looking for. So future shows can better match their tastes",
+			"You can jump to any part of your show by clicking on the chart to see what was on screen at that time",
+			"You have " + Game.FEEDBACK_COUNTDOWN + " seconds."
+		};
+		
+		Action dialogueFinished =
+		() => {
+			StartFeedback();
+		};
+		mDialogueManager.StartDialogue(dialogue, dialogueFinished);
+	}
+
+	void StartMiddleDay() {
+		string[] dialogue = new string[] {
+			"Here are last night's viewing figures",
+			"Use them to try to figure out what the audience are looking for. So future shows can better match their tastes",
+		};
+		
+		Action dialogueFinished =
+		() => {
+			StartFeedback();
+		};
+		mDialogueManager.StartDialogue(dialogue, dialogueFinished);
+	}
+
+	void StartLastDay() {
+		string[] dialogue = new string[] {
+			"Here are last night's viewing figures",
+			"It's too late to make changes to the show based on them. But it might be interesting to see"
+		};
+		
+		Action dialogueFinished =
+		() => {
+			StartFeedback();
+		};
+		mDialogueManager.StartDialogue(dialogue, dialogueFinished);
 	}
 
 	void StartFeedback() {

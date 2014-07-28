@@ -173,15 +173,20 @@ public class AfternoonManager : SceneManager {
 		if (mNetworkManager.myPlayer.uDay == 1) {
 			StartDay1 ();
 		} else {
-			StartPreparing();
+			StartOtherDay();
 		}
 	}
 
 	void StartDay1() {
 		if (!Game.DEBUG_MODE) {
 			string[] afternoon1Dialogue = new string[] {
-				"Some stuff about afternoon...",
-				"introduce it..."
+				"Now you create your show. Right now you don't know much about what the audience are looking for",
+				"By tomorrow you'll have a better idea. But for now you only have the theme to guide you",
+				"(your theme is " + mNetworkManager.myPlayer.uTheme + ")",
+				"Drag props and dialogue boxes from your toolbox on the right on to the canvas (the white area)",
+				"and either click on the backdrops and sounds (on the left) or press the associated key to activate them",
+				"you have " + Game.PREPARING_COUNTDOWN.ToString () + " seconds to prepare and set up your initial scene",
+				"following the preparation time you will have " + Game.RECORDING_COUNTDOWN.ToString () + " seconds where everything on the canvas will be recorded",
 			};
 		
 			Action afternoon1DialogueComplete =
@@ -190,6 +195,24 @@ public class AfternoonManager : SceneManager {
 					mNetworkManager.myPlayer.networkView.RPC ("SetReady", RPCMode.All, true);
 			};
 		
+			mDialogueManager.StartDialogue (afternoon1Dialogue, afternoon1DialogueComplete);
+		} else {
+			StartPreparing();
+		}
+	}
+
+	void StartOtherDay() {
+		if (!Game.DEBUG_MODE) {
+			string[] afternoon1Dialogue = new string[] {
+				"Using the information you gained from the viewing figures, create the next " + Game.RECORDING_COUNTDOWN.ToString() + " second episode of " + mNetworkManager.myPlayer.uShowName,
+			};
+			
+			Action afternoon1DialogueComplete =
+			() => {
+				mDialogueManager.StartDialogue ("Waiting for other players to continue");
+				mNetworkManager.myPlayer.networkView.RPC ("SetReady", RPCMode.All, true);
+			};
+			
 			mDialogueManager.StartDialogue (afternoon1Dialogue, afternoon1DialogueComplete);
 		} else {
 			StartPreparing();

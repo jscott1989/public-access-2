@@ -67,15 +67,18 @@ public class PropSelectionManager : SceneManager {
 		if (mNetworkManager.myPlayer.uDay == 1) {
 			StartFirstDay ();
 		} else {
-			StartPropSelection ();
+			StartOtherDay ();
 		}
 	}
 
 	void StartFirstDay() {
 		if (!Game.DEBUG_MODE) {
 			string[] propSelectionDialogue = new string[]{
-				"text about prop selection..",
-				"little bit of an overview..."
+				"Here is our prop room. As you can see we have quite a wide variety of items.",
+				"I've been told from the higher ups that we can't give you it all though, so you're going to have to budget.",
+				"I'll see if we can get you some more money later on in the week.",
+				"Click on the item you want to buy on the left and click 'Buy'. You can sell the items back by clicking 'Sell'.",
+				"You have one minute - if you finish early click 'Continue'"
 			};
 
 			Action propSelectionDialogueComplete =
@@ -90,6 +93,29 @@ public class PropSelectionManager : SceneManager {
 			mNetworkManager.myPlayer.PurchaseProp(mNetworkManager.myPlayer.uUnpurchasedProps[0].uID);
 			mNetworkManager.myPlayer.PurchaseProp(mNetworkManager.myPlayer.uUnpurchasedProps[0].uID);
 
+			StartPropSelection();
+		}
+	}
+
+	void StartOtherDay() {
+		if (!Game.DEBUG_MODE) {
+			string[] propSelectionDialogue = new string[]{
+				"You have a chance to change your props now. Try to ensure you're giving the people what they want!",
+				"I've managed to get you an extra $" + mGame.uCashPerDay[mNetworkManager.myPlayer.uDay] + " for your budget too"
+			};
+			
+			Action propSelectionDialogueComplete =
+			() => {
+				mDialogueManager.StartDialogue ("Waiting for other players to continue");
+				mNetworkManager.myPlayer.networkView.RPC ("SetReady", RPCMode.All, true);
+			};
+			
+			mDialogueManager.StartDialogue (propSelectionDialogue, propSelectionDialogueComplete);
+		} else {
+			mNetworkManager.myPlayer.PurchaseProp(mNetworkManager.myPlayer.uUnpurchasedProps[0].uID);
+			mNetworkManager.myPlayer.PurchaseProp(mNetworkManager.myPlayer.uUnpurchasedProps[0].uID);
+			mNetworkManager.myPlayer.PurchaseProp(mNetworkManager.myPlayer.uUnpurchasedProps[0].uID);
+			
 			StartPropSelection();
 		}
 	}

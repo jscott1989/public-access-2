@@ -10,9 +10,11 @@ using System.Linq;
  */
 public class GameSetup : UnityEngine.Object {
 
+	public string[] uBosses;
 	public string[] uAvailableProps;
 	public string[] uAvailableBackdrops;
 	public string[] uAvailableAudio;
+	public string[] uOldThemes;
 	public string[] uThemes;
 	public string[][] uNeeds;
 	public int uPlayers;
@@ -24,6 +26,26 @@ public class GameSetup : UnityEngine.Object {
 		{"when (person) met (person)", new string[]{"person", "person"}}
 	};
 
+	string[] firstNames = new string[] {
+		"John",
+		"James",
+		"Carl",
+		"Ed",
+		"Dave"
+	};
+
+	string[] surnames = new string[] {
+		"Smith",
+		"Davidson",
+		"Jeffrey",
+		"Banks",
+		"Hunter"
+	};
+
+	string GenerateBossName() {
+		System.Random rnd = new System.Random();
+		return firstNames[rnd.Next (firstNames.Length - 1)] + " " + surnames[rnd.Next (surnames.Length - 1)];
+	}
 
 	/**
 	 * Generate a theme which hints at the given needs
@@ -154,6 +176,31 @@ public class GameSetup : UnityEngine.Object {
 			themes.Add (GenerateTheme(game, otherNeeds.ToArray ()));
 		}
 
+		List<string> oldThemes = new List<string>();
+		for(int i = 0; i < pPlayers; i++) {
+			
+			List<string> otherNeeds = new List<string>();
+			for (int n = 0; n < pPlayers; n++) {
+				if (n != i) {
+					foreach(string need in needs[n]) {
+						if (need.StartsWith("-")) {
+							string rawNeed = need.Substring(1);
+							if (!otherNeeds.Contains(rawNeed)) {
+								otherNeeds.Add (rawNeed);
+							}
+						}
+					}
+				}
+			}
+			
+			oldThemes.Add (GenerateTheme(game, otherNeeds.ToArray ()));
+		}
+
+		List<string> bossNames = new List<string>();
+		for(int i = 0; i < pPlayers; i++) {
+			bossNames.Add (GenerateBossName());
+		}
+
 
 		List<string[]> needsAsArray = new List<string[]>();
 		foreach(List<string> s in needs) {
@@ -161,12 +208,12 @@ public class GameSetup : UnityEngine.Object {
 		}
 
 		uPlayers = pPlayers;
+		uBosses = bossNames.ToArray();
 		uAvailableProps = availableProps.ToArray ();
-//		uAvailableBackdrops = availableBackdrops.ToArray ();
-		uAvailableBackdrops = new string[]{"mars", "beach","mars", "beach","mars", "beach","mars", "beach"};
-//		uAvailableAudio = availableAudio.ToArray ();
-		uAvailableAudio = new string[]{"baby","bird","boink","boink","boink","boink","boink"};
+		uAvailableBackdrops = availableBackdrops.ToArray ();
+		uAvailableAudio = availableAudio.ToArray ();
+		uOldThemes = oldThemes.ToArray ();
 		uThemes = themes.ToArray ();
-		uNeeds = needsAsArray.ToArray (); // TODO: Right now needs is just a list of tags - we need to have a human readable description of the need
+		uNeeds = needsAsArray.ToArray ();
 	}
 }
