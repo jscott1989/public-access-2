@@ -334,7 +334,9 @@ public class EveningManager : SceneManager {
 		} else {
 			nextChannel = mWatchingPlayer + 1;
 		}
+
 		if (nextChannel == mMyChannel && mNetworkManager.players.Length > 1) {
+			mWatchingPlayer = mMyChannel;
 			ChannelUp ();
 		} else {
 			ShowChannel(nextChannel);
@@ -350,6 +352,7 @@ public class EveningManager : SceneManager {
 			nextChannel = mWatchingPlayer - 1;
 		}
 		if (nextChannel == mMyChannel && mNetworkManager.players.Length > 1) {
+			mWatchingPlayer = mMyChannel;
 			ChannelDown ();
 		} else {
 			ShowChannel(nextChannel);
