@@ -41,6 +41,7 @@ public class Game : MonoBehaviour {
 	public const string RANDOM_STATION_ID = "random";
 
 	void AddProp(Prop pProp) {
+//		print (pProp.uID);
 		uProps.Add (pProp.uID, pProp);
 	}
 
