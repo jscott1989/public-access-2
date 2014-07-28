@@ -200,8 +200,7 @@ public class EveningManager : SceneManager {
 			"You arrive home after a hard day's work.",
 			"As usual, you're going to spend your evening watching television.",
 			"This evening, it seems you have the TV all to yourself",
-			"In that case, you decide you're going to watch your favourite thing:",
-			uDay1Like,
+			"In that case, you decide you're going to watch your favourite thing: " + uDay1Like,
 			"You will get points while " + uDay1Like + " are on the screen",
 			"Flick through the channels using the UP and DOWN arrows to look for things that you like."
 		};
@@ -224,10 +223,9 @@ public class EveningManager : SceneManager {
 	}
 	void StartDay2() {
 		string[] day2Dialogue = new string[]{
-			"Today, your wife (wife's name) has joined you.",
-			"She isn't particularly picky when it comes to watching TV, but she hates:",
-			uDay2Dislike,
-			"You'll still gain points when " + uDay1Like + " are on the screen, but will lose points whenever" + uDay2Dislike + " are on the screen."
+			"Today, your wife " + mNetworkManager.myPlayer.uWifesName + " has joined you.",
+			"She isn't particularly picky when it comes to watching TV, but she hates: " + uDay2Dislike,
+			"You'll still gain points when " + uDay1Like + " are on the screen, but will lose points whenever " + uDay2Dislike + " are on the screen."
 		};
 		
 		Action day2DialogueComplete =
@@ -239,9 +237,8 @@ public class EveningManager : SceneManager {
 	}
 	void StartDay3() {
 		string[] day3Dialogue = new string[]{
-			"Today, your son (son's name) has joined you.",
-			"Like any child his age, he's quite obsessed with:",
-			uDay2Dislike,
+			"Today, your son " + mNetworkManager.myPlayer.uSonsName + " has joined you.",
+			"Like any child his age, he's quite obsessed with: " + uDay2Dislike,
 			"Now you need to try to ensure that you and your son are watching things you enjoy, while avoiding things your wife dislikes."
 		};
 		
@@ -254,9 +251,8 @@ public class EveningManager : SceneManager {
 	}
 	void StartDay4() {
 		string[] day4Dialogue = new string[]{
-			"(daughter's name), your daughter, has seen the fun that (son's name) is having, and has opted to join you this evening.",
-			"She's quite a miserable child, and really dislikes:",
-			uDay4Dislike,
+			mNetworkManager.myPlayer.uDaughtersName + ", your daughter, has seen the fun that " + mNetworkManager.myPlayer.uSonsName + " is having, and has opted to join you this evening.",
+			"She's quite a miserable child, and really dislikes " + uDay4Dislike,
 			"When watching TV, try to take this into account along with your preference, and your wife and son's preferences."
 		};
 		
@@ -269,9 +265,9 @@ public class EveningManager : SceneManager {
 	}
 	void StartDay5() {
 		string[] day5Dialogue = new string[]{
-			"Great... your mother in law has turned up unannounced. Right when you were settling down to watch some " + uDay1Like,
+			"Great... your mother in law, " + mNetworkManager.myPlayer.uGrandmothersName + ", has turned up unannounced. Right when you were settling down to watch some " + uDay1Like,
 			"She's really into " + uDay5Like + " these days.",
-			"Try to keep her happpy. It's worth points."
+			"Try to keep her happy. It's worth points."
 		};
 		
 		Action day5DialogueComplete =

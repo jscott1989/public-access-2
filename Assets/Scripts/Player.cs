@@ -134,12 +134,18 @@ public class Player : MonoBehaviour {
 
 	public string uStationName {
 		get {
+			if (uSelectedStation == null) {
+				return null;
+			}
 			return uSelectedStation.uName;
 		}
 	}
 
 	public Texture2D uStationLogo {
 		get {
+			if (uSelectedStation == null) {
+				return null;
+			}
 			return uSelectedStation.uLogo;
 		}
 	}
@@ -237,18 +243,23 @@ public class Player : MonoBehaviour {
 	public string uOldTheme;
 	public string uTheme;
 	public string[] uNeeds;
+	public string uSonsName;
+	public string uDaughtersName;
+	public string uWifesName;
+	public string uGrandmothersName;
 
 	[RPC] public void ClearRecording() {
 		uRecordingChanges.Clear ();
 	}
 
-	[RPC] public void SetGameInfo (string pOldTheme, string pBossName, string pTheme, string pNeeds, string pPropsString, string pBackdropsString, string pAudioString) {
+	[RPC] public void SetGameInfo (string pOldTheme, string pBossName, string pSonsName, string pFemaleNamesString, string pTheme, string pNeeds, string pPropsString, string pBackdropsString, string pAudioString) {
 		uAvailableProps.Clear ();
 		uAvailableBackdrops.Clear ();
 		string[] propIDs = RPCEncoder.Decode(pPropsString);
 		string[] backdropIDs = RPCEncoder.Decode(pBackdropsString);
 		string[] audioIDs = RPCEncoder.Decode(pAudioString);
 		string[] needs = RPCEncoder.Decode(pNeeds);
+		string[] femaleNames = RPCEncoder.Decode(pFemaleNamesString);
 		foreach(var pID in propIDs) {
 			uAvailableProps.Add (mGame.uProps[pID]);
 		}
@@ -261,6 +272,10 @@ public class Player : MonoBehaviour {
 		}
 		uOldTheme = pOldTheme;
 		uBossName = pBossName;
+		uSonsName = pSonsName;
+		uDaughtersName = femaleNames[0];
+		uWifesName = femaleNames[1];
+		uGrandmothersName = femaleNames[2];
 		uTheme = pTheme;
 		uNeeds = needs;
 	}

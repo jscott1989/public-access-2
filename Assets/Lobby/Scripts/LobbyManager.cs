@@ -26,6 +26,9 @@ public class LobbyManager : SceneManager {
 
 	public string uLobbyName {
 		get {
+			if (mNetworkManager == null) {
+				return "";
+			}
 			return mNetworkManager.uRoomName + " Lobby";
 		}
 	}
@@ -230,7 +233,7 @@ public class LobbyManager : SceneManager {
 				// We need to pick an available station at random for this user
 				players[i].networkView.RPC ("SetSelectedStation", RPCMode.All, players[i].uAvailableStations[r.Next (1, players[i].uAvailableStations.Count())].uID);
 			}
-			players[i].networkView.RPC ("SetGameInfo",RPCMode.All, gameSetup.uOldThemes[i], gameSetup.uBosses[i], gameSetup.uThemes[i], RPCEncoder.Encode(gameSetup.uNeeds[i]), RPCEncoder.Encode(gameSetup.uAvailableProps), RPCEncoder.Encode(gameSetup.uAvailableBackdrops), RPCEncoder.Encode(gameSetup.uAvailableAudio));
+			players[i].networkView.RPC ("SetGameInfo",RPCMode.All, gameSetup.uOldThemes[i], gameSetup.uBosses[i], gameSetup.uSonNames[i], RPCEncoder.Encode (gameSetup.uFemaleNames[i]), gameSetup.uThemes[i], RPCEncoder.Encode(gameSetup.uNeeds[i]), RPCEncoder.Encode(gameSetup.uAvailableProps), RPCEncoder.Encode(gameSetup.uAvailableBackdrops), RPCEncoder.Encode(gameSetup.uAvailableAudio));
 		}
 		networkView.RPC ("StartGame", RPCMode.All);
 	}
