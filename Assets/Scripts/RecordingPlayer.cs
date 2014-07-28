@@ -101,10 +101,12 @@ public class RecordingPlayer : MonoBehaviour {
 			// now get the last size/zorder/position change and apply it
 			Type[] changesToApply = new Type[]{typeof(SizeChange), typeof(ZOrderChange), typeof(PositionChange), typeof(DialogueTextChange), typeof(DialogueTextScaleChange)};
 
-			foreach(Type t in changesToApply) {
-				RecordingChange lastChange = runnableChanges.Where (rc => rc.GetType() == t).OrderByDescending(rc => rc.uTime).FirstOrDefault();
-				if (lastChange != null) {
-					lastChange.run (mPlayingScreen);
+			if (runnableChanges != null) {
+				foreach(Type t in changesToApply) {
+					RecordingChange lastChange = runnableChanges.Where (rc => rc.GetType() == t).OrderByDescending(rc => rc.uTime).FirstOrDefault();
+					if (lastChange != null) {
+						lastChange.run (mPlayingScreen);
+					}
 				}
 			}
 		}
