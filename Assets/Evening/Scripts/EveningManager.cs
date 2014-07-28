@@ -14,6 +14,13 @@ public class EveningManager : SceneManager {
 	Countdown mCountdown;
 	Game mGame;
 
+	GameObject mMam;
+	GameObject mSon;
+	GameObject mDaughter;
+	GameObject mGrandma;
+
+	DialogueManager mDialogueManager;
+
 	// The player who's station we are watching
 	int mWatchingPlayer = 0;
 	float mInformationCountdown = -1;
@@ -24,6 +31,54 @@ public class EveningManager : SceneManager {
 	const int PLAYING = 1;
 
 	int stage = 0;
+
+	public bool uIsPreparing {
+		get {
+			return stage == PREPARING;
+		}
+	}
+
+	public string uStageText {
+		get {
+			if (uIsPreparing) {
+				return "Preparing";
+			}
+			return "Watching";
+		}
+	}
+
+	public bool uDay1HasPassed {
+		get {
+			if (mNetworkManager == null || mNetworkManager.myPlayer == null) {
+				return false;
+			}
+			return mNetworkManager.myPlayer.uDay > 1;
+		}
+	}
+	public bool uDay2HasPassed {
+		get {
+			if (mNetworkManager == null || mNetworkManager.myPlayer == null) {
+				return false;
+			}
+			return mNetworkManager.myPlayer.uDay > 2;
+		}
+	}
+	public bool uDay3HasPassed {
+		get {
+			if (mNetworkManager == null || mNetworkManager.myPlayer == null) {
+				return false;
+			}
+			return mNetworkManager.myPlayer.uDay > 3;
+		}
+	}
+	public bool uDay4HasPassed {
+		get {
+			if (mNetworkManager == null || mNetworkManager.myPlayer == null) {
+				return false;
+			}
+			return mNetworkManager.myPlayer.uDay > 4;
+		}
+	}
 
 	public int uTodaysScore {
 		get {
@@ -54,6 +109,51 @@ public class EveningManager : SceneManager {
 		}
 	}
 
+	public string uDay1Like {
+		get {
+			if (mNetworkManager == null) {
+				return "";
+			}
+			return mNetworkManager.myPlayer.uNeeds.Where (s => !s.StartsWith("-")).First();
+		}
+	}
+
+	public string uDay2Dislike {
+		get {
+			if (mNetworkManager == null) {
+				return "";
+			}
+			return mNetworkManager.myPlayer.uNeeds.Where (s => s.StartsWith("-")).Select (s => s.Substring(1)).First();
+		}
+	}
+
+	public string uDay3Like {
+		get {
+			if (mNetworkManager == null) {
+				return "";
+			}
+			return mNetworkManager.myPlayer.uNeeds.Where (s => !s.StartsWith("-")).ToArray()[1];
+		}
+	}
+
+	public string uDay4Dislike {
+		get {
+			if (mNetworkManager == null) {
+				return "";
+			}
+			return mNetworkManager.myPlayer.uNeeds.Where (s => s.StartsWith("-")).Select (s => s.Substring(1)).ToArray()[1];
+		}
+	}
+
+	public string uDay5Like {
+		get {
+			if (mNetworkManager == null) {
+				return "";
+			}
+			return mNetworkManager.myPlayer.uNeeds.Where (s => !s.StartsWith("-")).ToArray()[2];
+		}
+	}
+
 	public string uTodaysLikesString {
 		get {
 			return string.Join("\n", uTodaysLikes);
@@ -72,12 +172,42 @@ public class EveningManager : SceneManager {
 		mCountdown = (Countdown) FindObjectOfType(typeof(Countdown));
 		mScreen = GameObject.FindGameObjectWithTag("Screen");
 		mGame = (Game) FindObjectOfType (typeof(Game));
+		mDialogueManager = FindObjectOfType<DialogueManager>();
+
+		mMam = GameObject.FindGameObjectWithTag("Mam");
+		mSon = GameObject.FindGameObjectWithTag("Son");
+		mDaughter = GameObject.FindGameObjectWithTag("Daughter");
+		mGrandma = GameObject.FindGameObjectWithTag("Grandma");
+
 	}
 	void Start () {
+		mNetworkManager.myPlayer.uDailyWatchingScore.Add (0);
+		if (mNetworkManager.myPlayer.uDay == 1) {
+			StartDay1();
+		} else if (mNetworkManager.myPlayer.uDay == 2) {
+			StartDay2();
+		} else if (mNetworkManager.myPlayer.uDay == 3) {
+			StartDay3();
+		} else if (mNetworkManager.myPlayer.uDay == 4) {
+			StartDay4();
+		} else if (mNetworkManager.myPlayer.uDay == 5) {
+			StartDay5();
+		}
+	}
 
-		// TODO: Add introductory text, to explain how to play this stage and importantly to tell the player what they are looking for
+	void StartDay1() {
+		string[] day1Dialogue = new string[]{
+			"You arrive home after a hard day's work.",
+			"As usual, you're going to spend your evening watching television.",
+			"This evening, it seems you have the TV all to yourself",
+			"In that case, you decide you're going to watch your favourite thing:",
+			uDay1Like,
+			"You will get points while " + uDay1Like + " are on the screen",
+			"Flick through the channels using the UP and DOWN arrows to look for things that you like."
+		};
 
-		if (mNetworkManager.myPlayer.uLastWatchedChannel < 0) {
+		Action day1DialogueComplete =
+			() => {
 			// This is our first time in Evening, so we need to decide which channel to start with
 			mMyChannel = Array.IndexOf (mNetworkManager.playersOrderedByStation, mNetworkManager.myPlayer);
 			if (mMyChannel == 0) {
@@ -87,7 +217,69 @@ public class EveningManager : SceneManager {
 				// Otherwise start on myChannel - 1
 				StartPreparing(mMyChannel - 1);
 			}
-		}
+		};
+
+		mDialogueManager.StartDialogue(day1Dialogue, day1DialogueComplete);
+
+	}
+	void StartDay2() {
+		string[] day2Dialogue = new string[]{
+			"Today, your wife (wife's name) has joined you.",
+			"She isn't particularly picky when it comes to watching TV, but she hates:",
+			uDay2Dislike,
+			"You'll still gain points when " + uDay1Like + " are on the screen, but will lose points whenever" + uDay2Dislike + " are on the screen."
+		};
+		
+		Action day2DialogueComplete =
+		() => {
+			StartPreparing(mNetworkManager.myPlayer.uLastWatchedChannel);
+		};
+		
+		mDialogueManager.StartDialogue(day2Dialogue, day2DialogueComplete);
+	}
+	void StartDay3() {
+		string[] day3Dialogue = new string[]{
+			"Today, your son (son's name) has joined you.",
+			"Like any child his age, he's quite obsessed with:",
+			uDay2Dislike,
+			"Now you need to try to ensure that you and your son are watching things you enjoy, while avoiding things your wife dislikes."
+		};
+		
+		Action day3DialogueComplete =
+		() => {
+			StartPreparing(mNetworkManager.myPlayer.uLastWatchedChannel);
+		};
+		
+		mDialogueManager.StartDialogue(day3Dialogue, day3DialogueComplete);
+	}
+	void StartDay4() {
+		string[] day4Dialogue = new string[]{
+			"(daughter's name), your daughter, has seen the fun that (son's name) is having, and has opted to join you this evening.",
+			"She's quite a miserable child, and really dislikes:",
+			uDay4Dislike,
+			"When watching TV, try to take this into account along with your preference, and your wife and son's preferences."
+		};
+		
+		Action day4DialogueComplete =
+		() => {
+			StartPreparing(mNetworkManager.myPlayer.uLastWatchedChannel);
+		};
+		
+		mDialogueManager.StartDialogue(day4Dialogue, day4DialogueComplete);
+	}
+	void StartDay5() {
+		string[] day5Dialogue = new string[]{
+			"Great... your mother in law has turned up unannounced. Right when you were settling down to watch some " + uDay1Like,
+			"She's really into " + uDay5Like + " these days.",
+			"Try to keep her happpy. It's worth points."
+		};
+		
+		Action day5DialogueComplete =
+		() => {
+			StartPreparing(mNetworkManager.myPlayer.uLastWatchedChannel);
+		};
+		
+		mDialogueManager.StartDialogue(day5Dialogue, day5DialogueComplete);
 	}
 
 	/**
@@ -107,6 +299,7 @@ public class EveningManager : SceneManager {
 	void StartPlaying() {
 		mTime = 0;
 		stage = PLAYING;
+		mNetworkManager.myPlayer.StartWatchingStation(mNetworkManager.playersOrderedByStation[mWatchingPlayer].uID.ToString(), "0");
 		mRecordingPlayer.Play(mNetworkManager.playersOrderedByStation[mWatchingPlayer], mScreen);
 		Action eveningFinished = 
 		() => {
@@ -122,12 +315,15 @@ public class EveningManager : SceneManager {
 	}
 
 	void ShowChannel(int pChannelNumber) {
+		mNetworkManager.myPlayer.uLastWatchedChannel = pChannelNumber;
 		uStationInformationIsVisible = true;
 		mWatchingPlayer = pChannelNumber;
 		mInformationCountdown = Game.CHANNEL_INFORMATION_COUNTDOWN;
-		mRecordingPlayer.Play(mNetworkManager.playersOrderedByStation[mWatchingPlayer], mScreen);
-		mRecordingPlayer.Jump(mTime);
-		mNetworkManager.myPlayer.StartWatchingStation(mNetworkManager.playersOrderedByStation[mWatchingPlayer].uID.ToString(), mTime.ToString ());
+		if (!uIsPreparing) {
+			mRecordingPlayer.Play(mNetworkManager.playersOrderedByStation[mWatchingPlayer], mScreen);
+			mRecordingPlayer.Jump(mTime);
+			mNetworkManager.myPlayer.StartWatchingStation(mNetworkManager.playersOrderedByStation[mWatchingPlayer].uID.ToString(), mTime.ToString ());
+		}
 	}
 
 	public void ChannelUp() {

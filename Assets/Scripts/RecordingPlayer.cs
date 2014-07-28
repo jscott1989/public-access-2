@@ -21,13 +21,14 @@ public class RecordingPlayer : MonoBehaviour {
 	void Awake() {
 		mGame = FindObjectOfType<Game>();
 		mAudioSource = GetComponent<AudioSource>();
+		mSceneManager = FindObjectOfType<SceneManager>();
 	}
 
 	public void PlayAudio(string pID) {
-		// TODO: Add score if possible
 		mSceneManager.AudioPlayed(mGame.uAudio[pID]);
 		mAudioSource.clip = mGame.uAudio[pID].uClip;
 		mAudioSource.Play ();
+		mSceneManager.AudioPlayed (mGame.uAudio[pID]);
 	}
 
 	public double uTime {
