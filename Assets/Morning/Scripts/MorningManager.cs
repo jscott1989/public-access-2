@@ -12,17 +12,28 @@ public class MorningManager : SceneManager {
 
 	string[] mGoodDialogues = new string[]{
 		"Wow! That was one of our best ever nights. Keep it up!",
-		// TODO: More good dialogues
+		"That was a really strong showing!",
+		"We're showing the others how it's done!",
+		"Keep doing that and I think we can renew the show for a full season!",
+		"Brilliant!"
 	};
 
 	string[] mBadDialogues = new string[]{
-		"That was bad",
-		// TODO: Bad dialogues
+		"That was a little bit worse than expected.",
+		"You're really going to have to do something to turn this around.",
+		"We can't accept many more results like this.",
+		"This is just as bad as the results the last show was getting.",
+		"This is embarrasing.",
+		"I can't believe so few people tuned in. And after all huge publicity push!"
 	};
 
 	string[] mMiddleDialogues = new string[]{
-		"That was okay",
-		// TODO: Middle dialogues
+		"That was okay.",
+		"That's in line with what we expected.",
+		"That's about right for a station of our size.",
+		"I think we can do better, but I can accept this.",
+		"Let's aim bigger next time.",
+		"We're in the middle of the pack, but I want to be in front!"
 	};
 
 	public string uCurrentDay {
@@ -159,12 +170,15 @@ public class MorningManager : SceneManager {
 		} else {
 			Action s =
 				() => {
-					string[] dialogue = new string[] {
-						"That was okay. Really, I think that's an improvement",
-						"That's " + (mNetworkManager.myPlayer.uDay - 1).ToString () + " days gone. " + (Game.NUMBER_OF_DAYS - (mNetworkManager.myPlayer.uDay - 1)).ToString() + " to go."
-					};
+					Action feedbackGiven =
+						() => {
+							string[] dialogue = new string[] {
+								"That's " + (mNetworkManager.myPlayer.uDay - 1).ToString () + " days gone. " + (Game.NUMBER_OF_DAYS - (mNetworkManager.myPlayer.uDay - 1)).ToString() + " to go."
+							};
 
-					mDialogueManager.StartDialogue (dialogue, dialogueFinished);
+							mDialogueManager.StartDialogue (dialogue, dialogueFinished);
+					};
+					GiveFeedback(feedbackGiven);
 			};
 			mManager.Show (s);
 		}
@@ -193,10 +207,57 @@ public class MorningManager : SceneManager {
 				mDialogueManager.StartDialogue ("Waiting for other players to continue");
 				mNetworkManager.myPlayer.networkView.RPC ("SetReady", RPCMode.All, true);
 			} else {
-				mDialogueManager.StartDialogue (mMiddleDialogues [0], firstDialogueFinished);
+				GiveFeedback(firstDialogueFinished);
 			}
 		};
 		mManager.Show (s);
+	}
+
+	void GiveFeedback(Action callback) {
+		int myViewers = 0;
+		int otherViewers = 0;
+
+		foreach(Player p in mNetworkManager.players) {
+			foreach(WatchedStationAction a in p.uWatchedStationActions) {
+				float endTime = a.uEndTime;
+				if (endTime == -1) {
+					endTime = 31;
+				}
+				// Check each second if it falls inside the watched time
+				for(int i = 0; i < 30; i++) {
+					if ((i >= a.uStartTime && i <= endTime) && (i + 1 >= a.uStartTime && i <= endTime)) {
+						if (a.uPlayer == mNetworkManager.myPlayer) {
+							myViewers += 1;
+						} else {
+							otherViewers += 1;
+						}
+					}
+				}
+			}
+		}
+
+		float myShare = ((float)myViewers)/(float)(myViewers + otherViewers);
+		float expectedShare = 1f/((float)mNetworkManager.players.Length);
+
+		string[] possibleDialogues;
+
+		if (myShare <= expectedShare - 0.1) {
+			// We did poorly
+			possibleDialogues = mBadDialogues;
+		} else if (myShare >= expectedShare + 0.1) {
+			// We did well
+			possibleDialogues = mGoodDialogues;
+		} else {
+			// We did okay
+			possibleDialogues = mMiddleDialogues;
+		}
+
+		System.Random rnd = new System.Random();
+		string[] dialogue = new string[]{
+			"Last night, we got " + (myShare * 100).ToString ("0.00") + "% of the audience share.",
+			possibleDialogues[rnd.Next (possibleDialogues.Length - 1)]
+		};
+		mDialogueManager.StartDialogue (dialogue, callback);
 	}
 
 	/**
