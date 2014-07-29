@@ -129,7 +129,12 @@ public class NetworkManager : MonoBehaviour {
 	public void StartServer(string pRoomName, Action pStartServerCallback) {
 		mStartServerCallback = pStartServerCallback;
 
-		Network.InitializeServer (mGame.uStations.Count - 2, SERVER_PORT, !Network.HavePublicAddress ()); // -1 is for Random, another is because I dunno but it adds up - TODO: Come back to this
+		NetworkConnectionError e = Network.InitializeServer (mGame.uStations.Count - 2, SERVER_PORT, !Network.HavePublicAddress ()); // -1 is for Random, another is because I dunno but it adds up - TODO: Come back to this
+		if (e != NetworkConnectionError.NoError) {
+			mErrorPanel.ShowError (e.ToString ());
+			ReturnToMainMenu();
+			return;
+		}
 		uRoomName = pRoomName;
 		StopGame (); // This registers everything with hte server - we're accepting new people
 	}

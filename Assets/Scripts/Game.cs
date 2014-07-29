@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
+
 public class Game : MonoBehaviour {
 	public Dictionary<string, Prop> uProps = new Dictionary<string, Prop>();
 	public Dictionary<string, Backdrop> uBackdrops = new Dictionary<string, Backdrop>();
@@ -60,9 +61,15 @@ public class Game : MonoBehaviour {
 		uStationsByID.Add (pStation.uID, pStation);
 	}
 
+	PropFileReader ResourceToCSVReader(string filename) {
+		TextAsset asset = Resources.Load(filename) as TextAsset;
+		Stream s = new MemoryStream(asset.bytes);
+		return new PropFileReader(s);
+	}
+
 	void Start() {
 		//Reading prop data CSV file containing list of available props for theme generation
-		using (PropFileReader reader = new PropFileReader("Assets/PropSelection.csv"))
+		using (PropFileReader reader = ResourceToCSVReader("PropSelection.csv"))
 		{
 			CsvRow row = new CsvRow();
 			while (reader.ReadRow(row))
@@ -72,7 +79,7 @@ public class Game : MonoBehaviour {
 			}
 		}
 
-		using (PropFileReader reader = new PropFileReader("Assets/Tags.csv"))
+		using (PropFileReader reader = ResourceToCSVReader("Tags.csv"))
 		{
 			CsvRow row = new CsvRow();
 			while (reader.ReadRow(row))
@@ -86,7 +93,7 @@ public class Game : MonoBehaviour {
 			}
 		}
 
-		using (PropFileReader reader = new PropFileReader("Assets/Shows.csv"))
+		using (PropFileReader reader = ResourceToCSVReader("Shows.csv"))
 		{
 			CsvRow row = new CsvRow();
 			while (reader.ReadRow(row))
@@ -95,7 +102,7 @@ public class Game : MonoBehaviour {
 			}
 		}
 
-		using (PropFileReader reader = new PropFileReader("Assets/Activities.csv"))
+		using (PropFileReader reader = ResourceToCSVReader("Activities.csv"))
 		{
 			CsvRow row = new CsvRow();
 			while (reader.ReadRow(row))
@@ -104,7 +111,7 @@ public class Game : MonoBehaviour {
 			}
 		}
 
-		using (PropFileReader reader = new PropFileReader("Assets/People.csv"))
+		using (PropFileReader reader = ResourceToCSVReader("People.csv"))
 		{
 			CsvRow row = new CsvRow();
 			while (reader.ReadRow(row))
@@ -113,7 +120,7 @@ public class Game : MonoBehaviour {
 			}
 		}
 
-		using (PropFileReader reader = new PropFileReader("Assets/Things.csv"))
+		using (PropFileReader reader = ResourceToCSVReader("Things.csv"))
 		{
 			CsvRow row = new CsvRow();
 			while (reader.ReadRow(row))
@@ -122,7 +129,7 @@ public class Game : MonoBehaviour {
 			}
 		}
 
-		using (PropFileReader reader = new PropFileReader("Assets/AudioSelection.csv"))
+		using (PropFileReader reader = ResourceToCSVReader("AudioSelection.csv"))
 		{
 			CsvRow row = new CsvRow();
 			while (reader.ReadRow(row))
@@ -132,7 +139,7 @@ public class Game : MonoBehaviour {
 			}
 		}
 
-		using (PropFileReader reader = new PropFileReader("Assets/Backdrops.csv"))
+		using (PropFileReader reader = ResourceToCSVReader("Backdrops.csv"))
 		{
 			CsvRow row = new CsvRow();
 			while (reader.ReadRow(row))
@@ -142,12 +149,12 @@ public class Game : MonoBehaviour {
 			}
 		}
 
-		using (PropFileReader reader = new PropFileReader("Assets/Stations.csv"))
+		using (PropFileReader reader = ResourceToCSVReader("Stations.csv"))
 		{
 			CsvRow row = new CsvRow();
 			while (reader.ReadRow(row))
 			{
-				AddStation (new Station(row[0], row[1], row[2]));
+				AddStation (new Station(row[0], row[1], ""));
 			}
 		}
 	}
