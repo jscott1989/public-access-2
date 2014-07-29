@@ -1,8 +1,9 @@
 fileFormatVersion: 2
-guid: a3646844d4b084f4e88301b28755e0d2
+guid: 83d0539e93c114d57910d245e4951dbb
 TextureImporter:
   fileIDToRecycleName:
-    21300000: ready
+    21300000: ready 1
+    21300002: ready
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -41,11 +42,7 @@ TextureImporter:
   spritePixelsToUnits: 100
   alphaIsTransparency: 1
   textureType: 8
-  buildTargetSettings:
-  - buildTarget: iPhone
-    maxTextureSize: 1024
-    textureFormat: -2
-    compressionQuality: 50
+  buildTargetSettings: []
   spriteSheet:
     sprites: []
   spritePackingTag: 
