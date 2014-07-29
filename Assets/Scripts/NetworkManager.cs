@@ -252,7 +252,10 @@ public class NetworkManager : MonoBehaviour {
 		foreach (Player player in players) {
 			Destroy (player.gameObject);
 		}
-		
+
+		// Destroy the Game object, which will be recreated
+		Destroy(FindObjectOfType<Game>().gameObject);
+
 		Destroy (gameObject);
 		mDialogueManager.EndDialogue();
 		LoadLevel ("MainMenu");

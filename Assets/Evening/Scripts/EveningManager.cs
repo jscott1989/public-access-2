@@ -322,37 +322,44 @@ public class EveningManager : SceneManager {
 		}
 	}
 
-	public void ChannelUp() {
-		int nextChannel;
-		if (mWatchingPlayer == (mNetworkManager.players.Length - 1)) {
-			// Move to 0
-			nextChannel = 0;
+	public int GetNextChannelUp(int pCurrentChannel) {
+		if (pCurrentChannel >= (mNetworkManager.players.Length - 1)) {
+			return 0;
 		} else {
-			nextChannel = mWatchingPlayer + 1;
-		}
-
-		if (nextChannel == mMyChannel && mNetworkManager.players.Length > 1) {
-			mWatchingPlayer = mMyChannel;
-			ChannelUp ();
-		} else {
-			ShowChannel(nextChannel);
+			return pCurrentChannel + 1;
 		}
 	}
 
+	public int GetNextChannelDown(int pCurrentChannel) {
+		if (pCurrentChannel <= 0) {
+			return (mNetworkManager.players.Length - 1);
+		} else {
+			return pCurrentChannel - 1;
+		}
+	}
+
+	public void ChannelUp() {
+		if (mNetworkManager.players.Length == 1) {
+			ShowChannel (0);
+			return;
+		}
+		int pNextChannel = GetNextChannelUp(mWatchingPlayer);
+		while (pNextChannel == mMyChannel) {
+			pNextChannel = GetNextChannelUp(pNextChannel);
+		}
+		ShowChannel(pNextChannel);
+	}
+
 	public void ChannelDown() {
-		int nextChannel;
-		if (mWatchingPlayer == 0) {
-			// Move to max
-			nextChannel = mNetworkManager.players.Length - 1;
-		} else {
-			nextChannel = mWatchingPlayer - 1;
+		if (mNetworkManager.players.Length == 1) {
+			ShowChannel (0);
+			return;
 		}
-		if (nextChannel == mMyChannel && mNetworkManager.players.Length > 1) {
-			mWatchingPlayer = mMyChannel;
-			ChannelDown ();
-		} else {
-			ShowChannel(nextChannel);
+		int pNextChannel = GetNextChannelDown(mWatchingPlayer);
+		while (pNextChannel == mMyChannel) {
+			pNextChannel = GetNextChannelDown(pNextChannel);
 		}
+		ShowChannel(pNextChannel);
 	}
 
 	void Update() {
@@ -400,10 +407,6 @@ public class EveningManager : SceneManager {
 
 					Vector3 topLeftPosition = new Vector3(sprite.Position.x, 0-sprite.Position.y);
 					Vector3 bottomRightPosition = (Vector3)topLeftPosition + (Vector3)sprite.Size;
-
-					print(topLeftPosition);
-					print(".");
-					print (bottomRightPosition);
 
 					// this checks is it visible on screen at all
 					if (bottomRightPosition.x > 0 && bottomRightPosition.y > 0 && topLeftPosition.x < SCREEN_WIDTH && topLeftPosition.y < SCREEN_HEIGHT) {
