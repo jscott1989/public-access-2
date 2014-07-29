@@ -65,13 +65,13 @@ public class LobbyManager : SceneManager {
 		dfLabel stationLabel = (dfLabel)playerInfo.GetComponentsInChildren (typeof(dfLabel))[1];
 		dfPropertyBinding.Bind (stationLabel.gameObject, pPlayer,"uStationName", stationLabel,"Text");
 
-		dfTextureSprite stationLogo = playerInfo.GetComponentsInChildren<dfTextureSprite>()[1];
+		dfTextureSprite stationLogo = playerInfo.transform.FindChild ("StationLogo").GetComponent<dfTextureSprite>();
 		dfPropertyBinding.Bind (stationLogo.gameObject, pPlayer,"uStationLogo", stationLogo,"Texture");
 
 		PlayerInfoBox p = (PlayerInfoBox)playerInfo.GetComponent (typeof(PlayerInfoBox));
 		p.uID = pPlayer.uID;
 
-		dfTextureSprite d = (dfTextureSprite) playerInfo.GetComponentsInChildren (typeof(dfTextureSprite))[0];
+		dfTextureSprite d = playerInfo.transform.FindChild ("IsPlayerReady").GetComponent<dfTextureSprite>();
 		dfPropertyBinding.Bind (d.gameObject, pPlayer,"uReadyTexture",d,"Texture");
 	}
 
@@ -92,10 +92,10 @@ public class LobbyManager : SceneManager {
 
 		dfPropertyBinding.Bind (myStation.gameObject, myStation, "SelectedIndex", pPlayer, "uSelectedStationIndex");
 
-		dfTextureSprite stationLogo = playerInfo.GetComponentsInChildren<dfTextureSprite>()[1];
+		dfTextureSprite stationLogo = playerInfo.transform.FindChild ("StationLogo").GetComponent<dfTextureSprite>();
 		dfPropertyBinding.Bind (stationLogo.gameObject, pPlayer,"uStationLogo", stationLogo,"Texture");
 
-		dfTextureSprite d = (dfTextureSprite) playerInfo.GetComponentsInChildren (typeof(dfTextureSprite))[0];
+		dfTextureSprite d = playerInfo.transform.FindChild ("IsPlayerReady").GetComponent<dfTextureSprite>();
 		dfPropertyBinding.Bind (d.gameObject, pPlayer,"uReadyTexture",d,"Texture");
 	}
 
