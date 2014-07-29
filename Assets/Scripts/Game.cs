@@ -25,7 +25,7 @@ public class Game : MonoBehaviour {
 	public Dictionary<string, string> uTagHumanReadable = new Dictionary<string, string>();
 
 	// This means that a single "ready" is enough to move everyone on - just to hurry during testing
-	public const bool DEBUG_MODE = true;
+	public const bool DEBUG_MODE = false;
 
 	public const int LOBBY_COUNTDOWN = 6;
 	public const int PROP_SELECTION_COUNTDOWN = 60; // 60

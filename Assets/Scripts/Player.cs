@@ -18,7 +18,19 @@ public class Player : MonoBehaviour {
 	public int uID;
 
 	// This is used anywhere we need to wait for everyone to be ready before continuing
-	public bool uReady = false;
+	bool _ready = false;
+
+	public bool isDisconnected = false;
+
+	public bool uReady {
+		get {
+			return (isDisconnected || _ready);
+		}
+
+		set {
+			_ready = value;
+		}
+	}
 
 	public int uDay = 1;
 
@@ -66,6 +78,12 @@ public class Player : MonoBehaviour {
 		} else {
 			uScoreLostFromWatching[pNeed] += pNumber;
 		}
+	}
+
+	[RPC] public void HasDisconnected() {
+		Action c = () => {};
+		FindObjectOfType<ErrorPanel>().ShowError(uName + " has disconnected", c);
+		isDisconnected = true;
 	}
 
 	/**

@@ -48,6 +48,7 @@ public class LobbyManager : SceneManager {
 		foreach (Player player in mNetworkManager.players) {
 			NewPlayer (player);
 		}
+
 		networkView.RPC ("AddChatMessage", RPCMode.All, "<br /><i style=\"color: black;\">Player " + (mNetworkManager.mMyClientID + 1).ToString () + " has joined</i>");
 
 	}
@@ -100,6 +101,7 @@ public class LobbyManager : SceneManager {
 	}
 
 	public override void PlayerConnected(int pID, NetworkPlayer pPlayer) {
+		print ("Player " + pID.ToString () + " has connected");
 		// A new player has joined - so we should fill them in on the state of the lobby
 		// (This is only called on the Server)
 		foreach (Player p in mNetworkManager.players) {
@@ -113,6 +115,7 @@ public class LobbyManager : SceneManager {
 		// A player has left - so we should inform the players
 		// (This is only called on the Server)
 		networkView.RPC ("AddChatMessage", RPCMode.All, "<br /><i style=\"color: black;\">" + mNetworkManager.GetPlayerWithID(pID).uName + " has left</i>");
+		Network.DestroyPlayerObjects(pPlayer);
 	}
 
 	public override void NewPlayer(Player pPlayer) {

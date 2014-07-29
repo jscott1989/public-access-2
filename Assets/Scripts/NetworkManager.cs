@@ -167,7 +167,10 @@ public class NetworkManager : MonoBehaviour {
 			mRefreshHostCallback(uHostList);
 		} else if (pEvent == MasterServerEvent.RegistrationSucceeded) {
 			// This means we are now hosting the game successfully
-			mStartServerCallback();
+			if (mStartServerCallback != null) {
+				mStartServerCallback();
+				mStartServerCallback = null;
+			}
 		} else {
 			// There has been an error setting up the server
 			mErrorPanel.ShowError ("There was an error starting the server");
@@ -209,8 +212,6 @@ public class NetworkManager : MonoBehaviour {
 	 */
 	void OnServerInitialized() {
 		CreatePlayer();
-		// We don't care about this event really because if it's not registered with
-		// the master server nobody can join anyway
 	}
 
 	/**
@@ -221,6 +222,7 @@ public class NetworkManager : MonoBehaviour {
 			Network.CloseConnection (pPlayer, true);
 		} else {
 			int id = Convert.ToInt16(pPlayer.ToString ());
+
 			mSceneManager.PlayerConnected(id, pPlayer);
 		}
 	}
@@ -232,7 +234,6 @@ public class NetworkManager : MonoBehaviour {
 		int id = Convert.ToInt16(pPlayer.ToString ());
 		mSceneManager.PlayerDisconnected(id, pPlayer);
 		Network.RemoveRPCs(pPlayer);
-		Network.DestroyPlayerObjects(pPlayer);
 	}
 
 	/**
