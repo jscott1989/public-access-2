@@ -398,9 +398,12 @@ public class EveningManager : SceneManager {
 						sprite = p.gameObject.GetComponent<dfSlicedSprite>();
 					}
 
-					Vector3 topLeftPosition = sprite.Position;
-					Vector3 bottomRightPosition = (Vector3)sprite.Position + (Vector3)sprite.Size;
+					Vector3 topLeftPosition = new Vector3(sprite.Position.x, 0-sprite.Position.y);
+					Vector3 bottomRightPosition = (Vector3)topLeftPosition + (Vector3)sprite.Size;
 
+					print(topLeftPosition);
+					print(".");
+					print (bottomRightPosition);
 
 					// this checks is it visible on screen at all
 					if (bottomRightPosition.x > 0 && bottomRightPosition.y > 0 && topLeftPosition.x < SCREEN_WIDTH && topLeftPosition.y < SCREEN_HEIGHT) {
