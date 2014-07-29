@@ -44,6 +44,12 @@ public class EveningManager : SceneManager {
 		}
 	}
 
+	public bool uShouldShowBadImage {
+		get {
+			return (uIsPreparing || mNetworkManager.playersOrderedByStation[mWatchingPlayer].isDisconnected);
+		}
+	}
+
 	public string uStageText {
 		get {
 			if (uIsPreparing) {
