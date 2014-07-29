@@ -11,13 +11,19 @@ public class EveningManager : SceneManager {
 	NetworkManager mNetworkManager;
 	RecordingPlayer mRecordingPlayer;
 	GameObject mScreen;
+	dfControl mScreenControl;
 	Countdown mCountdown;
 	Game mGame;
 
+	GameObject mDad;
 	GameObject mMam;
 	GameObject mSon;
 	GameObject mDaughter;
 	GameObject mGrandma;
+
+	GameObject mUIRoot;
+
+	GameObject mPointGainedIndicatorPrefab;
 
 	DialogueManager mDialogueManager;
 
@@ -159,13 +165,19 @@ public class EveningManager : SceneManager {
 		mRecordingPlayer = (RecordingPlayer) FindObjectOfType(typeof(RecordingPlayer));
 		mCountdown = (Countdown) FindObjectOfType(typeof(Countdown));
 		mScreen = GameObject.FindGameObjectWithTag("Screen");
+		mScreenControl = mScreen.GetComponent<dfPanel>();
 		mGame = (Game) FindObjectOfType (typeof(Game));
 		mDialogueManager = FindObjectOfType<DialogueManager>();
 
+		mDad = GameObject.FindGameObjectWithTag("Dad");
 		mMam = GameObject.FindGameObjectWithTag("Mam");
 		mSon = GameObject.FindGameObjectWithTag("Son");
 		mDaughter = GameObject.FindGameObjectWithTag("Daughter");
 		mGrandma = GameObject.FindGameObjectWithTag("Grandma");
+
+		mUIRoot = GameObject.FindGameObjectWithTag("UIRoot");
+
+		mPointGainedIndicatorPrefab = (GameObject)Resources.Load ("Evening/Prefabs/PointGainedIndicator");
 
 	}
 	void Start () {
@@ -386,21 +398,21 @@ public class EveningManager : SceneManager {
 						sprite = p.gameObject.GetComponent<dfSlicedSprite>();
 					}
 
-					Vector2 topLeftPosition = sprite.Position;
-					Vector2 bottomRightPosition = new Vector2(topLeftPosition.x + sprite.Width, topLeftPosition.y + sprite.Height);
+					Vector3 topLeftPosition = sprite.Position;
+					Vector3 bottomRightPosition = (Vector3)sprite.Position + (Vector3)sprite.Size;
 
 
 					// this checks is it visible on screen at all
 					if (bottomRightPosition.x > 0 && bottomRightPosition.y > 0 && topLeftPosition.x < SCREEN_WIDTH && topLeftPosition.y < SCREEN_HEIGHT) {
-						foreach(string need in uTodaysLikes) {
-							if (p.uTags.Contains(need)) {
-								AddScore(need);
+						for(int i = 0; i < uTodaysLikes.Length; i++) {
+							if (p.uTags.Contains(uTodaysLikes[i])) {
+								AddScore(i, uTodaysLikes[i], sprite);
 							}
 						}
 
-						foreach(string need in uTodaysDislikes) {
-							if (p.uTags.Contains(need)) {
-								LoseScore(need);
+						for(int i = 0; i < uTodaysDislikes.Length; i++) {
+							if (p.uTags.Contains(uTodaysDislikes[i])) {
+								LoseScore(i, uTodaysDislikes[i], sprite);
 							}
 						}
 					}
@@ -411,17 +423,55 @@ public class EveningManager : SceneManager {
 
 	/**
 	 * Add to our viewer score for the given need
+	 * pDay = the need's day NOT the current day
 	 */
-	void AddScore(string pNeed, int pNumber = 1) {
-		// TODO: Show some output that the need has been met
+	void AddScore(int pDay, string pNeed, dfControl source, int pNumber = 1) {
+		dfTextureSprite target = mDad.GetComponent<dfTextureSprite>();
+		if (pDay == 1) {
+			target = mSon.GetComponent<dfTextureSprite>();
+		}
+		if (pDay == 2) {
+			target = mGrandma.GetComponent<dfTextureSprite>();
+		}
+
+		for(int i = 0; i < pNumber; i++) {
+			GameObject g = (GameObject)Instantiate(mPointGainedIndicatorPrefab,Vector3.zero,Quaternion.identity);
+			PointGainedIndicator p = g.GetComponent<PointGainedIndicator>();
+			p.transform.parent = mUIRoot.transform;
+			if (source == null) {
+				g.GetComponent<dfTextureSprite>().Position = new Vector3(mScreenControl.Position.x + (mScreenControl.Width/2), mScreenControl.Position.y - (mScreenControl.Height/2));
+			} else {
+				g.GetComponent<dfTextureSprite>().Position = new Vector3(mScreenControl.Position.x + source.Position.x + (source.Width/2), mScreenControl.Position.y + source.Position.y - (source.Height/2));
+			}
+			p.MoveTo(target);
+		}
+
 		mNetworkManager.myPlayer.networkView.RPC ("AddWatchingScore", RPCMode.All, pNeed, pNumber);
 	}
 
 	/**
 	 * Subtract to our viewer score for the given need
+	 * pDay = the need's day NOT the current day
 	 */
-	void LoseScore(string pNeed, int pNumber = 1) {
-		// TODO: Show some output that the need has been lost
+	void LoseScore(int pDay, string pNeed, dfControl source, int pNumber = 1) {
+		dfTextureSprite target = mMam.GetComponent<dfTextureSprite>();
+		if (pDay == 1) {
+			target = mDaughter.GetComponent<dfTextureSprite>();
+		}
+
+		for(int i = 0; i < pNumber; i++) {
+			GameObject g = (GameObject)Instantiate(mPointGainedIndicatorPrefab,Vector3.zero,Quaternion.identity);
+			PointGainedIndicator p = g.GetComponent<PointGainedIndicator>();
+			p.transform.parent = mUIRoot.transform;
+			if (source == null) {
+				g.GetComponent<dfTextureSprite>().Position = new Vector3(mScreenControl.Position.x + (mScreenControl.Width/2), mScreenControl.Position.y - (mScreenControl.Height/2));
+			} else {
+				g.GetComponent<dfTextureSprite>().Position = new Vector3(mScreenControl.Position.x + source.Position.x + (source.Width/2), mScreenControl.Position.y + source.Position.y - (source.Height/2));
+			}
+			p.SetNegative();
+			p.MoveTo(target);
+		}
+
 		mNetworkManager.myPlayer.networkView.RPC ("LoseWatchingScore", RPCMode.All, pNeed, pNumber);
 	}
 
@@ -464,11 +514,15 @@ public class EveningManager : SceneManager {
 
 	public override void AudioPlayed(Audio pAudio) {
 		foreach (string tag in pAudio.uTags) {
-			if (uTodaysLikes.Contains(tag)) {
-				AddScore (tag, 10);
+			for (int i = 0; i < uTodaysLikes.Length; i++) {
+				if (uTodaysLikes[i] == tag) {
+					AddScore (i, tag, null, 10);
+				}
 			}
-			if (uTodaysDislikes.Contains(tag)) {
-				LoseScore (tag, 10);
+			for (int i = 0; i < uTodaysDislikes.Length; i++) {
+				if (uTodaysDislikes[i] == tag) {
+					LoseScore (i, tag, null, 10);
+				}
 			}
 		}
 	}
