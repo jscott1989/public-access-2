@@ -129,7 +129,7 @@ public class NetworkManager : MonoBehaviour {
 	public void StartServer(string pRoomName, Action pStartServerCallback) {
 		mStartServerCallback = pStartServerCallback;
 
-		Network.InitializeServer (mGame.uStations.Count, SERVER_PORT, !Network.HavePublicAddress ());
+		Network.InitializeServer (mGame.uStations.Count - 2, SERVER_PORT, !Network.HavePublicAddress ()); // -1 is for Random, another is because I dunno but it adds up - TODO: Come back to this
 		uRoomName = pRoomName;
 		StopGame (); // This registers everything with hte server - we're accepting new people
 	}
@@ -171,9 +171,15 @@ public class NetworkManager : MonoBehaviour {
 				mStartServerCallback();
 				mStartServerCallback = null;
 			}
-		} else {
+		} else if (pEvent == MasterServerEvent.RegistrationFailedGameName) {
 			// There has been an error setting up the server
-			mErrorPanel.ShowError ("There was an error starting the server");
+			mErrorPanel.ShowError ("There was an error starting the server (Invalid game name)");
+		} else if (pEvent == MasterServerEvent.RegistrationFailedGameType) {
+			// There has been an error setting up the server
+			mErrorPanel.ShowError ("There was an error starting the server (Invalid game type)");
+		} else if (pEvent == MasterServerEvent.RegistrationFailedNoServer) {
+			// There has been an error setting up the server
+			mErrorPanel.ShowError ("There was an error starting the server (No server)");
 		}
 	}
 

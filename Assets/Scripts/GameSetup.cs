@@ -2824,6 +2824,10 @@ public class GameSetup : UnityEngine.Object {
 	}
 
 	public GameSetup(int pPlayers) {
+		if (pPlayers < 3) {
+			pPlayers = 3;
+		}
+
 		Game game = FindObjectOfType<Game>();
 
 		int numberOfTags = (pPlayers * Game.NUMBER_OF_DAYS) / 2;
