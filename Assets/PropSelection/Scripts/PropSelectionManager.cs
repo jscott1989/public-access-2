@@ -126,16 +126,16 @@ public class PropSelectionManager : SceneManager {
 		mAvailablePropsList.AddItem ("[color#ff0000]Props[/color]");
 
 		foreach (Prop p in mNetworkManager.myPlayer.uUnpurchasedProps) {
-			mAvailablePropsList.AddItem (p.uName + " ($" + p.uPrice + ")");
+			mAvailablePropsList.AddItem ("[color#000000]" + p.uName + " ($" + p.uPrice + ")[/color]");
 		}
 		mAvailablePropsList.AddItem ("[color#ff0000]Backdrops[/color]");
 		foreach (Backdrop b in mNetworkManager.myPlayer.uUnpurchasedBackdrops) {
-			mAvailablePropsList.AddItem (b.uName + " ($" + b.uPrice + ")");
+			mAvailablePropsList.AddItem ("[color#000000]" + b.uName + " ($" + b.uPrice + ")[/color]");
 		}
 
 		mAvailablePropsList.AddItem ("[color#ff0000]Sound Effects[/color]");
 		foreach (Audio b in mNetworkManager.myPlayer.uUnpurchasedAudio) {
-			mAvailablePropsList.AddItem (b.uName + " ($" + b.uPrice + ")");
+			mAvailablePropsList.AddItem ("[color#000000]" + b.uName + " ($" + b.uPrice + ")[/color]");
 		}
 	}
 
