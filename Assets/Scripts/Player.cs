@@ -81,9 +81,17 @@ public class Player : MonoBehaviour {
 	}
 
 	[RPC] public void HasDisconnected() {
-		Action c = () => {};
-		FindObjectOfType<ErrorPanel>().ShowError(uName + " has disconnected", c);
-		isDisconnected = true;
+		int playersRemaining = mNetworkManager.players.Where(p => !p.isDisconnected).Count ();
+		if (playersRemaining < Game.MINIMUM_PLAYERS) {
+			Action c = () => {
+				mNetworkManager.ReturnToMainMenu();
+			};
+			FindObjectOfType<ErrorPanel>().ShowError(uName + " has disconnected. There are too few players to continue. The game will now quit.", c);
+		} else {
+			Action c = () => {};
+			FindObjectOfType<ErrorPanel>().ShowError(uName + " has disconnected", c);
+			isDisconnected = true;
+		}
 	}
 
 	/**

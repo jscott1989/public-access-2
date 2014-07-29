@@ -8,7 +8,6 @@ public class MorningManager : SceneManager {
 	DialogueManager mDialogueManager;
 	QuestionPanel mQuestionPanel;
 	Manager mManager;
-	Game mGame;
 
 	string[] mGoodDialogues = new string[]{
 		"Wow! That was one of our best ever nights. Keep it up!",
@@ -67,7 +66,6 @@ public class MorningManager : SceneManager {
 		mNetworkManager = FindObjectOfType<NetworkManager>();
 		mDialogueManager = FindObjectOfType<DialogueManager>();
 		mQuestionPanel = FindObjectOfType<QuestionPanel>();
-		mGame = FindObjectOfType<Game>();
 		mManager = FindObjectOfType<Manager>();
 	}
 

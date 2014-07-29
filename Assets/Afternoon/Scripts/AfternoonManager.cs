@@ -7,7 +7,6 @@ public class AfternoonManager : SceneManager {
 	NetworkManager mNetworkManager;
 	DialogueManager mDialogueManager;
 	Countdown mCountdown;
-	Game mGame;
 	Recorder mRecorder;
 	GameObject mScreen;
 	AudioSource mAudioSource;
@@ -155,7 +154,6 @@ public class AfternoonManager : SceneManager {
 		mNetworkManager = FindObjectOfType<NetworkManager>();
 		mDialogueManager = FindObjectOfType<DialogueManager>();
 		mCountdown = FindObjectOfType<Countdown>();
-		mGame = FindObjectOfType<Game>();
 		mRecorder = FindObjectOfType<Recorder>();
 		mScreen = GameObject.FindGameObjectWithTag("Screen");
 		mBackdropPrefab = (GameObject)Resources.Load ("Afternoon/Prefabs/Backdrop");

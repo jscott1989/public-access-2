@@ -4,13 +4,11 @@ using System;
 
 public class Dialogue : MonoBehaviour {
 	QuestionPanel mQuestionPanel;
-	dfSlicedSprite mSprite;
 	dfLabel mLabel;
 	DialogueSizeTester mDialogueSizeTester;
 
 	void Awake() {
 		mQuestionPanel = FindObjectOfType<QuestionPanel>();
-		mSprite = FindObjectOfType<dfSlicedSprite>();
 		mLabel = GetComponentInChildren<dfLabel>();
 		mDialogueSizeTester = FindObjectOfType<DialogueSizeTester>();
 

@@ -4,8 +4,6 @@ using System.Collections;
 using System.Linq;
 
 public class FeedbackManager : SceneManager {
-
-	Game mGame;
 	Countdown mCountdown;
 	RecordingPlayer mRecordingPlayer;
 	DialogueManager mDialogueManager;
@@ -14,7 +12,6 @@ public class FeedbackManager : SceneManager {
 	ViewerChart mViewerChart;
 
 	void Awake() {
-		mGame = FindObjectOfType<Game> ();
 		mCountdown = FindObjectOfType<Countdown> ();
 		mRecordingPlayer = FindObjectOfType<RecordingPlayer> ();
 		mDialogueManager = FindObjectOfType<DialogueManager> ();

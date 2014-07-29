@@ -8,14 +8,11 @@ public class ResizableProp : MonoBehaviour {
 
 	dfControl mSprite;
 
-	dfPanel mScreenPanel;
-
 	void Awake() {
 		mSprite = GetComponent<dfTextureSprite>();
 		if (mSprite == null) {
 			mSprite = GetComponent<dfSlicedSprite>();
 		}
-		mScreenPanel = GameObject.FindGameObjectWithTag("Screen").GetComponent<dfPanel>();
 	}
 
 	public void StartResizing(ResizableCorner pFixedCorner) {

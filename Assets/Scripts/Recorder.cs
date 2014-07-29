@@ -5,7 +5,6 @@ using System.Linq;
 
 public class Recorder : MonoBehaviour {
 	Player mRecordingPlayer;
-	GameObject mRecordingScreen;
 
 	string[] mKnownPropIDs;
 	Dictionary<string, Vector3> mKnownPositions = new Dictionary<string, Vector3>();
@@ -27,7 +26,6 @@ public class Recorder : MonoBehaviour {
 		mKnownDialogueIDs = new string[0];
 		pPlayer.networkView.RPC ("ClearRecording", RPCMode.All);
 		mRecordingPlayer = pPlayer;
-		mRecordingScreen = pScreen;
 	}
 
 	public void StopRecording() {

@@ -11,7 +11,6 @@ public class LobbyManager : SceneManager {
 	dfRichTextLabel mChat;
 	LoadingPanel mLoadingPanel;
 	NetworkManager mNetworkManager;
-	Game mGame;
 
 	// The current typed chat message
 	public string uChatMessage;
@@ -39,7 +38,6 @@ public class LobbyManager : SceneManager {
 		mChat = (dfRichTextLabel)GameObject.FindObjectOfType (typeof(dfRichTextLabel));
 		mLoadingPanel = (LoadingPanel)GameObject.FindObjectOfType (typeof(LoadingPanel));
 		mNetworkManager = (NetworkManager)GameObject.FindObjectOfType (typeof(NetworkManager));
-		mGame = (Game)FindObjectOfType (typeof(Game));
 	}
 
 	void Start() {
@@ -188,9 +186,10 @@ public class LobbyManager : SceneManager {
 		}
 		
 		// TODO: Add 3 player minimum (I'm not adding this now as it's easier to test things with 2)
-//		if (mNetworkManager.players.Length < 3) {
-//			networkView.RPC ("AddChatMessage", RPCMode.All, "<br /><i style=\"color: black;\">Waiting for at least 3 players</i>");
-//		}
+		if (mNetworkManager.players.Length < Game.MINIMUM_PLAYERS) {
+			networkView.RPC ("AddChatMessage", RPCMode.All, "<br /><i style=\"color: black;\">Waiting for at least " + Game.MINIMUM_PLAYERS.ToString() + " players</i>");
+			return;
+		}
 		
 		// Everyone is ready, let's start the countdown
 		StartCountdown();

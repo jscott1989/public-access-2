@@ -25,7 +25,14 @@ public class GameSetup : UnityEngine.Object {
 	Dictionary<string, string[]> themeTemplates = new Dictionary<string, string[]>() {
 		{"a show like (show) but with (thing)", new string[]{"show", "thing"}},
 		{"(activity) with (person)", new string[]{"activity", "person"}},
-		{"when (person) met (person)", new string[]{"person", "person"}}
+		{"when (person) met (person)", new string[]{"person", "person"}},
+		{"(activity), (activity) or (activity)?", new string[]{"activity", "activity", "activity"}},
+		{"(show) returns: the attack of (person)", new string[]{"show", "thing"}},
+		{"all new (show): starring (person)", new string[]{"show", "person"}},
+		{"(person) vs (person): the rematch", new string[]{"person", "person"}},
+		{"a mix of (show) and (show)", new string[]{"show", "show"}},
+		{"A sequel to (show)", new string[]{"show"}},
+		{"A documentary about (thing), presented by (person)", new string[]{"thing", "person"}}
 	};
 
 	string[] maleFirstNames = new string[] {
@@ -2834,11 +2841,23 @@ public class GameSetup : UnityEngine.Object {
 			availableProps.AddRange(game.uProps.Where(p => p.Value.uTags.Contains(tag)).OrderBy (x => rnd.Next ()).Take (2).Select (p => p.Value.uID));
 		}
 
+		while (availableProps.Count < numberOfAvailableProps) {
+			availableProps.Add (game.uProps.OrderBy (x => rnd.Next ()).Select(p => p.Value.uID).First ());
+		}
+
+
+		availableProps = availableProps.OrderBy (x => rnd.Next ()).ToList ();
 		List<string> availableBackdrops = new List<string>();
 		
 		foreach(string tag in tags) {
 			availableBackdrops.AddRange(game.uBackdrops.Where(p => p.Value.uTags.Contains(tag)).OrderBy (x => rnd.Next ()).Take (2).Select (p => p.Value.uID));
 		}
+
+		while (availableBackdrops.Count < numberOfTags) {
+			availableBackdrops.Add (game.uBackdrops.OrderBy (x => rnd.Next ()).Select(p => p.Value.uID).First ());
+		}
+
+		availableBackdrops = availableBackdrops.OrderBy (x => rnd.Next ()).ToList ();
 
 		List<string> availableAudio = new List<string>();
 		
@@ -2846,7 +2865,13 @@ public class GameSetup : UnityEngine.Object {
 			availableAudio.AddRange(game.uAudio.Where(p => p.Value.uTags.Contains(tag)).OrderBy (x => rnd.Next ()).Take (2).Select (p => p.Value.uID));
 		}
 
-		List<List<string>> needs = new List<List<string>>();
+		while (availableAudio.Count < numberOfTags) {
+			availableAudio.Add (game.uAudio.OrderBy (x => rnd.Next ()).Select(p => p.Value.uID).First ());
+		}
+
+		availableAudio = availableAudio.OrderBy (x => rnd.Next ()).ToList ();
+
+		List<string[]> needs = new List<string[]>();
 
 		List<string> distributingNeeds = new List<string>();
 
@@ -2867,13 +2892,13 @@ public class GameSetup : UnityEngine.Object {
 				distributingNeeds.Remove(tag);
 				oneNeeds.Add(tag);
 			}
-			needs.Add (oneNeeds);
+			needs.Add (oneNeeds.OrderBy(r => rnd.Next ()).ToArray());
 		}
 
 
-		foreach(List<string> n in needs) {
+		foreach(string[] n in needs) {
 			// Now for each player, set every second need as a negative one (a "dislike")
-			for(int i = 0; i < n.Count; i++) {
+			for(int i = 0; i < n.Count(); i++) {
 				if (i % 2 == 1) {
 					n[i] = "-" + n[i];
 				}
@@ -2932,12 +2957,6 @@ public class GameSetup : UnityEngine.Object {
 			femaleNames.Add(l.ToArray ());
 		}
 
-
-		List<string[]> needsAsArray = new List<string[]>();
-		foreach(List<string> s in needs) {
-			needsAsArray.Add (s.ToArray ());
-		}
-
 		uPlayers = pPlayers;
 		uBosses = bossNames.ToArray();
 		uSonNames = sonNames.ToArray ();
@@ -2947,6 +2966,6 @@ public class GameSetup : UnityEngine.Object {
 		uAvailableAudio = availableAudio.ToArray ();
 		uOldThemes = oldThemes.ToArray ();
 		uThemes = themes.ToArray ();
-		uNeeds = needsAsArray.ToArray ();
+		uNeeds = needs.OrderBy (r => rnd.Next ()).ToArray ();
 	}
 }
