@@ -29,11 +29,11 @@ public class Game : MonoBehaviour {
 	public const bool DEBUG_MODE = false;
 
 	public const int LOBBY_COUNTDOWN = 6;
-	public const int PROP_SELECTION_COUNTDOWN = 60; // 60
-	public const int PREPARING_COUNTDOWN = 30; // 30
+	public const int PROP_SELECTION_COUNTDOWN = 20; // 60
+	public const int PREPARING_COUNTDOWN = 3; // 30
 	public const int RECORDING_COUNTDOWN = 30; // 30
-	public const int EVENING_PREPARING_COUNTDOWN = 5; // 5
-	public const int FEEDBACK_COUNTDOWN = 60; // 60
+	public const int EVENING_PREPARING_COUNTDOWN = 2; // 5
+	public const int FEEDBACK_COUNTDOWN = 20; // 60
 	public const int NUMBER_OF_DAYS = 5; // 5
 	public const int CHANNEL_INFORMATION_COUNTDOWN = 2;
 	public const int MINIMUM_PLAYERS = 1;
