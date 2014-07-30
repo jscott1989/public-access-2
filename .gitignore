@@ -13,5 +13,4 @@
 /build/
 /web/
 /debug.app/
-*.meta
 debug2.app
