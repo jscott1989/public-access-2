@@ -41,6 +41,9 @@ public class MorningManager : SceneManager {
 			if (mNetworkManager == null || mNetworkManager.myPlayer == null) {
 				return "";
 			}
+			if (mNetworkManager.myPlayer.uDay > Game.NUMBER_OF_DAYS) {
+				return "";
+			}
 			return "Day " + mNetworkManager.myPlayer.uDay.ToString () + " of " + Game.NUMBER_OF_DAYS.ToString ();
 		}
 	}
@@ -83,7 +86,7 @@ public class MorningManager : SceneManager {
 		} else if(mNetworkManager.myPlayer.uDay < Game.NUMBER_OF_DAYS) {
 			MiddleDay();
 		} else if(mNetworkManager.myPlayer.uDay > Game.NUMBER_OF_DAYS) {
-			GameOver();
+			GameOver ();
 		} else {
 			LastDay();
 		}
@@ -244,7 +247,7 @@ public class MorningManager : SceneManager {
 			dialogue = new string[] {
 				"We came " + positionStrings[position] + ". It's not bad, but it's not good enough.",
 				"We're going to take " + mNetworkManager.myPlayer.uShowName + " forward under a new showrunner. We're hoping to land " + positions[0].uName + ".",
-				"Best of luck for the future though. If you need a reference just ask."
+				"Best of luck for the future though. If you need a reference, just ask."
 			};
 		}
 
@@ -315,7 +318,7 @@ public class MorningManager : SceneManager {
 		if (mNetworkManager.myPlayer.uDay == 1) {
 			mNetworkManager.LoadLevel ("PropSelection");
 		} else if (mNetworkManager.myPlayer.uDay > Game.NUMBER_OF_DAYS) {
-			mNetworkManager.LoadLevel ("EndOfGame");
+			mNetworkManager.LoadLevel("EndOfGame");
 		} else {
 			mNetworkManager.LoadLevel("Feedback");
 		}

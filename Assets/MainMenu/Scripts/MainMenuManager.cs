@@ -74,6 +74,9 @@ public class MainMenuManager : SceneManager {
 				mGamesList.Items = new string[]{};
 
 				foreach (HostData h in pHosts) {
+					if (h.comment == "Closed") {
+						continue;
+					}
 					mGamesList.AddItem (h.gameName + " (" + h.connectedPlayers.ToString () + "/" + h.playerLimit.ToString () + ")");
 				}
 				mLoadingPanel.HideAlert ();

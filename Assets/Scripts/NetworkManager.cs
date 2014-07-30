@@ -143,6 +143,9 @@ public class NetworkManager : MonoBehaviour {
 	 * Remove the server from the room list and stop accepting connections
 	 */
 	public void StartGame() {
+		Network.maxConnections = -1;
+		MasterServer.RegisterHost(GAME_NAME, uRoomName, "Closed");
+
 		MasterServer.UnregisterHost ();
 		uGameHasStarted = true;
 	}
@@ -151,6 +154,8 @@ public class NetworkManager : MonoBehaviour {
 	 * Add the server to the room list and start accepting connections
 	 */
 	public void StopGame() {
+		print ("Stopping game");
+		Network.maxConnections = mGame.uStations.Count - 2;
 		MasterServer.RegisterHost(GAME_NAME, uRoomName);
 		uGameHasStarted = false;
 	}
@@ -257,10 +262,25 @@ public class NetworkManager : MonoBehaviour {
 				mErrorPanel.ShowError("You have been disconnected from the server.");
 			}
 		}
-		ReturnToMainMenu();
+		if (mIsReturningToMainMenu) {
+			mIsReturningToMainMenu = false;
+		} else {
+			ReturnToMainMenu();
+		}
 	}
 
+
+	bool mIsReturningToMainMenu = false;
 	public void ReturnToMainMenu() {
+		if (Network.isServer) {
+			StartGame();
+		}
+
+		if (Network.isServer || Network.isClient) {
+			mIsReturningToMainMenu = true;
+			Network.Disconnect();
+		}
+
 		foreach (Player player in players) {
 			Destroy (player.gameObject);
 		}
@@ -268,8 +288,8 @@ public class NetworkManager : MonoBehaviour {
 		// Destroy the Game object, which will be recreated
 		Destroy(FindObjectOfType<Game>().gameObject);
 
+		Destroy(GameObject.Find ("UI-Alerts"));
 		Destroy (gameObject);
-		mDialogueManager.EndDialogue();
 		LoadLevel ("MainMenu");
 	}
 

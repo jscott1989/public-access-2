@@ -64,11 +64,9 @@ public class EndOfGameManager : SceneManager {
 		}
 
 		Dictionary<string, List<Player>> playersOrderedByTagScore = new Dictionary<string, List<Player>>();
-		foreach(string t in mGame.uTags) {
-			playersOrderedByTagScore[t] = mNetworkManager.players.OrderByDescending (p => p.uScoreFromWatching.ContainsKey(t) ? p.uScoreFromWatching[t] : 0).ToList ();
-		}
 		Dictionary<string, List<Player>> playersOrderedByTagLostScore = new Dictionary<string, List<Player>>();
 		foreach(string t in mGame.uTags) {
+			playersOrderedByTagScore[t] = mNetworkManager.players.OrderByDescending (p => p.uScoreFromWatching.ContainsKey(t) ? p.uScoreFromWatching[t] : 0).ToList ();
 			playersOrderedByTagLostScore[t] = mNetworkManager.players.OrderByDescending (p => p.uScoreLostFromWatching.ContainsKey(t) ? p.uScoreLostFromWatching[t] : 0).ToList ();
 		}
 
@@ -79,7 +77,7 @@ public class EndOfGameManager : SceneManager {
 		mSpecial2Tag = playersOrderedByTagLostScore.OrderBy (kvp => kvp.Value.IndexOf (mSpecial2Winner)).Select (kvp => kvp.Key).First ();
 
 		uSpecial1Category = "Biggest fan of " + mGame.uTagHumanReadable[mSpecial1Tag];
-		uSpecial2Category = "Really hates " + mGame.uTagHumanReadable[mSpecial2Tag];
+		uSpecial2Category = "Hates " + mGame.uTagHumanReadable[mSpecial2Tag];
 
 
 		// Now set up the FinalPlayerScores box

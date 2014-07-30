@@ -35,6 +35,7 @@ public class EveningManager : SceneManager {
 
 	const int PREPARING = 0;
 	const int PLAYING = 1;
+	const int FINISHED = 2;
 
 	int stage = 0;
 
@@ -187,6 +188,12 @@ public class EveningManager : SceneManager {
 
 	}
 	void Start () {
+		if (Network.isServer) {
+			foreach (Player player in mNetworkManager.players) {
+				player.networkView.RPC ("SetReady", RPCMode.All, false);
+			}
+		}
+
 		mNetworkManager.myPlayer.uDailyWatchingScore.Add (0);
 		mMyChannel = Array.IndexOf (mNetworkManager.playersOrderedByStation, mNetworkManager.myPlayer);
 		if (mNetworkManager.myPlayer.uDay == 1) {
@@ -305,8 +312,8 @@ public class EveningManager : SceneManager {
 		mRecordingPlayer.Play(mNetworkManager.playersOrderedByStation[mWatchingPlayer], mScreen);
 		Action eveningFinished = 
 		() => {
-			mNetworkManager.myPlayer.networkView.RPC ("NextDay", RPCMode.All);
-			mNetworkManager.LoadLevel ("Morning");
+			stage = FINISHED;
+			mDialogueManager.WaitForReady();
 		};
 		mCountdown.StartCountdown(Game.RECORDING_COUNTDOWN, eveningFinished);
 	}
@@ -532,5 +539,15 @@ public class EveningManager : SceneManager {
 				}
 			}
 		}
+	}
+
+	public override void AllReady() {
+		networkView.RPC ("MoveToNextScene", RPCMode.All);
+	}
+
+	[RPC] void MoveToNextScene() {
+		mDialogueManager.EndDialogue();
+		mNetworkManager.myPlayer.networkView.RPC ("NextDay", RPCMode.All);
+		mNetworkManager.LoadLevel ("Morning");
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections;
+using System.Linq;
 
 /**
  * This manages showing dialogues at the bottom of the screen, and can callback when the dialogue is finished
@@ -15,6 +16,7 @@ public class DialogueManager : MonoBehaviour {
 	int currentDialogue = 0;
 
 	bool mAllReadyHasBeenReported = false;
+	bool mIsWatchingReady = false;
 
 	public void SomeoneNotReady() {
 		mAllReadyHasBeenReported = false;
@@ -22,22 +24,27 @@ public class DialogueManager : MonoBehaviour {
 
 	void Update() {
 		if (Network.isServer && mNetworkManager.myPlayer.uReady) {
+			print ("b");
 			if (!mAllReadyHasBeenReported) {
+				print ("c");
 				if (Game.DEBUG_MODE) {
 					mNetworkManager.uSceneManager.AllReady();
 					mAllReadyHasBeenReported = true;
 					return;
 				}
-				
-				// Check if all players are ready - if so we can start
-				foreach (Player p in mNetworkManager.players) {
-					if (!p.uReady) {
-						return;
-					}
+
+				string[] waitingForPlayers = mNetworkManager.players.Where(p => !p.uReady).Select (p => p.uName).ToArray();
+				print (waitingForPlayers);
+				if (waitingForPlayers.Length == 0) {
+					mAllReadyHasBeenReported = true;
+					mNetworkManager.uSceneManager.AllReady();
+				} else if (mIsWatchingReady) {
+					mDialogue = new string[]{"Waiting for " + string.Join(", ", waitingForPlayers)};
 				}
-				mAllReadyHasBeenReported = true;
-				mNetworkManager.uSceneManager.AllReady();
 			}
+		} else if (mIsWatchingReady) {
+			string[] waitingForPlayers = mNetworkManager.players.Where(p => !p.uReady).Select (p => p.uName).ToArray();
+			mDialogue = new string[]{"Waiting for " + string.Join(", ", waitingForPlayers)};
 		}
 	}
 
@@ -78,6 +85,7 @@ public class DialogueManager : MonoBehaviour {
 		} else {
 			StartDialogue("Waiting for other players to continue");
 		}
+		mIsWatchingReady = true;
 		mNetworkManager.myPlayer.networkView.RPC("SetReady", RPCMode.All, true);
 	}
 	
@@ -100,6 +108,7 @@ public class DialogueManager : MonoBehaviour {
 	 * and the dialogue can only be ended with EndDialogue
 	 */
 	public void StartDialogue(string[] pDialogue, Action pCallback = null, string pContinueButtonText = "Continue") {
+		mIsWatchingReady = false;
 		mDialogue = pDialogue;
 		mCallback = pCallback;
 		uContinueButtonText = pContinueButtonText;
@@ -115,6 +124,7 @@ public class DialogueManager : MonoBehaviour {
 	 */
 	public void EndDialogue() {
 		print("Ending dialogue");
+		mIsWatchingReady = false;
 		currentDialogue = 0;
 		mDialogue = new string[]{};
 		mCallback = null;
