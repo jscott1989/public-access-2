@@ -118,7 +118,7 @@ public class LobbyManager : SceneManager {
 
 	public override void NewPlayer(Player pPlayer) {
 		// A player has joined the server (this is called for everyone)
-		if (pPlayer.uID == mNetworkManager.mMyClientID) {
+		if (pPlayer.uID == mNetworkManager.mMyClientID && GameObject.Find ("MyPlayerInfoBox") == null) { // I Check for an existing PlayerInfoBox 
 			// This is me, so make a myplayerinfobox
 			CreateMyPlayerInfoBox (pPlayer);
 		} else {
