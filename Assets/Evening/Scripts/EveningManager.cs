@@ -188,6 +188,7 @@ public class EveningManager : SceneManager {
 	}
 	void Start () {
 		mNetworkManager.myPlayer.uDailyWatchingScore.Add (0);
+		mMyChannel = Array.IndexOf (mNetworkManager.playersOrderedByStation, mNetworkManager.myPlayer);
 		if (mNetworkManager.myPlayer.uDay == 1) {
 			StartDay1();
 		} else if (mNetworkManager.myPlayer.uDay == 2) {
@@ -214,7 +215,6 @@ public class EveningManager : SceneManager {
 		Action day1DialogueComplete =
 			() => {
 			// This is our first time in Evening, so we need to decide which channel to start with
-			mMyChannel = Array.IndexOf (mNetworkManager.playersOrderedByStation, mNetworkManager.myPlayer);
 			if (mMyChannel == 0) {
 				// If I'm the first channel then we should start on the last channel
 				StartPreparing(mNetworkManager.players.Length - 1);
