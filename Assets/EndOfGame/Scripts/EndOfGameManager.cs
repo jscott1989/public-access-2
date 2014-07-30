@@ -17,9 +17,11 @@ public class EndOfGameManager : SceneManager {
 	string mSpecial2Tag;
 
 	NetworkManager mNetworkManager;
+	Game mGame;
 
 	void Awake() {
 		mNetworkManager = FindObjectOfType<NetworkManager>();
+		mGame = FindObjectOfType<Game>();
 	}
 
 	void Start() {
@@ -42,20 +44,27 @@ public class EndOfGameManager : SceneManager {
 		}
 
 		Player[] specialWinners = playerByWins.OrderBy (kvp => kvp.Value).Select (kvp => kvp.Key).ToArray ();
-
-
-		// TODO: Make this work - for now we just hardcode some stuff
-		uSpecial1Category = "Most Romantic Show";
-		uSpecial2Category = "Most Scary Show";
 		mSpecial1Winner = specialWinners[0];
 		mSpecial2Winner = specialWinners[1];
-		mSpecial1Tag = "romantic";
-		mSpecial2Tag = "scary";
+
+		Dictionary<string, List<Player>> playersOrderedByTagScore = new Dictionary<string, List<Player>>();
+		foreach(string t in mGame.uTags) {
+			playersOrderedByTagScore[t] = mNetworkManager.players.OrderByDescending (p => p.uScoreFromWatching.ContainsKey(t) ? p.uScoreFromWatching[t] : 0).ToList ();
+		}
+		Dictionary<string, List<Player>> playersOrderedByTagLostScore = new Dictionary<string, List<Player>>();
+		foreach(string t in mGame.uTags) {
+			playersOrderedByTagLostScore[t] = mNetworkManager.players.OrderByDescending (p => p.uScoreLostFromWatching.ContainsKey(t) ? p.uScoreLostFromWatching[t] : 0).ToList ();
+		}
+
+		// TODO: This doesn't /actually/ give us the winner of these categories - but it gives us something cute to talk about and I have
+		// no time to make it work correctly.
 
 		// Choose a tag which specialWinners[0] is best at
+		mSpecial1Tag = playersOrderedByTagScore.OrderByDescending (kvp => kvp.Value.IndexOf (specialWinners[0])).Select (kvp => kvp.Key).First ();
+		mSpecial2Tag = playersOrderedByTagScore.OrderByDescending (kvp => kvp.Value.IndexOf (specialWinners[1])).Select (kvp => kvp.Key).First ();
 
-		// Choose a tag which specialWinners[1] is best at
-
+		uSpecial1Category = "Biggest fan of " + mGame.uTagHumanReadable[mSpecial1Tag];
+		uSpecial2Category = "Really hates " + mGame.uTagHumanReadable[mSpecial2Tag];
 	}
 
 	public string uWinnerName {
@@ -207,8 +216,9 @@ public class EndOfGameManager : SceneManager {
 			if (mSpecial1Winner == null) {
 				return "";
 			}
-			if (mSpecial1Winner.uSpecialScores.ContainsKey(mSpecial1Tag)) {
-				return mSpecial1Winner.uSpecialScores[mSpecial1Tag].ToString () + " points";
+
+			if (mSpecial1Winner.uScoreFromWatching.ContainsKey(mSpecial1Tag)) {
+				return mSpecial1Winner.uScoreFromWatching[mSpecial1Tag].ToString () + " points";
 			}
 			return "";
 		}
@@ -237,8 +247,9 @@ public class EndOfGameManager : SceneManager {
 			if (mSpecial2Winner == null) {
 				return "";
 			}
-			if (mSpecial2Winner.uSpecialScores.ContainsKey (mSpecial2Tag)) {
-				return mSpecial2Winner.uSpecialScores[mSpecial2Tag].ToString () + " points";
+
+			if (mSpecial2Winner.uScoreLostFromWatching.ContainsKey (mSpecial2Tag)) {
+				return mSpecial2Winner.uScoreLostFromWatching[mSpecial2Tag].ToString () + " points lost";
 			}
 			return "";
 		}

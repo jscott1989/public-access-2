@@ -136,8 +136,6 @@ public class Player : MonoBehaviour {
 		}
 	}
 
-	public Dictionary<string, int> uSpecialScores = new Dictionary<string, int>();
-
 	public int uOverallScore {
 		get {
 			return uCreatorScore + uWatcherScore;
