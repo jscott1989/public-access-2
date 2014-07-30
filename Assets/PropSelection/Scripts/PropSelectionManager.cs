@@ -268,26 +268,15 @@ public class PropSelectionManager : SceneManager {
 	/**
 	 * This is called on the server when any player changes their ready status
 	 */
-	public override void ReadyStatusChanged(Player pPlayer) {
-		if (pPlayer.uReady) {
-			// Check if all players are ready - if so we can start
-			if (!Game.DEBUG_MODE) {
-				foreach (Player p in mNetworkManager.players) {
-					if (!p.uReady) {
-						return;
-					}
-				}
+	public override void AllReady() {
+		// Everyone is ready, let's move on
+		if (state == 0) {
+			networkView.RPC ("StartPropSelection", RPCMode.All);
+			foreach (Player player in mNetworkManager.players) {
+				player.networkView.RPC ("SetReady", RPCMode.All, false);
 			}
-			
-			// Everyone is ready, let's move on
-			if (state == 0) {
-				foreach (Player player in mNetworkManager.players) {
-					player.networkView.RPC ("SetReady", RPCMode.All, false);
-				}
-				networkView.RPC ("StartPropSelection", RPCMode.All);
-			} else {
-				EndPropSelection();
-			}
+		} else {
+			EndPropSelection();
 		}
 	}
 	

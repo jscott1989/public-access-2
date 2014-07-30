@@ -22,4 +22,6 @@ public abstract class SceneManager : MonoBehaviour {
 	public virtual void PropSold(Player pPlayer, PurchasedProp pPurchasedProp) {}
 
 	public virtual void AudioPlayed(Audio pAudio) {}
+
+	public virtual void AllReady() {}
 }

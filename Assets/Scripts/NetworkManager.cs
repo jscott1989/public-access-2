@@ -33,7 +33,7 @@ public class NetworkManager : MonoBehaviour {
 	// The callback to call when we recieve a list of games
 	private Action<HostData[]> mRefreshHostCallback;
 
-	private SceneManager mSceneManager;
+	public SceneManager uSceneManager;
 	private Game mGame;
 
 	public int mMyClientID;
@@ -234,7 +234,7 @@ public class NetworkManager : MonoBehaviour {
 		} else {
 			int id = Convert.ToInt16(pPlayer.ToString ());
 
-			mSceneManager.PlayerConnected(id, pPlayer);
+			uSceneManager.PlayerConnected(id, pPlayer);
 		}
 	}
 
@@ -243,7 +243,7 @@ public class NetworkManager : MonoBehaviour {
 	 */
 	void OnPlayerDisconnected(NetworkPlayer pPlayer) {
 		int id = Convert.ToInt16(pPlayer.ToString ());
-		mSceneManager.PlayerDisconnected(id, pPlayer);
+		uSceneManager.PlayerDisconnected(id, pPlayer);
 		Network.RemoveRPCs(pPlayer);
 	}
 
@@ -274,7 +274,7 @@ public class NetworkManager : MonoBehaviour {
 	}
 
 	void OnLevelWasLoaded(int level) {
-		mSceneManager = (SceneManager) GameObject.FindObjectOfType (typeof(SceneManager));
+		uSceneManager = (SceneManager) GameObject.FindObjectOfType (typeof(SceneManager));
 	}
 
 	void Start() {

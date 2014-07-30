@@ -14,6 +14,32 @@ public class DialogueManager : MonoBehaviour {
 
 	int currentDialogue = 0;
 
+	bool mAllReadyHasBeenReported = false;
+
+	public void SomeoneNotReady() {
+		mAllReadyHasBeenReported = false;
+	}
+
+	void Update() {
+		if (Network.isServer && mNetworkManager.myPlayer.uReady) {
+			if (!mAllReadyHasBeenReported) {
+				if (Game.DEBUG_MODE) {
+					mNetworkManager.uSceneManager.AllReady();
+					mAllReadyHasBeenReported = true;
+					return;
+				}
+				
+				// Check if all players are ready - if so we can start
+				foreach (Player p in mNetworkManager.players) {
+					if (!p.uReady) {
+						return;
+					}
+				}
+				mAllReadyHasBeenReported = true;
+				mNetworkManager.uSceneManager.AllReady();
+			}
+		}
+	}
 
 	void Awake() {
 		mNetworkManager = FindObjectOfType<NetworkManager>();

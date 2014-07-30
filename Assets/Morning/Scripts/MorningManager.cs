@@ -100,6 +100,7 @@ public class MorningManager : SceneManager {
 
 			Action managerArrived =
 				() => {
+					print ("ARRIVED");
 					Action day1DialogueFinished =
 					() => {
 						Action<string> showNameSelected =
@@ -302,22 +303,8 @@ public class MorningManager : SceneManager {
 		mDialogueManager.StartDialogue (dialogue, callback);
 	}
 
-	/**
-	 * This is called on the server when any player changes their ready status
-	 */
-	public override void ReadyStatusChanged(Player pPlayer) {
-		if (pPlayer.uReady) {
-			if (!Game.DEBUG_MODE) {
-				// Check if all players are ready - if so we can start
-				foreach (Player p in mNetworkManager.players) {
-					if (!p.uReady) {
-						return;
-					}
-				}
-			}
-
-			networkView.RPC ("MoveToNextScene", RPCMode.All);
-		}
+	public override void AllReady() {
+		networkView.RPC ("MoveToNextScene", RPCMode.All);
 	}
 
 	/**

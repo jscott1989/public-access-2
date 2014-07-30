@@ -86,23 +86,9 @@ public class FeedbackManager : SceneManager {
 		mRecordingPlayer.Play (mNetworkManager.myPlayer, mScreen, true);
 	}
 
-	/**
-	 * This is called on the server when any player changes their ready status
-	 */
-	public override void ReadyStatusChanged(Player pPlayer) {
-		if (pPlayer.uReady) {
-			if (!Game.DEBUG_MODE) {
-				// Check if all players are ready - if so we can start
-				foreach (Player p in mNetworkManager.players) {
-					if (!p.uReady) {
-						return;
-					}
-				}
-			}
-			
-			// Everyone is ready, let's move to the next scene
-			networkView.RPC ("MoveToNextScene", RPCMode.All);
-		}
+	public override void AllReady() {
+		// Everyone is ready, let's move to the next scene
+		networkView.RPC ("MoveToNextScene", RPCMode.All);
 	}
 
 	public void ReadyButtonPressed() {
