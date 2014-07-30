@@ -20,27 +20,6 @@ public class FeedbackManager : SceneManager {
 		mViewerChart = FindObjectOfType<ViewerChart> ();
 	}
 
-	int[] GenerateViewerData() {
-		int[] viewerData = new int[]{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-		foreach(Player p in mNetworkManager.players.Where (p => p != mNetworkManager.myPlayer)) {
-			foreach(WatchedStationAction a in p.uWatchedStationActions.Where(wsa => wsa.uPlayer == mNetworkManager.myPlayer)) {
-				float endTime = a.uEndTime;
-				if (endTime == -1) {
-					endTime = 31;
-				}
-				// Check each second if it falls inside the watched time
-				for(int i = 0; i < 30; i++) {
-					if ((i >= a.uStartTime && i <= endTime) && (i + 1 >= a.uStartTime && i <= endTime)) {
-						// This will show everyone who watched for at least one second
-						viewerData[i] += 1;
-					}
-				}
-			}
-		}
-		
-		return viewerData;
-	}
-
 	void Start () {
 		// First we need to set everyone to "Not Ready"
 		if (Network.isServer) {
@@ -49,7 +28,7 @@ public class FeedbackManager : SceneManager {
 			}
 		}
 
-		int[] data = GenerateViewerData();
+		int[] data = mNetworkManager.myPlayer.GenerateLatestViewerData();
 
 		// Add today's total viewer seconds to the score record
 		// TODO: This isn't a very good scoring mechanism - replace this with something more accurate
@@ -61,10 +40,8 @@ public class FeedbackManager : SceneManager {
 		// If it's day 1 show an introduction
 		if (mNetworkManager.myPlayer.uDay == 2) {
 			StartFirstDay();
-		} else  if (mNetworkManager.myPlayer.uDay == Game.NUMBER_OF_DAYS){
-			StartLastDay();
 		} else {
-			StartMiddleDay();
+			StartOtherDay();
 		}
 	}
 
@@ -83,23 +60,10 @@ public class FeedbackManager : SceneManager {
 		mDialogueManager.StartDialogue(dialogue, dialogueFinished);
 	}
 
-	void StartMiddleDay() {
+	void StartOtherDay() {
 		string[] dialogue = new string[] {
 			"Here are last night's viewing figures",
 			"Use them to try to figure out what the audience are looking for. So future shows can better match their tastes",
-		};
-		
-		Action dialogueFinished =
-		() => {
-			StartFeedback();
-		};
-		mDialogueManager.StartDialogue(dialogue, dialogueFinished);
-	}
-
-	void StartLastDay() {
-		string[] dialogue = new string[] {
-			"Here are last night's viewing figures",
-			"It's too late to make changes to the show based on them. But it might be interesting to see"
 		};
 		
 		Action dialogueFinished =
@@ -113,8 +77,7 @@ public class FeedbackManager : SceneManager {
 		// Start the countdown
 		Action countdownFinished =
 			() => {
-			mDialogueManager.StartDialogue("Waiting for other players to continue");
-			mNetworkManager.myPlayer.networkView.RPC("SetReady", RPCMode.All, true);
+			mDialogueManager.WaitForReady();
 		};
 		mCountdown.StartCountdown (Game.FEEDBACK_COUNTDOWN, countdownFinished);
 		
@@ -144,12 +107,7 @@ public class FeedbackManager : SceneManager {
 
 	public void ReadyButtonPressed() {
 		// Once ready is pressed we need to block the rest of the scene, so we'll show a cancellable dialogue
-		Action readyCancelled =
-		() => {
-			mNetworkManager.myPlayer.networkView.RPC("SetReady", RPCMode.All, false);
-		};
-		mDialogueManager.StartDialogue ("Waiting for other players...", readyCancelled, "Cancel");
-		mNetworkManager.myPlayer.networkView.RPC("SetReady", RPCMode.All, true);
+		mDialogueManager.WaitForReady(true);
 	}
 
 	[RPC] public void MoveToNextScene() {

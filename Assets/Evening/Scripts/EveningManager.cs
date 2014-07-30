@@ -244,7 +244,7 @@ public class EveningManager : SceneManager {
 	void StartDay3() {
 		string[] day3Dialogue = new string[]{
 			"Today, your son " + mNetworkManager.myPlayer.uSonsName + " has joined you.",
-			"Like any child his age, he's quite obsessed with: " + uDay2Dislike,
+			"Like any child his age, he's quite obsessed with " + uDay3Like,
 			"Now you need to try to ensure that you and your son are watching things you enjoy, while avoiding things your wife dislikes."
 		};
 		
@@ -306,12 +306,7 @@ public class EveningManager : SceneManager {
 		Action eveningFinished = 
 		() => {
 			mNetworkManager.myPlayer.NextDay ();
-			if (mNetworkManager.myPlayer.uDay > Game.NUMBER_OF_DAYS) {
-				// Move to the end of game
-				mNetworkManager.LoadLevel ("EndOfGame");
-			} else {
-				mNetworkManager.LoadLevel ("Morning");
-			}
+			mNetworkManager.LoadLevel ("Morning");
 		};
 		mCountdown.StartCountdown(Game.RECORDING_COUNTDOWN, eveningFinished);
 	}

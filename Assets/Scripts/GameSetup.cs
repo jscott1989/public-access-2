@@ -32,7 +32,8 @@ public class GameSetup : UnityEngine.Object {
 		{"(person) vs (person): the rematch", new string[]{"person", "person"}},
 		{"a mix of (show) and (show)", new string[]{"show", "show"}},
 		{"A sequel to (show)", new string[]{"show"}},
-		{"A documentary about (thing), presented by (person)", new string[]{"thing", "person"}}
+		{"A documentary about (thing), presented by (person)", new string[]{"thing", "person"}},
+		{"celebrity (activity) with (person)", new string[]{"activity", "person"}}
 	};
 
 	string[] maleFirstNames = new string[] {
@@ -2809,7 +2810,6 @@ public class GameSetup : UnityEngine.Object {
 		if (availableTemplates.Count() < 1) {
 			// TODO: This shouldn't happen - but hardcode a few themes just incase
 			return string.Join (" ", pNeeds);
-//			return "I couldn't create a theme";
 		}
 
 		string template = availableTemplates[rnd.Next(availableTemplates.Count())];

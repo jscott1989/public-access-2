@@ -51,8 +51,8 @@ public class InstantiationChange : RecordingChange {
 
 		dfTextureSprite sprite = (dfTextureSprite)g.GetComponent (typeof(dfTextureSprite));
 		sprite.Texture = (Texture2D)Resources.Load("Props/" + mPropID);
-		sprite.Position = new Vector2(float.Parse(mNewX), float.Parse (mNewY));
 		sprite.Size = new Vector2(float.Parse (mSizeX), float.Parse (mSizeY));
+		sprite.Position = new Vector2(float.Parse(mNewX), float.Parse (mNewY));
 		sprite.ZOrder = int.Parse (mZOrder);
 		PlayingProp r = (PlayingProp)g.GetComponent (typeof(PlayingProp));
 		r.uID = uID;
@@ -105,8 +105,8 @@ public class DialogueInstantiationChange : RecordingChange {
 		
 		dfSlicedSprite sprite = g.GetComponent<dfSlicedSprite>();
 		sprite.SpriteName = mSpriteName;
-		sprite.Position = new Vector2(float.Parse(mNewX), float.Parse (mNewY));
 		sprite.Size = new Vector2(float.Parse (mSizeX), float.Parse (mSizeY));
+		sprite.Position = new Vector2(float.Parse(mNewX), float.Parse (mNewY));
 		sprite.ZOrder = int.Parse (mZOrder);
 
 		PlayingProp r = g.GetComponent<PlayingProp>();

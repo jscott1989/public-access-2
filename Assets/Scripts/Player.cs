@@ -46,6 +46,24 @@ public class Player : MonoBehaviour {
 	public Dictionary<string, int> uScoreFromWatching = new Dictionary<string, int>();
 	public Dictionary<string, int> uScoreLostFromWatching = new Dictionary<string, int>();
 
+	public string uFormattedDailyNeed(int day) {
+		if (day == 0) {
+			return uName + " likes " + uNeeds[0];
+		}
+		if (day == 1) {
+			return uWifesName + " dislikes " + uNeeds[1].Substring(1);
+		}
+		if (day == 2) {
+			return uSonsName + " likes " + uNeeds[2];
+		}
+		if (day == 3) {
+			return uDaughtersName + " dislikes " + uNeeds[3].Substring(1);
+		}
+		if (day == 4) {
+			return uGrandmothersName + " likes " + uNeeds[4];
+		}
+		return "";
+	}
 	/**
 	 * Record that a point has been gained from watching TV
 	 */
@@ -494,6 +512,27 @@ public class Player : MonoBehaviour {
 	public void NextDay() {
 		uBudget += mGame.uCashPerDay[uDay];
 		uDay += 1;
+	}
+
+	public int[] GenerateLatestViewerData() {
+		int[] viewerData = new int[]{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+		foreach(Player p in mNetworkManager.players.Where (p => p != mNetworkManager.myPlayer)) {
+			foreach(WatchedStationAction a in p.uWatchedStationActions.Where(wsa => wsa.uPlayer == mNetworkManager.myPlayer)) {
+				float endTime = a.uEndTime;
+				if (endTime == -1) {
+					endTime = 31;
+				}
+				// Check each second if it falls inside the watched time
+				for(int i = 0; i < 30; i++) {
+					if ((i >= a.uStartTime && i <= endTime) && (i + 1 >= a.uStartTime && i <= endTime)) {
+						// This will show everyone who watched for at least one second
+						viewerData[i] += 1;
+					}
+				}
+			}
+		}
+		
+		return viewerData;
 	}
 
 	public List<WatchedStationAction> uWatchedStationActions = new List<WatchedStationAction>();

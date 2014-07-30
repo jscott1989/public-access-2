@@ -189,8 +189,7 @@ public class AfternoonManager : SceneManager {
 		
 			Action afternoon1DialogueComplete =
 				() => {
-					mDialogueManager.StartDialogue ("Waiting for other players to continue");
-					mNetworkManager.myPlayer.networkView.RPC ("SetReady", RPCMode.All, true);
+				mDialogueManager.WaitForReady();
 			};
 		
 			mDialogueManager.StartDialogue (afternoon1Dialogue, afternoon1DialogueComplete);
@@ -207,8 +206,7 @@ public class AfternoonManager : SceneManager {
 			
 			Action afternoon1DialogueComplete =
 			() => {
-				mDialogueManager.StartDialogue ("Waiting for other players to continue");
-				mNetworkManager.myPlayer.networkView.RPC ("SetReady", RPCMode.All, true);
+				mDialogueManager.WaitForReady();
 			};
 			
 			mDialogueManager.StartDialogue (afternoon1Dialogue, afternoon1DialogueComplete);
@@ -284,8 +282,7 @@ public class AfternoonManager : SceneManager {
 		Action finishedRecording =
 			() => {
 			mRecorder.StopRecording ();
-			mDialogueManager.StartDialogue("Waiting for other players to finish recording");
-			mNetworkManager.myPlayer.networkView.RPC("SetReady", RPCMode.All, true);
+			mDialogueManager.WaitForReady();
 		};
 
 		mCountdown.StartCountdown (Game.RECORDING_COUNTDOWN, finishedRecording);

@@ -33,7 +33,9 @@ public class Recorder : MonoBehaviour {
 	}
 
 	public void RecordAudio(PurchasedAudio pAudio) {
-		mRecordingPlayer.networkView.RPC ("RecordAction", RPCMode.All, new object[]{"AudioChange", RPCEncoder.Encode(new string[]{mTime.ToString (), pAudio.uAudio.uID})});
+		if (mRecordingPlayer != null) {
+			mRecordingPlayer.networkView.RPC ("RecordAction", RPCMode.All, new object[]{"AudioChange", RPCEncoder.Encode(new string[]{mTime.ToString (), pAudio.uAudio.uID})});
+		}
 	}
 
 	void Update() {
@@ -61,8 +63,10 @@ public class Recorder : MonoBehaviour {
 				// Get the full prop information
 				RecordingProp p = currentRecordingProps.Where (prop => prop.uPurchasedProp.uID == ID).First ();
 				dfTextureSprite sprite = (dfTextureSprite) p.gameObject.GetComponent (typeof(dfTextureSprite));
-				
-				mRecordingPlayer.networkView.RPC ("RecordAction", RPCMode.All, new object[]{"InstantiationChange", RPCEncoder.Encode(new string[]{mTime.ToString (), p.uPurchasedProp.uProp.uID, p.uPurchasedProp.uID,sprite.Position.x.ToString (),sprite.Position.y.ToString(), sprite.Size.x.ToString(), sprite.Size.y.ToString(), sprite.ZOrder.ToString ()})});
+
+				float x_pos = sprite.Position.x;// - (sprite.Width / 2);
+				float y_pos = sprite.Position.y;// + (sprite.Height / 2);
+				mRecordingPlayer.networkView.RPC ("RecordAction", RPCMode.All, new object[]{"InstantiationChange", RPCEncoder.Encode(new string[]{mTime.ToString (), p.uPurchasedProp.uProp.uID, p.uPurchasedProp.uID,x_pos.ToString(),y_pos.ToString(), sprite.Size.x.ToString(), sprite.Size.y.ToString(), sprite.ZOrder.ToString ()})});
 				mKnownPositions[ID] = sprite.Position;
 				mKnownZOrders[ID] = sprite.ZOrder;
 				mKnownSizes[ID] = sprite.Size;

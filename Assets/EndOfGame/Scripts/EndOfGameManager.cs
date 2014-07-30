@@ -16,12 +16,24 @@ public class EndOfGameManager : SceneManager {
 	string mSpecial1Tag;
 	string mSpecial2Tag;
 
+	dfTweenVector3 mOverallDetailTween;
+	dfTweenVector3 mDetailOverallTween;
+
+	dfScrollPanel mFinalPlayerScores;
+	GameObject mFinalPlayerScorePrefab;
+
 	NetworkManager mNetworkManager;
 	Game mGame;
 
 	void Awake() {
 		mNetworkManager = FindObjectOfType<NetworkManager>();
 		mGame = FindObjectOfType<Game>();
+		mFinalPlayerScores = GameObject.Find ("FinalPlayerScores").GetComponent<dfScrollPanel>();
+		mFinalPlayerScorePrefab = (GameObject)Resources.Load ("EndOfGame/Prefabs/FinalPlayerScore");
+		GameObject container = GameObject.Find ("Container");
+		dfTweenVector3[] tweens = container.GetComponents<dfTweenVector3>();
+		mOverallDetailTween = tweens[0];
+		mDetailOverallTween = tweens[1];
 	}
 
 	void Start() {
@@ -36,8 +48,8 @@ public class EndOfGameManager : SceneManager {
 		foreach(Player p in mOverallScores) {
 			int score = 0;
 			if (p == mOverallScores[0]) score += 3;
-			if (p == mOverallScores[1]) score += 2;
-			if (p == mOverallScores[2]) score += 1;
+			if (mOverallScores.Length > 1 && p == mOverallScores[1]) score += 2;
+			if (mOverallScores.Length > 2 && p == mOverallScores[2]) score += 1;
 			if (p == mCreatorScores[0]) score += 2;
 			if (p == mWatcherScores[0]) score += 2;
 			playerByWins[p] = score;
@@ -45,7 +57,11 @@ public class EndOfGameManager : SceneManager {
 
 		Player[] specialWinners = playerByWins.OrderBy (kvp => kvp.Value).Select (kvp => kvp.Key).ToArray ();
 		mSpecial1Winner = specialWinners[0];
-		mSpecial2Winner = specialWinners[1];
+		if (specialWinners.Length > 1) {
+			mSpecial2Winner = specialWinners[1];
+		} else {
+			mSpecial2Winner = specialWinners[0];
+		}
 
 		Dictionary<string, List<Player>> playersOrderedByTagScore = new Dictionary<string, List<Player>>();
 		foreach(string t in mGame.uTags) {
@@ -59,12 +75,30 @@ public class EndOfGameManager : SceneManager {
 		// TODO: This doesn't /actually/ give us the winner of these categories - but it gives us something cute to talk about and I have
 		// no time to make it work correctly.
 
-		// Choose a tag which specialWinners[0] is best at
-		mSpecial1Tag = playersOrderedByTagScore.OrderByDescending (kvp => kvp.Value.IndexOf (specialWinners[0])).Select (kvp => kvp.Key).First ();
-		mSpecial2Tag = playersOrderedByTagScore.OrderByDescending (kvp => kvp.Value.IndexOf (specialWinners[1])).Select (kvp => kvp.Key).First ();
+		mSpecial1Tag = playersOrderedByTagScore.OrderByDescending (kvp => kvp.Value.IndexOf (mSpecial1Winner)).Select (kvp => kvp.Key).First ();
+		mSpecial2Tag = playersOrderedByTagLostScore.OrderByDescending (kvp => kvp.Value.IndexOf (mSpecial2Winner)).Select (kvp => kvp.Key).First ();
 
 		uSpecial1Category = "Biggest fan of " + mGame.uTagHumanReadable[mSpecial1Tag];
 		uSpecial2Category = "Really hates " + mGame.uTagHumanReadable[mSpecial2Tag];
+
+
+		// Now set up the FinalPlayerScores box
+
+		foreach(Player p in mOverallScores) {
+			GameObject f = (GameObject)Instantiate (mFinalPlayerScorePrefab, Vector3.zero, Quaternion.identity);
+			f.transform.Find ("PlayerName").GetComponent<dfLabel>().Text = p.uName;
+			f.transform.Find ("ShowTitle").GetComponent<dfLabel>().Text = p.uShowName;
+			f.transform.Find ("ChannelLogo").GetComponent<dfTextureSprite>().Texture = p.uStationLogo;
+
+			for(int i = 0; i < Game.NUMBER_OF_DAYS; i++) {
+				Transform day = f.transform.Find ("Day " + (i + 1));
+				day.Find ("Like").GetComponent<dfLabel>().Text = p.uFormattedDailyNeed(i);
+				int score = p.uDailyCreatorScore[i] + p.uDailyWatchingScore[i];
+				day.Find ("Score").GetComponent<dfLabel>().Text = score + " points";
+			}
+
+			f.transform.parent = mFinalPlayerScores.transform;
+		}
 	}
 
 	public string uWinnerName {
@@ -213,14 +247,14 @@ public class EndOfGameManager : SceneManager {
 	
 	public string uSpecial1Points {
 		get {
-			if (mSpecial1Winner == null) {
+			if (mSpecial1Winner == null || mSpecial1Tag == null) {
 				return "";
 			}
 
 			if (mSpecial1Winner.uScoreFromWatching.ContainsKey(mSpecial1Tag)) {
 				return mSpecial1Winner.uScoreFromWatching[mSpecial1Tag].ToString () + " points";
 			}
-			return "";
+			return "0 points";
 		}
 	}
 	
@@ -244,14 +278,14 @@ public class EndOfGameManager : SceneManager {
 	
 	public string uSpecial2Points {
 		get {
-			if (mSpecial2Winner == null) {
+			if (mSpecial2Winner == null || mSpecial2Tag == null) {
 				return "";
 			}
 
 			if (mSpecial2Winner.uScoreLostFromWatching.ContainsKey (mSpecial2Tag)) {
 				return mSpecial2Winner.uScoreLostFromWatching[mSpecial2Tag].ToString () + " points lost";
 			}
-			return "";
+			return "0 points lost";
 		}
 	}
 	
@@ -266,5 +300,13 @@ public class EndOfGameManager : SceneManager {
 
 	public void Quit() {
 		mNetworkManager.ReturnToMainMenu();
+	}
+
+	public void ShowDetail() {
+		mOverallDetailTween.Play ();
+	}
+
+	public void ShowOverall() {
+		mDetailOverallTween.Play ();
 	}
 }

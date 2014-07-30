@@ -8,10 +8,16 @@ using System.Collections;
 public class DialogueManager : MonoBehaviour {
 	string[] mDialogue = new string[]{};
 	Action mCallback;
+	NetworkManager mNetworkManager;
 
 	public string uContinueButtonText;
 
 	int currentDialogue = 0;
+
+
+	void Awake() {
+		mNetworkManager = FindObjectOfType<NetworkManager>();
+	}
 
 	/**
 	 * Should the dialogue be visible?
@@ -34,6 +40,19 @@ public class DialogueManager : MonoBehaviour {
 			}
 			return false;
 		}
+	}
+
+	public void WaitForReady(bool pCanCancel = false) {
+		if (pCanCancel) {
+			Action readyCancelled =
+			() => {
+				mNetworkManager.myPlayer.networkView.RPC("SetReady", RPCMode.All, false);
+			};
+			StartDialogue ("Waiting for other players to continue", readyCancelled, "Cancel");
+		} else {
+			StartDialogue("Waiting for other players to continue");
+		}
+		mNetworkManager.myPlayer.networkView.RPC("SetReady", RPCMode.All, true);
 	}
 	
 	/**
