@@ -75,8 +75,8 @@ public class EndOfGameManager : SceneManager {
 		// TODO: This doesn't /actually/ give us the winner of these categories - but it gives us something cute to talk about and I have
 		// no time to make it work correctly.
 
-		mSpecial1Tag = playersOrderedByTagScore.OrderByDescending (kvp => kvp.Value.IndexOf (mSpecial1Winner)).Select (kvp => kvp.Key).First ();
-		mSpecial2Tag = playersOrderedByTagLostScore.OrderByDescending (kvp => kvp.Value.IndexOf (mSpecial2Winner)).Select (kvp => kvp.Key).First ();
+		mSpecial1Tag = playersOrderedByTagScore.OrderBy (kvp => kvp.Value.IndexOf (mSpecial1Winner)).Select (kvp => kvp.Key).First ();
+		mSpecial2Tag = playersOrderedByTagLostScore.OrderBy (kvp => kvp.Value.IndexOf (mSpecial2Winner)).Select (kvp => kvp.Key).First ();
 
 		uSpecial1Category = "Biggest fan of " + mGame.uTagHumanReadable[mSpecial1Tag];
 		uSpecial2Category = "Really hates " + mGame.uTagHumanReadable[mSpecial2Tag];
