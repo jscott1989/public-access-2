@@ -305,7 +305,7 @@ public class EveningManager : SceneManager {
 		mRecordingPlayer.Play(mNetworkManager.playersOrderedByStation[mWatchingPlayer], mScreen);
 		Action eveningFinished = 
 		() => {
-			mNetworkManager.myPlayer.NextDay ();
+			mNetworkManager.myPlayer.networkView.RPC ("NextDay", RPCMode.All);
 			mNetworkManager.LoadLevel ("Morning");
 		};
 		mCountdown.StartCountdown(Game.RECORDING_COUNTDOWN, eveningFinished);

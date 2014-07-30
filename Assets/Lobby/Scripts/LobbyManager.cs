@@ -162,8 +162,6 @@ public class LobbyManager : SceneManager {
 	public override void ReadyStatusChanged(Player pPlayer) {
 		if (pPlayer.uReady) {
 			networkView.RPC ("AddChatMessage", RPCMode.All, "<br /><i style=\"color: black;\">" + pPlayer.uName + " is ready</i>");
-
-			CheckForAllReady();
 		} else {
 			networkView.RPC ("AddChatMessage", RPCMode.All, "<br /><i style=\"color: black;\">" + pPlayer.uName + " is not ready</i>");
 			if (mCountdown > -1) {
@@ -172,26 +170,7 @@ public class LobbyManager : SceneManager {
 		}
 	}
 
-	void CheckForAllReady() {
-		if (Game.DEBUG_MODE) {
-			mCountdown = -1;
-			ServerStartGame ();
-		}
-		
-		// Check if all players are ready - if so we can start
-		foreach (Player p in mNetworkManager.players) {
-			if (!p.uReady) {
-				return;
-			}
-		}
-		
-		// TODO: Add 3 player minimum (I'm not adding this now as it's easier to test things with 2)
-		if (mNetworkManager.players.Length < Game.MINIMUM_PLAYERS) {
-			networkView.RPC ("AddChatMessage", RPCMode.All, "<br /><i style=\"color: black;\">Waiting for at least " + Game.MINIMUM_PLAYERS.ToString() + " players</i>");
-			return;
-		}
-		
-		// Everyone is ready, let's start the countdown
+	public override void AllReady() {
 		StartCountdown();
 	}
 
@@ -208,7 +187,6 @@ public class LobbyManager : SceneManager {
 		mCountdown = -1;
 		networkView.RPC ("AddChatMessage", RPCMode.All, "<br /><i style=\"color: black;\">Game stopped</i>");
 	}
-
 
 	/**
 	 * Inform the players the game is starting

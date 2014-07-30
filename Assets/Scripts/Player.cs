@@ -14,6 +14,8 @@ public class Player : MonoBehaviour {
 	public delegate void AvailableStationsHaveChangedEvent();
 	public event AvailableStationsHaveChangedEvent AvailableStationsHaveChanged;
 
+	DialogueManager mDialogueManager;
+
 	// The player's ID
 	public int uID;
 
@@ -274,6 +276,9 @@ public class Player : MonoBehaviour {
 		uReady = pReady;
 		if (Network.isServer) {
 			mSceneManager.ReadyStatusChanged(this);
+			if (!pReady) {
+				mDialogueManager.SomeoneNotReady();
+			}
 		}
 	}
 
@@ -331,6 +336,7 @@ public class Player : MonoBehaviour {
 		mNotReadyTexture = (Texture2D)Resources.Load ("Lobby/Images/not_ready");
 		mGame = (Game)FindObjectOfType(typeof(Game));
 		mNetworkManager = FindObjectOfType<NetworkManager>();
+		mDialogueManager = FindObjectOfType<DialogueManager>();
 
 		uSelectedStation = mGame.uStationsByID[Game.RANDOM_STATION_ID];
 
@@ -509,7 +515,7 @@ public class Player : MonoBehaviour {
 		uShowName = pShowName;
 	}
 
-	public void NextDay() {
+	[RPC] public void NextDay() {
 		uBudget += mGame.uCashPerDay[uDay];
 		uDay += 1;
 	}
@@ -536,9 +542,12 @@ public class Player : MonoBehaviour {
 	}
 
 	public List<WatchedStationAction> uWatchedStationActions = new List<WatchedStationAction>();
-
+	int mLastWatchedDay = -1;
 	[RPC] public void StartWatchingStation(string pPlayerID, string pStartTime) {
-		// TODO: Clear on day 2
+		if (mLastWatchedDay != uDay) {
+			uWatchedStationActions.Clear ();
+			mLastWatchedDay = uDay;
+		}
 
 		if (uWatchedStationActions.Count > 0) {
 			uWatchedStationActions.Last().uEndTime = float.Parse(pStartTime);

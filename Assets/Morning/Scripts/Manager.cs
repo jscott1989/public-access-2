@@ -11,6 +11,7 @@ public class Manager : MonoBehaviour {
 	}
 
 	public void TweenFinished() {
+		print ("MANAGER ARRIVED");
 		mCallback();
 	}
 }

@@ -215,28 +215,14 @@ public class AfternoonManager : SceneManager {
 		}
 	}
 
-	/**
-	 * This is called on the server when any player changes their ready status
-	 */
-	public override void ReadyStatusChanged(Player pPlayer) {
-		if (pPlayer.uReady) {
-			// Check if all players are ready
-			if (!Game.DEBUG_MODE) {
-				foreach (Player p in mNetworkManager.players) {
-					if (!p.uReady) {
-						return;
-					}
-				}
-			}
-			
-			// Everyone is ready, let's move on
-			if (!uRecording) {
-				// This must be the dialogue
-				networkView.RPC ("StartPreparing", RPCMode.All);
-			} else {
-				// This must indicate everyone is finished recording - move on to the evening stage
-				networkView.RPC ("MoveToNextScene", RPCMode.All);
-			}
+	public override void AllReady() {
+		// Everyone is ready, let's move on
+		if (!uRecording) {
+			// This must be the dialogue
+			networkView.RPC ("StartPreparing", RPCMode.All);
+		} else {
+			// This must indicate everyone is finished recording - move on to the evening stage
+			networkView.RPC ("MoveToNextScene", RPCMode.All);
 		}
 	}
 
