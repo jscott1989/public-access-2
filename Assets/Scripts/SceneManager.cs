@@ -11,7 +11,9 @@ public abstract class SceneManager : MonoBehaviour {
 		Player player = FindObjectOfType<NetworkManager>().GetPlayerWithID(pID);
 
 		// We now mark the player as disconnected and inform all players
-		player.networkView.RPC ("HasDisconnected",RPCMode.All);
+		if (player != null) {
+			player.networkView.RPC ("HasDisconnected",RPCMode.All);
+		}
 	}
 
 	public virtual void NewPlayer(Player pPlayer) {}
