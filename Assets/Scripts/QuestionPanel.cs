@@ -31,4 +31,8 @@ public class QuestionPanel : MonoBehaviour {
 		mPanel.enabled = false;
 		mCallback(mTextBox.Text);
 	}
+
+	public void EndQuestion() {
+		Submit ();
+	}
 }

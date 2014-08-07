@@ -58,15 +58,19 @@ public class MovableProp : MonoBehaviour {
 	}
 
 	void StopDragging() {
-		if (dfInputManager.ControlUnderMouse == mProps) {
-			mRecordingProp.PutBackInBox();
-		}
+		Vector2 aPosition = mScreenPanel.GetManager ().ScreenToGui(new Vector2(Input.mousePosition.x, Input.mousePosition.y));
 
-		mIsDragging = false;
+		if (aPosition.x > mProps.GetAbsolutePosition().x && aPosition.y > mProps.GetAbsolutePosition().y && aPosition.x < mProps.GetAbsolutePosition().x + mProps.Width && aPosition.y < mProps.GetAbsolutePosition().y + mProps.Height) {
+			mRecordingProp.PutBackInBox();
+			mIsDragging = false;
+			return;
+		}
 
 		if (!hasDroppedFirst) {
 			hasDroppedFirst = true;
 			mRecordingProp.FirstDrop();
 		}
+
+		mIsDragging = false;
 	}
 }

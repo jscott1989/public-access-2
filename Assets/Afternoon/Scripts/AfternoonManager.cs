@@ -6,6 +6,7 @@ using System.Collections.Generic;
 public class AfternoonManager : SceneManager {
 	NetworkManager mNetworkManager;
 	DialogueManager mDialogueManager;
+	QuestionPanel mQuestionPanel;
 	Countdown mCountdown;
 	Recorder mRecorder;
 	GameObject mScreen;
@@ -153,6 +154,7 @@ public class AfternoonManager : SceneManager {
 	void Awake() {
 		mNetworkManager = FindObjectOfType<NetworkManager>();
 		mDialogueManager = FindObjectOfType<DialogueManager>();
+		mQuestionPanel = FindObjectOfType<QuestionPanel>();
 		mCountdown = FindObjectOfType<Countdown>();
 		mRecorder = FindObjectOfType<Recorder>();
 		mScreen = GameObject.FindGameObjectWithTag("Screen");
@@ -279,6 +281,7 @@ public class AfternoonManager : SceneManager {
 	 */
 	[RPC] void MoveToNextScene() {
 		mDialogueManager.EndDialogue();
+		mQuestionPanel.EndQuestion();
 		mNetworkManager.LoadLevel ("Evening");
 	}
 }

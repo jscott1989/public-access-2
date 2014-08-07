@@ -57,7 +57,6 @@ public class MainMenuManager : SceneManager {
 
 			Action serverStarted =
 				() => {
-					mLoadingPanel.HideAlert ();
 					mNetworkManager.LoadLevel("Lobby");
 			};
 			mNetworkManager.StartServer (uCreateGameRoomName, serverStarted);
@@ -96,7 +95,6 @@ public class MainMenuManager : SceneManager {
 
 			Action gameJoined =
 				() => {
-					mLoadingPanel.HideAlert ();
 					mNetworkManager.LoadLevel ("Lobby");
 			};
 			mNetworkManager.JoinServer (mHosts[mGamesList.SelectedIndex], gameJoined);

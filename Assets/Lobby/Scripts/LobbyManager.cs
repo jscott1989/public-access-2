@@ -48,6 +48,7 @@ public class LobbyManager : SceneManager {
 		}
 
 		networkView.RPC ("AddChatMessage", RPCMode.All, "<br /><i style=\"color: black;\">Player " + (mNetworkManager.mMyClientID + 1).ToString () + " has joined</i>");
+		mLoadingPanel.HideAlert ();
 
 	}
 
@@ -171,7 +172,11 @@ public class LobbyManager : SceneManager {
 	}
 
 	public override void AllReady() {
-		StartCountdown();
+		if (mNetworkManager.players.Length < Game.MINIMUM_PLAYERS) {
+			networkView.RPC ("AddChatMessage", RPCMode.All, "<br /><i style=\"color: black;\">Waiting for " + Game.MINIMUM_PLAYERS + " players</i>");
+		} else {
+			StartCountdown();
+		}
 	}
 
 	/**
