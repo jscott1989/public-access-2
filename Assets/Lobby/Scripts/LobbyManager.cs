@@ -50,6 +50,8 @@ public class LobbyManager : SceneManager {
 		networkView.RPC ("AddChatMessage", RPCMode.All, "<br /><i style=\"color: black;\">Player " + (mNetworkManager.mMyClientID + 1).ToString () + " has joined</i>");
 		mLoadingPanel.HideAlert ();
 
+		GameObject.FindObjectOfType<Playlist>().StopPlaying();
+
 	}
 
 	/**

@@ -6,18 +6,12 @@ public class Playlist : MonoBehaviour {
 	public AudioClip[] uAudioClips;
 	private int mCurrentIndex = 0;
 
+	private bool isPlaying = true;
+
 	AudioSource mAudioSource;
 
 	void Awake(){
-
 		mAudioSource = GetComponent<AudioSource> ();
-
-	}
-
-	void Start(){
-
-		PlayNextClip ();
-
 	}
 
 	void PlayNextClip(){
@@ -33,12 +27,17 @@ public class Playlist : MonoBehaviour {
 	}
 
 	void Update(){
-
-
-		if (!mAudioSource.isPlaying) {
-		
+		if (!mAudioSource.isPlaying && isPlaying) {
 			PlayNextClip();
 		}
 	}
 
+	public void StartPlaying() {
+		isPlaying = true;
+	}
+
+	public void StopPlaying() {
+		isPlaying = false;
+		mAudioSource.Stop ();
+	}
 }
