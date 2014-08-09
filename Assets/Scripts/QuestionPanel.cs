@@ -18,6 +18,13 @@ public class QuestionPanel : MonoBehaviour {
 		DontDestroyOnLoad (gameObject);
 	}
 
+	/**
+	 * Is the panel visible
+	 */
+	public void isEnabled() {
+		return mPanel.enabled;
+	}
+
 	public void AskQuestion(string question, Action<string> callback, string defaultText = "") {
 		mLabel.Text = question;
 		mTextBox.Text = defaultText;

@@ -2832,6 +2832,11 @@ public class GameSetup : UnityEngine.Object {
 
 		int numberOfTags = (pPlayers * Game.NUMBER_OF_DAYS) / 2;
 
+		// We set this to try to ensure there is plenty of overlap in larger games.
+		if (numberOfTags > 12) {
+			numberOfTags = 12;
+		}
+
 		System.Random rnd = new System.Random();
 		List<string> tags = game.uTags.OrderBy(x => rnd.Next()).Take(numberOfTags - 1).ToList();
 

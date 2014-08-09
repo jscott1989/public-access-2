@@ -36,7 +36,7 @@ public class Game : MonoBehaviour {
 	public const int FEEDBACK_COUNTDOWN = 40; // 60
 	public const int NUMBER_OF_DAYS = 5; // 5
 	public const int CHANNEL_INFORMATION_COUNTDOWN = 2;
-	public const int MINIMUM_PLAYERS = 1;
+	public const int MINIMUM_PLAYERS = 3;
 
 	public const int CREATOR_SCORE_MULTIPLIER = 9;
 
@@ -61,7 +61,7 @@ public class Game : MonoBehaviour {
 		uStationsByID.Add (pStation.uID, pStation);
 	}
 
-	PropFileReader ResourceToCSVReader(string filename) {
+	public static PropFileReader ResourceToCSVReader(string filename) {
 		TextAsset asset = Resources.Load(filename) as TextAsset;
 		Stream s = new MemoryStream(asset.bytes);
 		return new PropFileReader(s);

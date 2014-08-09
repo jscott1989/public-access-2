@@ -117,8 +117,10 @@ public class AfternoonManager : SceneManager {
 	void Update() {
 		for(int i = 0; i < 10; i++) {
 			if (Input.GetKeyDown (i.ToString ())) {
-				// Activate this backdrop/sound
-				KeyPressed(i);
+				if (!mQuestionPanel.isEnabled()) { // Don't fire if we're trying in a caption/dialogue
+					// Activate this backdrop/sound
+					KeyPressed(i);
+				}
 			}
 		}
 	}
