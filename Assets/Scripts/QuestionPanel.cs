@@ -21,7 +21,7 @@ public class QuestionPanel : MonoBehaviour {
 	/**
 	 * Is the panel visible
 	 */
-	public void isEnabled() {
+	public bool isEnabled() {
 		return mPanel.enabled;
 	}
 
