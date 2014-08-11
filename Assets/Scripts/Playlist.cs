@@ -8,6 +8,12 @@ public class Playlist : MonoBehaviour {
 
 	private bool isPlaying = true;
 
+	public bool uIsPlaying {
+		get {
+			return isPlaying;
+		}
+	}
+
 	AudioSource mAudioSource;
 
 	void Awake(){

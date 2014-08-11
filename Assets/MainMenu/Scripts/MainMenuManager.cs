@@ -11,6 +11,10 @@ public class MainMenuManager : SceneManager {
 	dfListbox mGamesList;
 	LoadingPanel mLoadingPanel;
 	ErrorPanel mErrorPanel;
+	Playlist mPlaylist;
+
+	Texture mSoundPlayingTexture;
+	Texture mSoundNotPlayingTexture;
 
 	HostData[] mHosts;
 
@@ -31,10 +35,13 @@ public class MainMenuManager : SceneManager {
 
 
 	void Awake() {
-		mNetworkManager = (NetworkManager)GameObject.FindObjectOfType (typeof(NetworkManager));
-		mGamesList = (dfListbox)GameObject.FindObjectOfType (typeof(dfListbox));
-		mLoadingPanel = (LoadingPanel)GameObject.FindObjectOfType (typeof(LoadingPanel));
-		mErrorPanel = (ErrorPanel)GameObject.FindObjectOfType (typeof(ErrorPanel));
+		mNetworkManager = GameObject.FindObjectOfType<NetworkManager>();
+		mGamesList = GameObject.FindObjectOfType<dfListbox>();
+		mLoadingPanel = GameObject.FindObjectOfType<LoadingPanel>();
+		mErrorPanel = GameObject.FindObjectOfType<ErrorPanel>();
+		mPlaylist = GameObject.FindObjectOfType<Playlist>();
+		mSoundPlayingTexture = (Texture)Resources.Load ("MainMenu/Images/sound_enabled");
+		mSoundNotPlayingTexture = (Texture)Resources.Load ("MainMenu/Images/sound_disabled");
 	}
 
 	void Start() {
@@ -98,6 +105,24 @@ public class MainMenuManager : SceneManager {
 					mNetworkManager.LoadLevel ("Lobby");
 			};
 			mNetworkManager.JoinServer (mHosts[mGamesList.SelectedIndex], gameJoined);
+		}
+	}
+
+	public Texture StartStopMusicTexture {
+		get {
+			if (mPlaylist.uIsPlaying) {
+				return mSoundPlayingTexture;
+			} else {
+				return mSoundNotPlayingTexture;
+			}
+		}
+	}
+
+	public void StartStopMusic() {
+		if (mPlaylist.uIsPlaying) {
+			mPlaylist.StopPlaying();
+		} else {
+			mPlaylist.StartPlaying();
 		}
 	}
 }
