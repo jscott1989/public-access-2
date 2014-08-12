@@ -16,10 +16,14 @@ public class MainMenuManager : SceneManager {
 	Texture mSoundPlayingTexture;
 	Texture mSoundNotPlayingTexture;
 
+	GameObject mGamePrefab;
+
 	HostData[] mHosts;
 
 	public string uCreateGameRoomName;
 
+	public bool uIsCreatingGame = false;
+	public bool uVoiceChatEnabled = true;
 
 	public bool hasHosts {
 		get {
@@ -42,6 +46,7 @@ public class MainMenuManager : SceneManager {
 		mPlaylist = GameObject.FindObjectOfType<Playlist>();
 		mSoundPlayingTexture = (Texture)Resources.Load ("MainMenu/Images/sound_enabled");
 		mSoundNotPlayingTexture = (Texture)Resources.Load ("MainMenu/Images/sound_disabled");
+		mGamePrefab = (GameObject)Resources.Load ("Prefabs/Game");
 	}
 
 	void Start() {
@@ -57,14 +62,34 @@ public class MainMenuManager : SceneManager {
 	 * The Create Game button has been pushed
 	 */
 	public void CreateGame() {
+		uIsCreatingGame = true;
+
+		// TODO: For some reason this doesn't work:
+//		GameObject.Find ("Game Name").GetComponent<dfTextbox>().Focus();
+	}
+
+	public void CancelCreateGame() {
+		uIsCreatingGame = false;
+	}
+
+	/**
+	 * The Create Game button has been pushed
+	 */
+	public void CreateGameSubmit() {
 		if (uCreateGameRoomName == "") {
 			mErrorPanel.ShowError ("You must choose a room name");
 		} else {
-			mLoadingPanel.ShowAlert ("Creating Game...");
+			GameObject g = (GameObject)Instantiate (mGamePrefab, Vector3.zero, Quaternion.identity);
+			Game game = g.GetComponent<Game>();
 
+			// TODO: Set settings on game (which content packs will be loaded, if sound is enabled, etc.)
+			game.uVoiceChatEnabled = uVoiceChatEnabled;
+
+			mLoadingPanel.ShowAlert ("Creating Game...");
+			
 			Action serverStarted =
-				() => {
-					mNetworkManager.LoadLevel("Lobby");
+			() => {
+				mNetworkManager.LoadLevel("Lobby");
 			};
 			mNetworkManager.StartServer (uCreateGameRoomName, serverStarted);
 		}

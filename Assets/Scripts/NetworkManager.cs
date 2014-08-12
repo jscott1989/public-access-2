@@ -34,7 +34,11 @@ public class NetworkManager : MonoBehaviour {
 	private Action<HostData[]> mRefreshHostCallback;
 
 	public SceneManager uSceneManager;
-	private Game mGame;
+	private Game mGame {
+		get {
+			return FindObjectOfType<Game>();
+		}
+	}
 
 	public int mMyClientID;
 
@@ -116,7 +120,7 @@ public class NetworkManager : MonoBehaviour {
 		mDialogueManager = GameObject.FindObjectOfType<DialogueManager>();
 		mErrorPanel = GameObject.FindObjectOfType<ErrorPanel>();
 		mPlayerPrefab = Resources.Load<GameObject>("Prefabs/Player");
-		mGame = FindObjectOfType<Game>();
+
 		/**
 		 * Persist the NetworkManager between scenes
 		 */
@@ -154,7 +158,6 @@ public class NetworkManager : MonoBehaviour {
 	 * Add the server to the room list and start accepting connections
 	 */
 	public void StopGame() {
-		print ("Stopping game");
 		Network.maxConnections = mGame.uStations.Count - 2;
 		MasterServer.RegisterHost(GAME_NAME, uRoomName);
 		uGameHasStarted = false;
