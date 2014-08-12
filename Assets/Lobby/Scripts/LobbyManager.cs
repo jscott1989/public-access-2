@@ -11,9 +11,55 @@ public class LobbyManager : SceneManager {
 	dfRichTextLabel mChat;
 	LoadingPanel mLoadingPanel;
 	NetworkManager mNetworkManager;
+	Game mGame;
 
 	// The current typed chat message
 	public string uChatMessage;
+
+
+	public bool uEditingAudioSettings = false;
+	public void EditAudioSettings() {
+		uEditingAudioSettings = true;
+	}
+
+	public void EditAudioSettingsConfirm() {
+		uEditingAudioSettings = false;
+	}
+
+	public bool uEditingGameSettings = false;
+
+	public void EditGameSettings() {
+		uEditSettingsVoiceChatEnabled = uVoiceChatEnabled;
+		uEditSettingsLobbyName = mGame.uRoomName;
+
+		uEditingGameSettings = true;
+	}
+
+	public void EditGameSettingsConfirm() {
+		uVoiceChatEnabled = uEditSettingsVoiceChatEnabled;
+		mGame.uRoomName = uEditSettingsLobbyName;
+
+		// TODO: Send these settings to all players
+
+		uEditingGameSettings = false;
+	}
+
+
+	public string uGameName {
+		get {
+			return mGame.uRoomName;
+		}
+
+		set {
+			mGame.uRoomName = value;
+		}
+	}
+
+	public bool uIsServer {
+		get {
+			return Network.isServer;
+		}
+	}
 
 	/**
 	 * This is used to countdown 5 seconds before the game begins
@@ -22,22 +68,37 @@ public class LobbyManager : SceneManager {
 	// This is used to announce each second as it passes
 	int mLastCountdownAnnouncement = 0;
 
+	public bool uVoiceChatEnabled {
+		get {
+			return mGame.uVoiceChatEnabled;
+		}
+
+		set {
+			mGame.uVoiceChatEnabled = value;
+		}
+	}
 
 	public string uLobbyName {
 		get {
-			if (mNetworkManager == null) {
+			if (mGame == null) {
 				return "";
 			}
-			return mNetworkManager.uRoomName + " Lobby";
+			return mGame.uRoomName + " Lobby";
 		}
 	}
+
+
+	public bool uEditSettingsVoiceChatEnabled = false;
+	public string uEditSettingsLobbyName = "";
+
 	void Awake() {
-		mMyPlayerInfoPrefab = (GameObject)Resources.Load ("Lobby/Prefabs/MyPlayerInfoBox");
-		mPlayerInfoPrefab = (GameObject)Resources.Load ("Lobby/Prefabs/PlayerInfoBox");
-		mPlayersList = (dfScrollPanel)GameObject.FindObjectOfType (typeof(dfScrollPanel));
-		mChat = (dfRichTextLabel)GameObject.FindObjectOfType (typeof(dfRichTextLabel));
-		mLoadingPanel = (LoadingPanel)GameObject.FindObjectOfType (typeof(LoadingPanel));
-		mNetworkManager = (NetworkManager)GameObject.FindObjectOfType (typeof(NetworkManager));
+		mMyPlayerInfoPrefab = Resources.Load<GameObject> ("Lobby/Prefabs/MyPlayerInfoBox");
+		mPlayerInfoPrefab = Resources.Load<GameObject> ("Lobby/Prefabs/PlayerInfoBox");
+		mPlayersList = GameObject.FindObjectOfType<dfScrollPanel>();
+		mChat = GameObject.FindObjectOfType<dfRichTextLabel>();
+		mLoadingPanel = GameObject.FindObjectOfType<LoadingPanel>();
+		mNetworkManager = GameObject.FindObjectOfType<NetworkManager>();
+		mGame = GameObject.FindObjectOfType<Game>();
 	}
 
 	void Start() {
@@ -72,6 +133,10 @@ public class LobbyManager : SceneManager {
 
 		dfTextureSprite d = playerInfo.transform.FindChild ("IsPlayerReady").GetComponent<dfTextureSprite>();
 		dfPropertyBinding.Bind (d.gameObject, pPlayer,"uReadyTexture",d,"Texture");
+
+		VoiceController c = pPlayer.GetComponent<VoiceController>();
+		dfTextureSprite playerIsTalking = playerInfo.transform.FindChild ("PlayerIsTalking").GetComponent<dfTextureSprite>();
+		dfPropertyBinding.Bind (stationLogo.gameObject, c,"IsPlaying", playerIsTalking,"IsVisible");
 	}
 
 	/**
@@ -96,6 +161,10 @@ public class LobbyManager : SceneManager {
 
 		dfTextureSprite d = playerInfo.transform.FindChild ("IsPlayerReady").GetComponent<dfTextureSprite>();
 		dfPropertyBinding.Bind (d.gameObject, pPlayer,"uReadyTexture",d,"Texture");
+
+		VoiceController c = pPlayer.GetComponent<VoiceController>();
+		dfTextureSprite playerIsTalking = playerInfo.transform.FindChild ("PlayerIsTalking").GetComponent<dfTextureSprite>();
+		dfPropertyBinding.Bind (stationLogo.gameObject, c,"IsRecording", playerIsTalking,"IsVisible");
 	}
 
 	public override void PlayerConnected(int pID, NetworkPlayer pPlayer) {

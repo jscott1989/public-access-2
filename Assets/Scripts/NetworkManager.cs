@@ -290,6 +290,7 @@ public class NetworkManager : MonoBehaviour {
 
 		// Destroy the Game object, which will be recreated
 		Destroy(FindObjectOfType<Game>().gameObject);
+		Destroy(FindObjectOfType<GA_SystemTracker>().gameObject);
 
 		Destroy(GameObject.Find ("UI-Alerts"));
 		Destroy (gameObject);

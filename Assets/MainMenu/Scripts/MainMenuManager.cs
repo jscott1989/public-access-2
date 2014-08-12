@@ -83,6 +83,7 @@ public class MainMenuManager : SceneManager {
 			Game game = g.GetComponent<Game>();
 
 			// TODO: Set settings on game (which content packs will be loaded, if sound is enabled, etc.)
+			game.uRoomName = uCreateGameRoomName;
 			game.uVoiceChatEnabled = uVoiceChatEnabled;
 
 			mLoadingPanel.ShowAlert ("Creating Game...");

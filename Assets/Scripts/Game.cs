@@ -44,6 +44,7 @@ public class Game : MonoBehaviour {
 
 	public const string RANDOM_STATION_ID = "random";
 
+	public string uRoomName = "";
 	public bool uVoiceChatEnabled = false;
 
 	void AddProp(Prop pProp) {
@@ -70,6 +71,8 @@ public class Game : MonoBehaviour {
 	}
 
 	void Awake() {
+		DontDestroyOnLoad (gameObject);
+
 		//Reading prop data CSV file containing list of available props for theme generation
 		using (PropFileReader reader = ResourceToCSVReader("PropSelection"))
 		{
